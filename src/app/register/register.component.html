@@ -1,0 +1,44 @@
+<p-toast position="bottom-center" class="ui-messages-error"></p-toast>
+<div  style = "display:flex; position:absolute; top:0; bottom:0; right:0; left:0">
+  <div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">
+    <h1 class="p-col">
+      Join the Mission
+    </h1>
+    <span class="ui-float-label p-col" >
+        <input id="float-input3" type="text" size="30" pInputText>
+        <label for="float-input" style="margin-left: 8px">First Name</label>
+    </span>
+    <span class="ui-float-label p-col" style="margin-top:10px" >
+        <input id="float-input4" type="text" size="30" pInputText>
+        <label for="float-input" style="margin-left: 8px">Last Name</label>
+    </span>
+    <span class="ui-float-label p-col" style="margin-top:10px">
+        <input id="float-input5" type="text" size="30" pInputText>
+        <label for="float-input" style="margin-left: 8px">Organization</label>
+    </span>
+    <span class="ui-float-label p-col" style="margin-top:10px">
+        <input id="float-input6" type="text" size="30" pInputText [(ngModel)] = "email">
+        <label for="float-input" style="margin-left: 8px">Email</label>
+    </span>
+    <span class="ui-float-label p-col" style="margin-top:10px">
+        <input id="float-input9" type="text" size="30" pInputText [(ngModel)] = "emailConfirm">
+        <label for="float-input" style="margin-left: 8px">Confirm Email</label>
+    </span>
+    <span class="ui-float-label p-col" style="margin-top:10px" >
+        <input id="float-input" type="text" size="30" pInputText>
+        <label for="float-input" style="margin-left: 8px">Username</label>
+    </span>
+    <span class="ui-float-label p-col" style="margin-top:10px">
+        <input id="float-input2" type="password" size="30" pInputText [(ngModel)] = "password">
+        <label for="float-input" style="margin-left: 8px">Password</label>
+    </span>
+    <span class="ui-float-label p-col" style="margin-top:10px">
+        <input id="float-input7" type="password" size="30" pInputText [(ngModel)] = "passwordConfirm">
+        <label for="float-input" style="margin-left: 8px">Confirm Password</label>
+    </span>
+    <div class="p-grid p-col-align-stretch p-justify-between">
+      <a routerLink="/" ><p class="p-col p-col-2">Cancel</p></a>
+      <p-button class="p-col p-col-3 p-col-align-center" label="Register" (onClick)="registerClick()"></p-button>
+    </div>
+  </div>
+</div>
