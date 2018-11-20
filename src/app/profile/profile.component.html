@@ -8,13 +8,6 @@
         <input id="float-input" type="text" size="30" pInputText [(ngModel)] = "email">
         <label for="float-input" style="margin-left: 8px">Email</label>
     </span>
-    <span class="ui-float-label p-col" style="margin-top:10px">
-        <input id="float-input2" type="password" size="30" pInputText [(ngModel)] = "password">
-        <label for="float-input" style="margin-left: 8px">Password</label>
-    </span>
-    <div class="p-grid p-col-align-stretch p-justify-between">
-      <a routerLink="/register" ><p class="p-col p-col-2">Join?</p></a>
-      <p-button class="p-col p-col-3 p-col-align-center" label="Login" (onClick)="loginClick()"></p-button>
-    </div>
+    <p-button class="p-col p-col-3 p-col-align-center" label="Save" (onClick)="saveClick()"></p-button>
   </div>
 </div>

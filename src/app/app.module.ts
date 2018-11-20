@@ -17,6 +17,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AngularFireModule} from '@angular/fire';
 import {MessageService} from 'primeng/api';
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {MessageService} from 'primeng/api';
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    LandingComponent
+    LandingComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

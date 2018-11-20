@@ -2,6 +2,7 @@
 <div class="p-grid p-dir-col" style="height: 100%; width: 100%;">
   <div id="svgContainer" class = "p-col-12 p-col-align-start" style="height: 60%">
   </div>
+  <a routerLink="/profile" ><p class="p-col p-col-2">Profile</p></a>
   <span id="listContainer" class = "p-col-12 p-col-align-end"  style="height: 40%; width: 100%">
     <p-listbox [options]="sites" [style] = "{'width':'100%'}" [(ngModel)]="selectedSite" optionLabel="siteName"></p-listbox>
   </span>
