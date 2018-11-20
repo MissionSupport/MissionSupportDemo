@@ -24,6 +24,7 @@ export class RegisterComponent implements OnInit {
     if (this.email === this.emailConfirm) {
       if (this.password === this.passwordConfirm) {
         this.authInstance.auth.createUserWithEmailAndPassword(this.email, this.password).then(reason => {
+          this.authInstance.auth.currentUser.sendEmailVerification();
           this.router.navigate(['']);
         })
           .catch(err => {
