@@ -59,7 +59,6 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     d3.json('assets/countries.topo.json')
       .then((topology) => {
         // Code from your callback goes here...
-        console.log('hello');
           console.log(topology);
 
           // convert our topojson to geojson
