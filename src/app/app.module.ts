@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AngularFireModule} from '@angular/fire';
 import {MessageService} from 'primeng/api';
 import { ProfileComponent } from './profile/profile.component';
+import { SitesComponent } from './sites/sites.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { ProfileComponent } from './profile/profile.component';
     LoginComponent,
     RegisterComponent,
     LandingComponent,
-    ProfileComponent
+    ProfileComponent,
+    SitesComponent
   ],
   imports: [
     BrowserModule,
