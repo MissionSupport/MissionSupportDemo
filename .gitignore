@@ -41,4 +41,4 @@ Thumbs.db
 # Ignore Environments
 /src/environments/
 
-/package-lock.json
+package-lock.json
