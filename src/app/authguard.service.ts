@@ -11,14 +11,19 @@ import {MessageService} from 'primeng/api';
 export class AuthGuard implements CanActivate {
   constructor(private router: Router, public authInstance: AngularFireAuth, private messageService: MessageService) { }
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
-    if (this.authInstance.auth.currentUser == null || !this.authInstance.auth.currentUser.emailVerified) {
+     if (!localStorage.getItem('user') && (this.authInstance.auth.currentUser == null ||
+       !this.authInstance.auth.currentUser.emailVerified)) {
+    // if (localStorage.getItem('user')) {
       // TODO come back and tell user they are not authenticated or need to create an account
-      console.log('User is not logged in or verified. Denying Access.');
-      this.messageService.add({severity: 'error', summary: 'Login Error', detail: 'User account is not authenticated,' +
-          ' please check your email.'});
-      this.router.navigate(['/']);
-      return false;
+     if (this.authInstance.auth.currentUser == null) {
+       console.log('User is not logged in.');
+     } else {
+       console.log('User is not verified.');
+     }
+     this.router.navigate(['/']);
+     return false;
     }
+    console.log('User is authenticated.');
     return true;
   }
 

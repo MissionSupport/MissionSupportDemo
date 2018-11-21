@@ -16,7 +16,10 @@ export class ProfileComponent implements OnInit {
   constructor(public router: Router, public authInstance: AngularFireAuth, private messageService: MessageService) { }
 
   ngOnInit() {
-    this.email = this.authInstance.auth.currentUser.email;
+    this.authInstance.auth.onAuthStateChanged(user => {
+      this.email = user.email;
+      // TODO: this function only updates the email text input field after being clicked on. Needs to be fixed.
+    });
   }
 
   saveClick(name: string) {
