@@ -9,6 +9,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class SitesComponent implements OnInit {
 
   id: string;
+  markdown: string;
   constructor(public route: ActivatedRoute) { }
 
   ngOnInit() {

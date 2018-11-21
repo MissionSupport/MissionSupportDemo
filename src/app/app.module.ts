@@ -19,6 +19,7 @@ import {AngularFireModule} from '@angular/fire';
 import {MessageService} from 'primeng/api';
 import { ProfileComponent } from './profile/profile.component';
 import { SitesComponent } from './sites/sites.component';
+import { MarkdownModule } from 'ngx-markdown';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { SitesComponent } from './sites/sites.component';
     BrowserAnimationsModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    MarkdownModule.forRoot()
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]
