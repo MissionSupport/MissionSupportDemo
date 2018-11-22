@@ -20,6 +20,7 @@ import {MessageService} from 'primeng/api';
 import { ProfileComponent } from './profile/profile.component';
 import { SitesComponent } from './sites/sites.component';
 import { MarkdownModule } from 'ngx-markdown';
+import {AngularFireDatabaseModule} from '@angular/fire/database';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { MarkdownModule } from 'ngx-markdown';
     ListboxModule,
     FormsModule,
     AngularFireAuthModule,
+    AngularFireDatabaseModule,
     ToastModule,
     BrowserAnimationsModule,
     AngularFirestoreModule.enablePersistence(),
