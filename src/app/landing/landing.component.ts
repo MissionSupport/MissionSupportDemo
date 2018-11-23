@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import {feature} from 'topojson/node_modules/topojson-client';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
+import {Router} from '@angular/router';
 
 export interface Site {id: string; region: string; siteName: string; }
 @Component({
@@ -27,7 +28,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
 
 
 
-  constructor(private readonly db: AngularFirestore) {
+  constructor(private readonly db: AngularFirestore, public router: Router) {
     this.siteCollection = db.collection<Site>('Sites');
     this.sites = this.siteCollection.valueChanges();
     this.sites.subscribe( item => {
@@ -59,7 +60,6 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     d3.json('assets/countries.topo.json')
       .then((topology) => {
         // Code from your callback goes here...
-        console.log('hello');
           console.log(topology);
 
           // convert our topojson to geojson
@@ -115,5 +115,10 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     const id = this.db.createId();
     const site: Site = { id, region, siteName };
     this.siteCollection.doc(id).set(site);
+  }
+
+  siteClick(): void {
+    console.log(this.selectedSite);
+    this.router.navigate(['sites/' + this.selectedSite.id]);
   }
 }

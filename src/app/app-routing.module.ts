@@ -3,7 +3,9 @@ import {Routes, RouterModule} from '@angular/router';
 import {LandingComponent} from './landing/landing.component';
 import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
-import {AuthGuard} from './authguard.service';
+import {AuthguardService} from './service/authguard.service';
+import {ProfileComponent} from './profile/profile.component';
+import {SitesComponent} from './sites/sites.component';
 
 const routes: Routes = [
   {
@@ -16,8 +18,18 @@ const routes: Routes = [
   },
   {
     path: 'landing',
-    canActivate: [AuthGuard],
+    canActivate: [AuthguardService],
     component: LandingComponent
+  },
+  {
+    path: 'profile',
+    canActivate: [AuthguardService],
+    component: ProfileComponent
+  },
+  {
+    path: 'sites/:id',
+    canActivate: [AuthguardService],
+    component: SitesComponent
   }
 ];
 

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -17,6 +17,10 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AngularFireModule} from '@angular/fire';
 import {MessageService} from 'primeng/api';
+import { ProfileComponent } from './profile/profile.component';
+import { SitesComponent } from './sites/sites.component';
+import { MarkdownModule } from 'ngx-markdown';
+import {AngularFireDatabaseModule} from '@angular/fire/database';
 
 
 @NgModule({
@@ -24,7 +28,9 @@ import {MessageService} from 'primeng/api';
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    LandingComponent
+    LandingComponent,
+    ProfileComponent,
+    SitesComponent
   ],
   imports: [
     BrowserModule,
@@ -34,11 +40,13 @@ import {MessageService} from 'primeng/api';
     ListboxModule,
     FormsModule,
     AngularFireAuthModule,
+    AngularFireDatabaseModule,
     ToastModule,
     BrowserAnimationsModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    MarkdownModule.forRoot()
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]

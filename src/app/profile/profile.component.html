@@ -1,0 +1,28 @@
+<p-toast position="bottom-center" class="ui-messages-error"></p-toast>
+<div  style = "display:flex; position:absolute; top:0; bottom:0; right:0; left:0">
+  <div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">
+    <h1 class="p-col">
+      Support    the Mission
+    </h1>
+    <div class="p-grid p-col-align-stretch p-justify-between">
+      <span class="ui-float-label p-col" >
+        <input id="float-input1" class="p-col" type="text" size="30" pInputText [(ngModel)] = "email">
+        <label for="float-input1" style="margin-left: 8px">Email</label>
+      </span>
+      <p-button class="p-col p-col-align-right" label="Save" (onClick)="saveClick('email')"></p-button>
+    </div>
+    <div class="p-grid p-col-align-stretch p-justify-between">
+      <span class="ui-float-label p-col" >
+        <input id="float-input2" class="p-col" type="text" size="30" pInputText [(ngModel)] = "password">
+        <label for="float-input2" style="margin-left: 8px">New Password</label>
+      </span>
+    </div>
+    <div class="p-grid p-col-align-stretch p-justify-between">
+      <span class="ui-float-label p-col" >
+        <input id="float-input3" class="p-col" type="text" size="30" pInputText [(ngModel)] = "newPassword">
+        <label for="float-input3" style="margin-left: 8px">New Password Confirmed</label>
+      </span>
+      <p-button class="p-col p-col-align-right" label="Save" (onClick)="saveClick('password')"></p-button>
+    </div>
+  </div>
+</div>

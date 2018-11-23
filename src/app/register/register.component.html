@@ -5,36 +5,32 @@
       Join the Mission
     </h1>
     <span class="ui-float-label p-col" >
-        <input id="float-input3" type="text" size="30" pInputText>
-        <label for="float-input" style="margin-left: 8px">First Name</label>
+        <input id="float-input3" type="text" size="30" pInputText [(ngModel)] = "firstName">
+        <label for="float-input3" style="margin-left: 8px">First Name</label>
     </span>
     <span class="ui-float-label p-col" style="margin-top:10px" >
-        <input id="float-input4" type="text" size="30" pInputText>
-        <label for="float-input" style="margin-left: 8px">Last Name</label>
+        <input id="float-input4" type="text" size="30" pInputText [(ngModel)] = "lastName">
+        <label for="float-input4" style="margin-left: 8px">Last Name</label>
     </span>
     <span class="ui-float-label p-col" style="margin-top:10px">
-        <input id="float-input5" type="text" size="30" pInputText>
-        <label for="float-input" style="margin-left: 8px">Organization</label>
+        <input id="float-input5" type="text" size="30" pInputText [(ngModel)] = "orginization">
+        <label for="float-input5" style="margin-left: 8px">Organization</label>
     </span>
     <span class="ui-float-label p-col" style="margin-top:10px">
         <input id="float-input6" type="text" size="30" pInputText [(ngModel)] = "email">
-        <label for="float-input" style="margin-left: 8px">Email</label>
+        <label for="float-input6" style="margin-left: 8px">Email</label>
     </span>
     <span class="ui-float-label p-col" style="margin-top:10px">
         <input id="float-input9" type="text" size="30" pInputText [(ngModel)] = "emailConfirm">
-        <label for="float-input" style="margin-left: 8px">Confirm Email</label>
-    </span>
-    <span class="ui-float-label p-col" style="margin-top:10px" >
-        <input id="float-input" type="text" size="30" pInputText>
-        <label for="float-input" style="margin-left: 8px">Username</label>
+        <label for="float-input9" style="margin-left: 8px">Confirm Email</label>
     </span>
     <span class="ui-float-label p-col" style="margin-top:10px">
         <input id="float-input2" type="password" size="30" pInputText [(ngModel)] = "password">
-        <label for="float-input" style="margin-left: 8px">Password</label>
+        <label for="float-input2" style="margin-left: 8px">Password</label>
     </span>
     <span class="ui-float-label p-col" style="margin-top:10px">
         <input id="float-input7" type="password" size="30" pInputText [(ngModel)] = "passwordConfirm">
-        <label for="float-input" style="margin-left: 8px">Confirm Password</label>
+        <label for="float-input7" style="margin-left: 8px">Confirm Password</label>
     </span>
     <div class="p-grid p-col-align-stretch p-justify-between">
       <a routerLink="/" ><p class="p-col p-col-2">Cancel</p></a>
