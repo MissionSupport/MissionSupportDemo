@@ -6,6 +6,7 @@ import {RegisterComponent} from './register/register.component';
 import {AuthguardService} from './service/authguard.service';
 import {ProfileComponent} from './profile/profile.component';
 import {SitesComponent} from './sites/sites.component';
+import {TempWikiComponent} from './temp-wiki/temp-wiki.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,11 @@ const routes: Routes = [
     path: 'sites/:id',
     canActivate: [AuthguardService],
     component: SitesComponent
+  },
+  {
+    path: 'temp',
+    canActivate: [AuthguardService],
+    component: TempWikiComponent
   }
 ];
 

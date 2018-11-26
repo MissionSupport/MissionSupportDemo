@@ -119,6 +119,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
 
   siteClick(): void {
     console.log(this.selectedSite);
-    this.router.navigate(['sites/' + this.selectedSite.id]);
+    // this.router.navigate(['sites/' + this.selectedSite.id]);
+    this.router.navigate(['/temp']);
   }
 }

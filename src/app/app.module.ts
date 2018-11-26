@@ -23,6 +23,8 @@ import { MarkdownModule } from 'ngx-markdown';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import {SidebarModule} from 'primeng/sidebar';
+import { TempWikiComponent } from './temp-wiki/temp-wiki.component';
+import {InplaceModule} from 'primeng/inplace';
 
 
 @NgModule({
@@ -33,7 +35,8 @@ import {SidebarModule} from 'primeng/sidebar';
     LandingComponent,
     ProfileComponent,
     SitesComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    TempWikiComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ import {SidebarModule} from 'primeng/sidebar';
     ToastModule,
     BrowserAnimationsModule,
     SidebarModule,
+    InplaceModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
