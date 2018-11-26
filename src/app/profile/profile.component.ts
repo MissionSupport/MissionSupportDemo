@@ -30,9 +30,11 @@ export class ProfileComponent implements OnInit {
         user.sendEmailVerification().then(() => {
           // Success, now alert user the email verification was sent
           console.log('Success email updated.');
-          this.messageService.add({severity: 'error', summary: 'Email Updated', detail:
+          this.messageService.add({severity: 'success', summary: 'Email Updated', detail:
               'Email was successfully updated'});
         }).catch(error => {
+          this.messageService.add({severity: 'error', summary: 'Unsuccessful', detail:
+              'Error with sending verification email'});
           console.log('Error with sending verification email ', error);
         });
       }).catch(error => {
@@ -50,7 +52,7 @@ export class ProfileComponent implements OnInit {
     } else if (name === 'password') {
       if (this.password === this.newPassword) {
         user.updatePassword(this.password).then(() => {
-          this.messageService.add({severity: 'error', summary: 'Password Changed', detail:
+          this.messageService.add({severity: 'success', summary: 'Password Changed', detail:
               'The password was successfully updated'});
         }).catch(error => {
           // Failed to update

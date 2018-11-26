@@ -21,6 +21,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { SitesComponent } from './sites/sites.component';
 import { MarkdownModule } from 'ngx-markdown';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
+import { ToolbarComponent } from './toolbar/toolbar.component';
+import {SidebarModule} from 'primeng/sidebar';
 
 
 @NgModule({
@@ -30,7 +32,8 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
     RegisterComponent,
     LandingComponent,
     ProfileComponent,
-    SitesComponent
+    SitesComponent,
+    ToolbarComponent
   ],
   imports: [
     BrowserModule,
@@ -43,6 +46,7 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
     AngularFireDatabaseModule,
     ToastModule,
     BrowserAnimationsModule,
+    SidebarModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

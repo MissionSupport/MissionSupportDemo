@@ -1,10 +1,8 @@
-<!--<div class="p-grid p-dir-col" style="height: 100%; width: 100%;">-->
+<app-toolbar style="width: 100%" header="Region Selection"></app-toolbar>
 <div class="p-grid p-dir-col" style="height: 100%; width: 100%;">
-  <a routerLink="/profile" ><p class="p-col p-col-2">Profile</p></a>
   <div id="svgContainer" class = "p-col-12 p-col-align-start" style="height: 60%">
-    <span id="listContainer" class = "p-col-12 p-col-align-end"  style="height: 40%; width: 100%">
-    <p-listbox [options]="sites" [style] = "{'width':'100%'}" [(ngModel)]="selectedSite"
-               optionLabel="siteName" (onDblClick)="siteClick()"></p-listbox>
-  </span>
   </div>
+  <span id="listContainer" class = "p-col-12 p-col-align-end"  style="height: 40%; width: 100%">
+    <p-listbox [options]="sites" [style] = "{'width':'100%'}" [(ngModel)]="selectedSite" optionLabel="siteName" (click)="siteClick()"></p-listbox>
+  </span>
 </div>
