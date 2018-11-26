@@ -24,7 +24,7 @@ export class SitesComponent implements OnInit {
   editTasks: AngularFirestoreCollection<EditTask>;
   currentEdit: EditTask;
   canEdit: boolean; // Can a user make edits
-  editMode: boolean;
+  editMode: boolean; /// If the user is in edit mode we want the screen to change
 
   userPreferences: UserPreferences;
 
@@ -51,14 +51,7 @@ export class SitesComponent implements OnInit {
     this.editTasks.snapshotChanges().subscribe(item => {
       item.map(a => {
         const data = a.payload.doc.data();
-        const id = a.payload.doc.id;
-        console.log('lel');
-        if (data.id !== id) {
-          // Let's update
-          data.id = id;
-          this.updateEdit(data, false);
-          console.log('Id is updating, ', id);
-        }
+        this.updateEdit(data, false);
       });
     });
 
@@ -69,6 +62,7 @@ export class SitesComponent implements OnInit {
 
   updateUserPreferences(uid: string) {
     const pref = this.db.doc('user_preferences/' + uid).valueChanges();
+    this.canEdit = false;
     pref.subscribe(data => {
       this.userPreferences = data as UserPreferences;
       // Now let's see if the user can edit this page.
@@ -82,7 +76,7 @@ export class SitesComponent implements OnInit {
   }
 
   createEdit(task: EditTask) {
-    this.editTasks.add(task).then( () => {
+    this.editTasks.doc(task.user).set(task).then( () => {
       this.currentEdit = task;
       // Successful save.
       this.messageService.add({severity: 'info', summary: 'Edit successfully created',
@@ -96,7 +90,7 @@ export class SitesComponent implements OnInit {
   }
 
   updateEdit(task: EditTask, showMessage: boolean) {
-    this.db.doc<EditTask>('Sites/' + this.id + '/edits/' + task.id).update(task).then(() => {
+    this.db.doc<EditTask>('Sites/' + this.id + '/edits/' + task.user).update(task).then(() => {
       if (showMessage) {
         this.messageService.add({severity: 'info', summary: 'Edit successfully saved',
           detail: 'The edit has been successfully saved'});
@@ -114,7 +108,7 @@ export class SitesComponent implements OnInit {
   }
 
   deleteEdit(task: EditTask) {
-    this.db.doc<EditTask>('Sites/' + this.id + '/edits/' + task.id).delete().then(() => {
+    this.db.doc<EditTask>('Sites/' + this.id + '/edits/' + task.user).delete().then(() => {
       this.messageService.add({severity: 'info', summary: 'Edit successfully deleted',
         detail: 'The edit has been successfully deleted'});
       this.currentEdit = null;
