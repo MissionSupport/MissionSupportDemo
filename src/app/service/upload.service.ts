@@ -18,9 +18,8 @@ export class UploadService {
     const storageRef = this.storage.ref(this.basePath);
     const uploadTask = storageRef.child(`${this.authInstance.auth.currentUser.uid}/${upload.file.name}`).put(upload.file);
     upload.progress = uploadTask.percentageChanges();
+    upload.name = upload.file.name;
   }
-
-
 
   // Writes the file details to the realtime db
   private saveFileData(upload: Upload) {
