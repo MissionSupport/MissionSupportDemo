@@ -23,7 +23,9 @@ export class RegisterComponent implements OnInit {
   }
 
   registerClick() {
-    if (this.email === this.emailConfirm) {
+    if (!this.firstName || !this.lastName || !this.orginization) {
+      this.messageService.add({severity: 'error', summary: 'Registration Error', detail: 'All fields must be set'});
+    } else if (this.email === this.emailConfirm) {
       if (this.password === this.passwordConfirm) {
         this.authInstance.auth.createUserWithEmailAndPassword(this.email, this.password).then(reason => {
           this.authInstance.auth.currentUser.sendEmailVerification();
