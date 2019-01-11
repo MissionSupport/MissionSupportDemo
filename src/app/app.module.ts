@@ -25,6 +25,7 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import {SidebarModule} from 'primeng/sidebar';
 import { TempWikiComponent } from './temp-wiki/temp-wiki.component';
 import {InplaceModule} from 'primeng/inplace';
+import { SettingsListComponent } from './settings-list/settings-list.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import {InplaceModule} from 'primeng/inplace';
     ProfileComponent,
     SitesComponent,
     ToolbarComponent,
-    TempWikiComponent
+    TempWikiComponent,
+    SettingsListComponent
   ],
   imports: [
     BrowserModule,

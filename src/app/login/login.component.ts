@@ -24,7 +24,8 @@ export class LoginComponent implements OnInit {
     });
     this.authInstance.auth.signInWithEmailAndPassword(this.email, this.password).then(reason => {
       localStorage.setItem('user', this.authInstance.auth.currentUser.uid);
-      this.router.navigate(['landing']);
+      this.router.navigate([{outlets: {primary: 'landing' , sidebar: 'settingsOptions'}}]);
+      // this.router.navigate(['landing']);
     })
       .catch(err => {
         this.messageService.add({severity: 'error', summary: 'Login Error', detail: err});

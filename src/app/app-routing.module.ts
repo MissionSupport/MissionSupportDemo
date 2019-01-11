@@ -7,11 +7,17 @@ import {AuthguardService} from './service/authguard.service';
 import {ProfileComponent} from './profile/profile.component';
 import {SitesComponent} from './sites/sites.component';
 import {TempWikiComponent} from './temp-wiki/temp-wiki.component';
+import {SettingsListComponent} from './settings-list/settings-list.component';
 
 const routes: Routes = [
   {
     path: '',
     component: LoginComponent
+  },
+  {
+    path: 'landing',
+    component: SettingsListComponent,
+    outlet: 'sidebar'
   },
   {
     path: 'register',
@@ -20,7 +26,15 @@ const routes: Routes = [
   {
     path: 'landing',
     canActivate: [AuthguardService],
-    component: LandingComponent
+    component: LandingComponent,
+    // children: [
+    //   {
+    //     path: 'settingsOptions',
+    //     canActivate: [AuthguardService],
+    //     component: SettingsListComponent,
+    //     outlet: 'sidebar'
+    //   }
+    // ]
   },
   {
     path: 'profile',
@@ -36,6 +50,19 @@ const routes: Routes = [
     path: 'temp',
     canActivate: [AuthguardService],
     component: TempWikiComponent
+  }
+  ,
+  {
+    path: 'settingsOptions',
+    canActivate: [AuthguardService],
+    component: SettingsListComponent,
+    outlet: 'sidebar'
+  },
+  {
+    path: 'profileSide',
+    canActivate: [AuthguardService],
+    component: ProfileComponent,
+    outlet: 'sidebar'
   }
 ];
 
