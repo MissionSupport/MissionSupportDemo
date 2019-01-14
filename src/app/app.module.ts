@@ -26,6 +26,9 @@ import {SidebarModule} from 'primeng/sidebar';
 import { TempWikiComponent } from './temp-wiki/temp-wiki.component';
 import {InplaceModule} from 'primeng/inplace';
 import { SettingsListComponent } from './settings-list/settings-list.component';
+import { UploadFormComponent } from './upload-form/upload-form.component';
+import {AngularFireStorageModule, StorageBucket} from '@angular/fire/storage';
+
 
 
 @NgModule({
@@ -38,7 +41,8 @@ import { SettingsListComponent } from './settings-list/settings-list.component';
     SitesComponent,
     ToolbarComponent,
     TempWikiComponent,
-    SettingsListComponent
+    SettingsListComponent,
+    UploadFormComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +53,7 @@ import { SettingsListComponent } from './settings-list/settings-list.component';
     FormsModule,
     AngularFireAuthModule,
     AngularFireDatabaseModule,
+    AngularFireStorageModule,
     ToastModule,
     BrowserAnimationsModule,
     SidebarModule,

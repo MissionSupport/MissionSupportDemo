@@ -30,7 +30,7 @@ export class ProfileComponent implements OnInit {
         user.sendEmailVerification().then(() => {
           // Success, now alert user the email verification was sent
           console.log('Success email updated.');
-          this.messageService.add({severity: 'success', summary: 'Email Updated', detail:
+          this.messageService.add({severity: 'info', summary: 'Email Updated', detail:
               'Email was successfully updated'});
         }).catch(error => {
           this.messageService.add({severity: 'error', summary: 'Unsuccessful', detail:

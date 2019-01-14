@@ -8,6 +8,8 @@ import {ProfileComponent} from './profile/profile.component';
 import {SitesComponent} from './sites/sites.component';
 import {TempWikiComponent} from './temp-wiki/temp-wiki.component';
 import {SettingsListComponent} from './settings-list/settings-list.component';
+import {UploadFormComponent} from './upload-form/upload-form.component';
+
 
 const routes: Routes = [
   {
@@ -63,6 +65,11 @@ const routes: Routes = [
     canActivate: [AuthguardService],
     component: ProfileComponent,
     outlet: 'sidebar'
+  },
+  {
+    path: 'upload',
+    canActivate: [AuthguardService],
+    component: UploadFormComponent
   }
 ];
 
