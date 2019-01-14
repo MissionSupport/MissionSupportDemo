@@ -31,7 +31,7 @@ jobs:
             - run:
                 name: Building
                 command: |
-                    if [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                    if [ "${CIRCLE_BRANCH}" == "master" ]; then
                         npm run build-prod
                     else
                         npm run build
