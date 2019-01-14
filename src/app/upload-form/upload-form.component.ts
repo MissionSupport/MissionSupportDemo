@@ -20,14 +20,14 @@ export class UploadFormComponent implements OnInit {
   }
 
   uploadSingle() {
-    const file = this.selectedFiles.item(0)
+    const file = this.selectedFiles.item(0);
     this.currentUpload = new Upload(file);
     this.upSvc.pushUpload(this.currentUpload);
   }
 
   uploadMulti() {
-    const files = this.selectedFiles
-    const filesIndex = _.range(files.length)
+    const files = this.selectedFiles;
+    const filesIndex = _.range(files.length);
     _.each(filesIndex, (idx) => {
       this.currentUpload = new Upload(files[idx]);
       this.upSvc.pushUpload(this.currentUpload);
