@@ -3,7 +3,7 @@ jobs:
     build:
         working_directory: ~/project
         docker:
-            - image: circleci/node:chakracore-8.11-browsers-legacy
+            - image: circleci/node:6.10-browsers
         steps:
             - checkout
             - run:
@@ -31,7 +31,7 @@ jobs:
             - run:
                 name: Building
                 command: |
-                    if [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                    if [ "${CIRCLE_BRANCH}" == "master" ]; then
                         npm run build-prod
                     else
                         npm run build
@@ -45,7 +45,7 @@ jobs:
                     - .firebaserc
     deploy:
         docker:
-            - image: circleci/node:chakracore-8.11-browsers-legacy
+            - image: circleci/node:6.10-browsers
         working_directory: ~/project
         steps:
             - run:
