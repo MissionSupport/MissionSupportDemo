@@ -65,7 +65,7 @@ export class RegisterComponent implements OnInit {
   }
 
   passwordValid() {
-    const expression = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,}$/;
+    const expression = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])[a-zA-Z0-9!@#$%^&*]{7,}$/;
     return expression.test(this.password);
   }
 }
