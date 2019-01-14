@@ -30,7 +30,12 @@ jobs:
 #                command: npm run test-prod
             - run:
                 name: Building
-                command: npm run build-prod
+                command: |
+                    if [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                        npm run build-prod
+                    else
+                        npm run build
+                    fi
             - save_cache:
                 key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
                 paths:
