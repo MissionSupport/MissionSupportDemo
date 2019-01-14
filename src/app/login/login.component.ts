@@ -13,8 +13,10 @@ import {log} from 'util';
 export class LoginComponent implements OnInit {
   email: string;
   password: string;
+  time: number; // Time since last email verification
   ngOnInit() {
     console.log('User authenticated maybe ', this.authInstance.auth.currentUser);
+    this.time = localStorage.getItem('login_time_verify') != null ? +localStorage.getItem('login_time_verify') : 0;
   }
   constructor(public router: Router, public authInstance: AngularFireAuth, private messageService: MessageService) {  }
 
@@ -31,7 +33,12 @@ export class LoginComponent implements OnInit {
         });
       } else {
         // User was not authenticated
-        this.messageService.add({severity: 'error', summary: 'Login Error', detail: 'Email is not verified'});
+        this.messageService.add({severity: 'error', summary: 'Login Error', detail: 'Email is not verified, please check your email'});
+        if (this.time === 0 || this.time + 300000 < (new Date()).getTime()) { // If first time or five minutes
+          request.user.sendEmailVerification();
+          this.time = new Date().getTime();
+          localStorage.setItem('login_time_verify', String(this.time));
+        }
         localStorage.removeItem('user');
         this.authInstance.auth.signOut();
       }

@@ -21,6 +21,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { SitesComponent } from './sites/sites.component';
 import { MarkdownModule } from 'ngx-markdown';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
+import { UploadFormComponent } from './upload-form/upload-form.component';
+import {AngularFireStorageModule, StorageBucket} from '@angular/fire/storage';
 
 
 @NgModule({
@@ -30,7 +32,8 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
     RegisterComponent,
     LandingComponent,
     ProfileComponent,
-    SitesComponent
+    SitesComponent,
+    UploadFormComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +44,7 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
     FormsModule,
     AngularFireAuthModule,
     AngularFireDatabaseModule,
+    AngularFireStorageModule,
     ToastModule,
     BrowserAnimationsModule,
     AngularFirestoreModule.enablePersistence(),
