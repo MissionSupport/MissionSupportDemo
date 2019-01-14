@@ -1,3 +1,3 @@
-<app-toolbar style="width: 100%" header="Region Selection" [hidden] = "globals.toolHidden"></app-toolbar>
-<router-outlet></router-outlet>
+<app-toolbar style="width: 100%" [header]="pageName" [hidden] = "showTool"></app-toolbar>
+<router-outlet (activate)="onActivate($event)"></router-outlet>
 

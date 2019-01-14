@@ -1,19 +1,31 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Globals } from './globals';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ Globals ],
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
   title = 'missionSupport1';
   showTool;
+  pageName;
 
-  constructor(db: AngularFirestore, private globals: Globals) {
+  constructor(db: AngularFirestore) {
+  }
+
+  onActivate(componentRef) {
+    console.log(componentRef.constructor.name);
+     if (componentRef.constructor.name === 'LoginComponent' || componentRef.constructor.name === 'RegisterComponent') {
+        this.pageName = 'NoShow';
+        this.showTool = true;
+     } else {
+        if (componentRef.constructor.name === 'LandingComponent') {
+          this.pageName = 'Region Selection';
+        }
+       this.showTool = false;
+     }
   }
 }

@@ -4,7 +4,6 @@ import {feature} from 'topojson/node_modules/topojson-client';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
-import { Globals } from 'src/app/globals';
 
 export interface Site {id: string; region: string; siteName: string; }
 @Component({
@@ -29,8 +28,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
 
 
 
-  constructor(private readonly db: AngularFirestore, public router: Router, private globals: Globals) {
-    globals.toolHidden = false;
+  constructor(private readonly db: AngularFirestore, public router: Router) {
     this.siteCollection = db.collection<Site>('Sites');
     this.sites = this.siteCollection.valueChanges();
     this.sites.subscribe( item => {
@@ -120,8 +118,8 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   siteClick(): void {
-    console.log(this.selectedSite);
-    // this.router.navigate(['sites/' + this.selectedSite.id]);
+    // console.log(this.selectedSite);
+    this.router.navigate(['sites/' + this.selectedSite.id]);
     // this.router.navigate(['/temp']);
   }
 }
