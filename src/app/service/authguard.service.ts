@@ -10,9 +10,15 @@ import {Observable} from 'rxjs';
 export class AuthguardService implements CanActivate {
   constructor(private router: Router, public authInstance: AngularFireAuth, private messageService: MessageService) { }
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
+    this.authInstance.auth.onAuthStateChanged(user => {
+      if (user == null) {
+        // User is not signed in
+        localStorage.removeItem('user');
+        this.router.navigate(['/']);
+      }
+    });
     if (!localStorage.getItem('user') && (this.authInstance.auth.currentUser == null ||
       !this.authInstance.auth.currentUser.emailVerified)) {
-      // if (localStorage.getItem('user')) {
       // TODO come back and tell user they are not authenticated or need to create an account
       if (this.authInstance.auth.currentUser == null) {
         console.log('User is not logged in.');
