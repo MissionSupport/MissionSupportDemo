@@ -4,6 +4,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import {MessageService} from 'primeng/api';
 import { auth } from 'firebase/app';
 import {log} from 'util';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {Globals} from '../globals';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +20,10 @@ export class LoginComponent implements OnInit {
     console.log('User authenticated maybe ', this.authInstance.auth.currentUser);
     this.time = localStorage.getItem('login_time_verify') != null ? +localStorage.getItem('login_time_verify') : 0;
   }
-  constructor(public router: Router, public authInstance: AngularFireAuth, private messageService: MessageService) {  }
+  constructor(public router: Router, public authInstance: AngularFireAuth,
+              private messageService: MessageService, private globals: Globals) {
+    globals.toolHidden = true;
+  }
 
   loginClick() {
     this.authInstance.auth.setPersistence(auth.Auth.Persistence.SESSION).then(() => {
@@ -28,9 +33,12 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('user', request.user.uid);
       // Check if user is authenticated
       if (request.user.emailVerified) {
-        this.router.navigate([{outlets: {primary: 'landing' , sidebar: 'settingsOptions'}}]).catch(reason => {
+        this.router.navigate([{outlets: {primary: 'landing' }}]).catch(reason => {
           console.log('Something went wrong with authguard');
         });
+        // this.router.navigate([{outlets: {primary: 'landing' , sidebar: 'settingsOptions'}}]).catch(reason => {
+        //   console.log('Something went wrong with authguard');
+        // });
       } else {
         // User was not authenticated
         this.messageService.add({severity: 'error', summary: 'Login Error', detail: 'Email is not verified, please check your email'});

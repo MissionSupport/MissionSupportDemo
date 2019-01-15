@@ -6,6 +6,7 @@ import {MessageService} from 'primeng/api';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {EditTask} from '../interfaces/edit-task';
 import {UserPreferences} from '../interfaces/user-preferences';
+import {SharedService} from '../globals';
 
 @Component({
   selector: 'app-sites',
@@ -29,8 +30,9 @@ export class SitesComponent implements OnInit {
   userPreferences: UserPreferences;
 
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
-              public authInstance: AngularFireAuth) {
+              public authInstance: AngularFireAuth,  private sharedService: SharedService) {
     this.id = this.route.snapshot.paramMap.get('id');
+    sharedService.onPageNav.emit(this.id);
     // Now we are going to get the latest version of markdown that is approved.
     this.siteCollection = this.db.collection('Sites/' + this.id + '/versions', ref =>
       ref.where('current', '==', true));

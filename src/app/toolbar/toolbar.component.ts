@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-toolbar',
@@ -8,10 +9,13 @@ import { Component, OnInit, Input } from '@angular/core';
 export class ToolbarComponent implements OnInit {
   @Input() header;
   display;
-  constructor() { }
+  constructor(public router: Router) { }
 
   ngOnInit() {
   }
 
+  restoreFront(event) {
+    this.router.navigate(['', { outlets: { sidebar: ['settingsOptions'] } }]);
+  }
 
 }
