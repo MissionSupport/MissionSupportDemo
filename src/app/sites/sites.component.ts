@@ -7,10 +7,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {EditTask} from '../interfaces/edit-task';
 import {UserPreferences} from '../interfaces/user-preferences';
 import {SharedService} from '../globals';
-class Section {
-  title: string;
-  markdown: string;
-}
+
 @Component({
   selector: 'app-sites',
   templateUrl: './sites.component.html',
@@ -27,11 +24,13 @@ export class SitesComponent implements OnInit {
   siteCollection: AngularFirestoreCollection;
   versionId;
   sections = [];
+  editText = [];
+  hideme = [];
 
   editTasks: AngularFirestoreCollection<EditTask>;
   currentEdit: EditTask;
   canEdit: boolean; // Can a user make edits
-  editMode: boolean; /// If the user is in edit mode we want the screen to change
+  editMode = false; /// If the user is in edit mode we want the screen to change
 
   userPreferences: UserPreferences;
 
@@ -72,18 +71,10 @@ export class SitesComponent implements OnInit {
           for (const [title, markup] of Object.entries(section[0])) {
             if (section[0].hasOwnProperty(title)) {
               this.sections.push({title, markup});
+              this.editText.push(markup);
             }
-            // console.log(element);
-            // this.objects.push(element as Section);
           }
           console.log(this.sections);
-          // console.log(section);
-          // console.log(section[0]);
-          // this.hurr = section[0];
-          // if (item.length >= 1) { // Is possible for more than one so we will just take the first.
-          //   this.site = item[0] as any;
-          //   this.markdown = this.site['markdown'];
-          // }
         });
       });
     });
@@ -92,6 +83,12 @@ export class SitesComponent implements OnInit {
     this.authInstance.auth.onAuthStateChanged(data => {
       this.updateUserPreferences(data.uid);
     });
+  }
+
+  submitEdit(title, i) {
+    // this.editText[i] is the data we with to push into firebase with the section header title
+    // to then revert the page to the view do "hidden[i] = !hidden[i];"
+    console.log(title, this.editText[i], i);
   }
   updateVersionId(data) {
     this.versionId = data;
