@@ -7,12 +7,16 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {EditTask} from '../interfaces/edit-task';
 import {UserPreferences} from '../interfaces/user-preferences';
 import {SharedService} from '../globals';
-
+class Section {
+  title: string;
+  markdown: string;
+}
 @Component({
   selector: 'app-sites',
   templateUrl: './sites.component.html',
   styleUrls: ['./sites.component.css']
 })
+
 export class SitesComponent implements OnInit {
 
   id: string;
@@ -21,6 +25,8 @@ export class SitesComponent implements OnInit {
   sites: Observable<{}[]>;
   site: {};
   siteCollection: AngularFirestoreCollection;
+  versionId;
+  sections = [];
 
   editTasks: AngularFirestoreCollection<EditTask>;
   currentEdit: EditTask;
@@ -33,6 +39,7 @@ export class SitesComponent implements OnInit {
               public authInstance: AngularFireAuth,  private sharedService: SharedService) {
     this.id = this.route.snapshot.paramMap.get('id');
     sharedService.onPageNav.emit(this.id);
+    sharedService.onMainEvent.emit(false);
     // Now we are going to get the latest version of markdown that is approved.
     this.siteCollection = this.db.collection('Sites/' + this.id + '/versions', ref =>
       ref.where('current', '==', true));
@@ -56,12 +63,40 @@ export class SitesComponent implements OnInit {
         this.updateEdit(data, false);
       });
     });
+    this.siteCollection.snapshotChanges().subscribe(item => {
+      item.map(a => {
+        const data = a.payload.doc.id;
+        this.updateVersionId(data);
+        const sections = this.db.collection('Sites/' + this.id + '/versions/' + this.versionId + '/wikiSections').valueChanges();
+        sections.subscribe( section => {
+          for (const [title, markup] of Object.entries(section[0])) {
+            if (section[0].hasOwnProperty(title)) {
+              this.sections.push({title, markup});
+            }
+            // console.log(element);
+            // this.objects.push(element as Section);
+          }
+          console.log(this.sections);
+          // console.log(section);
+          // console.log(section[0]);
+          // this.hurr = section[0];
+          // if (item.length >= 1) { // Is possible for more than one so we will just take the first.
+          //   this.site = item[0] as any;
+          //   this.markdown = this.site['markdown'];
+          // }
+        });
+      });
+    });
+
 
     this.authInstance.auth.onAuthStateChanged(data => {
       this.updateUserPreferences(data.uid);
     });
   }
-
+  updateVersionId(data) {
+    this.versionId = data;
+    console.log(this.versionId);
+  }
   updateUserPreferences(uid: string) {
     const pref = this.db.doc('user_preferences/' + uid).valueChanges();
     this.canEdit = false;
