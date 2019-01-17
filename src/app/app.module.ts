@@ -28,6 +28,10 @@ import {InplaceModule} from 'primeng/inplace';
 import { SettingsListComponent } from './settings-list/settings-list.component';
 import { UploadFormComponent } from './upload-form/upload-form.component';
 import {AngularFireStorageModule, StorageBucket} from '@angular/fire/storage';
+import {ProgressBarModule} from 'primeng/progressbar';
+import {FileUploadModule} from 'primeng/fileupload';
+import {FieldsetModule} from 'primeng/fieldset';
+import {EditorModule} from 'primeng/editor';
 
 
 
@@ -58,6 +62,10 @@ import {AngularFireStorageModule, StorageBucket} from '@angular/fire/storage';
     BrowserAnimationsModule,
     SidebarModule,
     InplaceModule,
+    ProgressBarModule,
+    FileUploadModule,
+    FieldsetModule,
+    EditorModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

@@ -1,28 +1,45 @@
 <div *ngIf="currentUpload">
-  <div class="progress">
-    <div class="progress-bar progress-bar-animated" [ngStyle]="{ 'width': currentUpload?.progress + '%' }"></div>
-  </div>
-  Progress: {{currentUpload?.name}} | {{currentUpload?.progress | async}}% Complete
+    <div class="p-grid" *ngFor="let upload of uploads">
+      <div class="p-col-2"><span>{{upload?.name}}</span></div>
+      <div class="progress p-col-8">
+        <p-progressBar [value] = "upload?.progress | async"></p-progressBar>
+      </div>
+    </div>
 </div>
 
-<label>
-  <input type="file" (change)="detectFiles($event)">
-</label>
+<div class="p-grid">
+  <span class="p-col-12 p-justify-center" style="text-align: center">Media Upload Page</span>
+  <div class="p-col-6 p-justify-center" style="text-align: center">
+    <p-fileUpload mode = "basic" customUpload="true" (uploadHandler)="uploadSingle($event)" chooseLabel="Upload Single"></p-fileUpload>
+  </div>
+  <div class="p-col-6 p-justify-center" style="text-align: center">
+    <p-fileUpload class="p-align-center" mode = "basic" customUpload="true" (uploadHandler)="uploadMulti($event)" multiple="true" chooseLabel="Upload Multiple"></p-fileUpload>
+  </div>
+</div>
 
-<button
-  [disabled]="!selectedFiles"
-  (click)="uploadSingle()">
 
-  Upload Single
-</button>
 
-<label>
-  <input type="file" (change)="detectFiles($event)" multiple>
-</label>
 
-<button
-  [disabled]="!selectedFiles"
-  (click)="uploadMulti()">
 
-  Upload Multiple
-</button>
+
+<!--<label>-->
+  <!--<input type="file" (change)="detectFiles($event)">-->
+
+<!--</label>-->
+
+<!--<p-button-->
+  <!--[disabled]="!selectedFiles"-->
+  <!--(click)="uploadSingle()">-->
+  <!--Upload Single-->
+<!--</p-button>-->
+
+<!--<label>-->
+  <!--<input type="file" (change)="detectFiles($event)" multiple>-->
+<!--</label>-->
+
+<!--<p-button-->
+  <!--[disabled]="!selectedFiles"-->
+  <!--(click)="uploadMulti()">-->
+
+  <!--Upload Multiple-->
+<!--</p-button>-->

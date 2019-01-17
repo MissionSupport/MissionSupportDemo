@@ -70,7 +70,13 @@ const routes: Routes = [
     path: 'upload',
     canActivate: [AuthguardService],
     component: UploadFormComponent
-  }
+  },
+  {
+    path: 'uploadSide',
+    canActivate: [AuthguardService],
+    component: UploadFormComponent,
+    outlet: 'sidebar'
+  },
 ];
 
 @NgModule({

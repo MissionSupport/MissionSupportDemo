@@ -1,14 +1,16 @@
-import {Component, OnInit, AfterContentInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, AfterContentInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import * as d3 from 'd3';
 import {feature} from 'topojson/node_modules/topojson-client';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {Site} from '../interfaces/site';
+import {Globals, SharedService} from '../globals';
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
+  providers: [Globals],
   styleUrls: ['./landing.component.css']
 })
 export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
@@ -28,15 +30,16 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
 
 
 
-  constructor(private readonly db: AngularFirestore, public router: Router) {
+  constructor(private readonly db: AngularFirestore, public router: Router, private sharedService: SharedService) {
     this.siteCollection = db.collection<Site>('Sites');
     this.sites = this.siteCollection.valueChanges();
     this.sites.subscribe( item => {
       this.sites = item as any;
     });
     console.log(this.sites);
+    sharedService.onMainEvent.emit(false);
+    sharedService.onPageNav.emit('Region Selection');
   }
-
   ngOnInit() {
   }
 

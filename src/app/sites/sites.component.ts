@@ -6,12 +6,14 @@ import {MessageService} from 'primeng/api';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {EditTask} from '../interfaces/edit-task';
 import {UserPreferences} from '../interfaces/user-preferences';
+import {SharedService} from '../globals';
 
 @Component({
   selector: 'app-sites',
   templateUrl: './sites.component.html',
   styleUrls: ['./sites.component.css']
 })
+
 export class SitesComponent implements OnInit {
 
   id: string;
@@ -20,6 +22,10 @@ export class SitesComponent implements OnInit {
   sites: Observable<{}[]>;
   site: {};
   siteCollection: AngularFirestoreCollection;
+  versionId;
+  sections = [];
+  editText = [];
+  hideme = [];
 
   editTasks: AngularFirestoreCollection<EditTask>;
   currentEdit: EditTask; // If current task is null it means that the user does not have an edit.
@@ -29,8 +35,10 @@ export class SitesComponent implements OnInit {
   userPreferences: UserPreferences;
 
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
-              public authInstance: AngularFireAuth) {
+              public authInstance: AngularFireAuth,  private sharedService: SharedService) {
     this.id = this.route.snapshot.paramMap.get('id');
+    sharedService.onPageNav.emit(this.id);
+    sharedService.onMainEvent.emit(false);
     // Now we are going to get the latest version of markdown that is approved.
     this.siteCollection = this.db.collection('Sites/' + this.id + '/versions', ref =>
       ref.where('current', '==', true).limit(1));
@@ -54,12 +62,38 @@ export class SitesComponent implements OnInit {
         this.updateEdit(data, false);
       });
     });
+    this.siteCollection.snapshotChanges().subscribe(item => {
+      item.map(a => {
+        const data = a.payload.doc.id;
+        this.updateVersionId(data);
+        const sections = this.db.collection('Sites/' + this.id + '/versions/' + this.versionId + '/wikiSections').valueChanges();
+        sections.subscribe( section => {
+          for (const [title, markup] of Object.entries(section[0])) {
+            if (section[0].hasOwnProperty(title)) {
+              this.sections.push({title, markup});
+              this.editText.push(markup);
+            }
+          }
+          console.log(this.sections);
+        });
+      });
+    });
+
 
     this.authInstance.auth.onAuthStateChanged(data => {
       this.updateUserPreferences(data.uid);
     });
   }
 
+  submitEdit(title, i) {
+    // this.editText[i] is the data we with to push into firebase with the section header title
+    // to then revert the page to the view do "hidden[i] = !hidden[i];"
+    console.log(title, this.editText[i], i);
+  }
+  updateVersionId(data) {
+    this.versionId = data;
+    console.log(this.versionId);
+  }
   updateUserPreferences(uid: string) {
     const pref = this.db.doc('user_preferences/' + uid).valueChanges();
     this.canApprove = false;

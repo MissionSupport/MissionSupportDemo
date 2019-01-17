@@ -12,24 +12,28 @@ export class UploadFormComponent implements OnInit {
 
   selectedFiles: FileList;
   currentUpload: Upload;
+  uploads: Array<Upload> = new Array<Upload>();
 
   constructor(private upSvc: UploadService) { }
 
-  detectFiles(event) {
-    this.selectedFiles = event.target.files;
-  }
+  // detectFiles(event) {
+  //   this.selectedFiles = event.target.files;
+  // }
 
-  uploadSingle() {
-    const file = this.selectedFiles.item(0);
+  uploadSingle(event) {
+    this.selectedFiles = event.files;
+    const file = this.selectedFiles[0];
     this.currentUpload = new Upload(file);
+    this.uploads.push(this.currentUpload);
     this.upSvc.pushUpload(this.currentUpload);
   }
 
-  uploadMulti() {
-    const files = this.selectedFiles;
+  uploadMulti(event) {
+    const files = event.files;
     const filesIndex = _.range(files.length);
     _.each(filesIndex, (idx) => {
       this.currentUpload = new Upload(files[idx]);
+      this.uploads.push(this.currentUpload);
       this.upSvc.pushUpload(this.currentUpload);
     });
   }
