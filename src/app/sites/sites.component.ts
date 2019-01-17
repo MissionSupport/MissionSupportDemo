@@ -22,7 +22,8 @@ export class SitesComponent implements OnInit {
   sites: Observable<{}[]>;
   site: {};
   siteCollection: AngularFirestoreCollection;
-  versionId;
+  versionId: string;
+  wikiId: string;
   sections = [];
   editText = [];
   hideme = [];
@@ -30,7 +31,7 @@ export class SitesComponent implements OnInit {
   editTasks: AngularFirestoreCollection<EditTask>;
   currentEdit: EditTask; // If current task is null it means that the user does not have an edit.
   canApprove: boolean; // This is used to see if a user can approve edits
-  editMode: boolean; // If the user is in edit mode we want the screen to change
+  editMode = false; // If the user is in edit mode we want the screen to change
 
   userPreferences: UserPreferences;
 
@@ -47,7 +48,7 @@ export class SitesComponent implements OnInit {
       console.log(item);
       if (item.length >= 1) { // Is possible for more than one so we will just take the first.
         this.site = item[0] as any;
-        this.markdown = this.site['markdown'];
+        // Here we will deal with information like approved by, current, last_modified
       }
     });
     // When ever it loads the markup should be display on the page.
@@ -66,10 +67,19 @@ export class SitesComponent implements OnInit {
       item.map(a => {
         const data = a.payload.doc.id;
         this.updateVersionId(data);
-        const sections = this.db.collection('Sites/' + this.id + '/versions/' + this.versionId + '/wikiSections').valueChanges();
-        sections.subscribe( section => {
-          for (const [title, markup] of Object.entries(section[0])) {
-            if (section[0].hasOwnProperty(title)) {
+        const sections = this.db.collection('Sites/' + this.id + '/versions/' + this.versionId + '/wikiSections');
+        sections.snapshotChanges().subscribe(section => {
+          let sectionData = null;
+          section.map(args => {
+            this.wikiId = args.payload.doc.id;
+            sectionData = args.payload.doc.data();
+          });
+          console.log(sectionData);
+          this.sections = [];
+          this.editText = [];
+          for (const title in sectionData) {
+            if (sectionData.hasOwnProperty(title)) {
+              const markup = sectionData[title];
               this.sections.push({title, markup});
               this.editText.push(markup);
             }
@@ -89,10 +99,16 @@ export class SitesComponent implements OnInit {
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
     console.log(title, this.editText[i], i);
+    console.log(title, this.sections[i], i);
+    // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
+    const jsonVariable = {};
+    jsonVariable[title] = this.editText[i];
+    this.db.doc(`Sites/${this.id}/versions/${this.versionId}/wikiSections/${this.wikiId}`).update(jsonVariable);
+    this.hideme[i] = !this.hideme[i];
   }
   updateVersionId(data) {
     this.versionId = data;
-    console.log(this.versionId);
+    console.log('Version id is ' + this.versionId);
   }
   updateUserPreferences(uid: string) {
     const pref = this.db.doc('user_preferences/' + uid).valueChanges();

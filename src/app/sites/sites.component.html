@@ -7,9 +7,10 @@
   <!--</div>-->
 <!--</div>-->
 <div style="width: 100vw">
+  <a (click)="editMode = !editMode" style="font-size: smaller">Toggle Edit Mode</a>
   <div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">
     <div [hidden]="!hideme[i]">
-      <p-editor [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
+      <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
       <div class="p-grid" style="text-align: center">
         <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]">Cancel</p-button>
         <p-button class="p-col-6" (click)="submitEdit(info.title, i)">Submit</p-button>
@@ -18,7 +19,9 @@
     <p-fieldset legend={{info.title}} [toggleable]="true" [hidden]="hideme[i]">
       <markdown [data]="info.markup"></markdown>
     </p-fieldset>
-    <a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>
+    <div [hidden]="!editMode">
+      <a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>
+    </div>
   </div>
 </div>
 
