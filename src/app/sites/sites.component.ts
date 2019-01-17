@@ -28,9 +28,9 @@ export class SitesComponent implements OnInit {
   hideme = [];
 
   editTasks: AngularFirestoreCollection<EditTask>;
-  currentEdit: EditTask;
-  canEdit: boolean; // Can a user make edits
-  editMode = false; /// If the user is in edit mode we want the screen to change
+  currentEdit: EditTask; // If current task is null it means that the user does not have an edit.
+  canApprove: boolean; // This is used to see if a user can approve edits
+  editMode: boolean; // If the user is in edit mode we want the screen to change
 
   userPreferences: UserPreferences;
 
@@ -41,7 +41,7 @@ export class SitesComponent implements OnInit {
     sharedService.onMainEvent.emit(false);
     // Now we are going to get the latest version of markdown that is approved.
     this.siteCollection = this.db.collection('Sites/' + this.id + '/versions', ref =>
-      ref.where('current', '==', true));
+      ref.where('current', '==', true).limit(1));
     this.sites = this.siteCollection.valueChanges();
     this.sites.subscribe( item => {
       console.log(item);
@@ -96,11 +96,11 @@ export class SitesComponent implements OnInit {
   }
   updateUserPreferences(uid: string) {
     const pref = this.db.doc('user_preferences/' + uid).valueChanges();
-    this.canEdit = false;
+    this.canApprove = false;
     pref.subscribe(data => {
       this.userPreferences = data as UserPreferences;
       // Now let's see if the user can edit this page.
-      this.canEdit = this.id in this.userPreferences.sites;
+      this.canApprove = this.id in this.userPreferences.sites;
     });
   }
 

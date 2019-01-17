@@ -4,9 +4,9 @@ import {feature} from 'topojson/node_modules/topojson-client';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {Site} from '../interfaces/site';
 import {Globals, SharedService} from '../globals';
 
-export interface Site {id: string; region: string; siteName: string; }
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
