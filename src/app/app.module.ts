@@ -32,6 +32,7 @@ import {FileUploadModule} from 'primeng/fileupload';
 import {FieldsetModule} from 'primeng/fieldset';
 import {EditorModule} from 'primeng/editor';
 import { GroupsComponent } from './groups/groups.component';
+import { GroupadminComponent } from './admin/groupadmin/groupadmin.component';
 
 
 
@@ -46,7 +47,8 @@ import { GroupsComponent } from './groups/groups.component';
     ToolbarComponent,
     SettingsListComponent,
     UploadFormComponent,
-    GroupsComponent
+    GroupsComponent,
+    GroupadminComponent
   ],
   imports: [
     BrowserModule,

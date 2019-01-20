@@ -8,7 +8,6 @@ import {EditTask} from '../interfaces/edit-task';
 import {UserPreferences} from '../interfaces/user-preferences';
 import {SharedService} from '../globals';
 import {Site} from '../interfaces/site';
-import {Group} from '../interfaces/group';
 
 @Component({
   selector: 'app-sites',
@@ -35,7 +34,7 @@ export class SitesComponent implements OnInit {
 
   editTasks: AngularFirestoreCollection<EditTask>;
   currentEdit: EditTask; // If current task is null it means that the user does not have an edit.
-  canApprove: boolean; // This is used to see if a user can approve edits
+  canEdit = false; // This is used to see if a user can approve edits
   editMode = false; // If the user is in edit mode we want the screen to change
 
   userPreferences: UserPreferences;
@@ -75,7 +74,6 @@ export class SitesComponent implements OnInit {
             this.wikiId = args.payload.doc.id;
             sectionData = args.payload.doc.data();
           });
-          console.log(sectionData);
           this.sections = [];
           this.editText = [];
           for (const title in sectionData) {
@@ -85,13 +83,11 @@ export class SitesComponent implements OnInit {
               this.editText.push(markup);
             }
           }
-          console.log(this.sections);
         });
       });
     });
     const groupCollection = this.db.collection(`Sites/${this.id}/groups`);
     groupCollection.snapshotChanges().subscribe(groupsData => {
-      console.log('test1111');
       groupsData.map( a => {
         const data = a.payload.doc.data();
         const path = data['id'].path;
@@ -102,45 +98,44 @@ export class SitesComponent implements OnInit {
           const j = {'name': name,
             'id': groupId};
           this.groups.push(j);
-          console.log('Group name is: ');
-          console.log(j);
         });
       });
     });
 
-    /*
     this.authInstance.auth.onAuthStateChanged(data => {
       this.updateUserPreferences(data.uid);
     });
-    */
   }
 
   submitEdit(title, i) {
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
-    console.log(title, this.editText[i], i);
-    console.log(title, this.sections[i], i);
     // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
     const jsonVariable = {};
     jsonVariable[title] = this.editText[i];
     this.db.doc(`Sites/${this.id}/versions/${this.versionId}/wikiSections/${this.wikiId}`).update(jsonVariable);
     this.hideme[i] = !this.hideme[i];
   }
+
   updateVersionId(data) {
     this.versionId = data;
-    console.log('Version id is ' + this.versionId);
   }
-  /*
+
   updateUserPreferences(uid: string) {
     const pref = this.db.doc('user_preferences/' + uid).valueChanges();
-    this.canApprove = false;
     pref.subscribe(data => {
+      this.canEdit = false;
       this.userPreferences = data as UserPreferences;
       // Now let's see if the user can edit this page.
-      this.canApprove = this.id in this.userPreferences.sites;
+      for (let i = 0; i < this.userPreferences.sites.length; i++) {
+        if (this.userPreferences.sites[i] === this.id) {
+          this.canEdit = true;
+          break;
+        }
+      }
+      console.log('User can edit ' + this.canEdit);
     });
   }
-  */
 
   ngOnInit() {
     console.log('id is ', this.id);

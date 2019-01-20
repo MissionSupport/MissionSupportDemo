@@ -9,6 +9,7 @@ import {SitesComponent} from './sites/sites.component';
 import {SettingsListComponent} from './settings-list/settings-list.component';
 import {UploadFormComponent} from './upload-form/upload-form.component';
 import {GroupsComponent} from './groups/groups.component';
+import {GroupadminComponent} from './admin/groupadmin/groupadmin.component';
 
 
 const routes: Routes = [
@@ -73,14 +74,15 @@ const routes: Routes = [
     outlet: 'sidebar'
   },
   {
-    path: 'upload',
-    canActivate: [AuthguardService],
-    component: UploadFormComponent
-  },
-  {
     path: 'uploadSide',
     canActivate: [AuthguardService],
     component: UploadFormComponent,
+    outlet: 'sidebar'
+  },
+  {
+    path: 'manageGroup',
+    canActivate: [AuthguardService],
+    component: GroupadminComponent,
     outlet: 'sidebar'
   },
   {
