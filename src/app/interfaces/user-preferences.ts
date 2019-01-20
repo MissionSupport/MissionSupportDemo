@@ -4,5 +4,4 @@
 export interface UserPreferences {
   id: string;
   admin: false;
-  sites: [];
 }

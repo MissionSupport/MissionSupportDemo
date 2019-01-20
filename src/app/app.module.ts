@@ -32,6 +32,7 @@ import {ProgressBarModule} from 'primeng/progressbar';
 import {FileUploadModule} from 'primeng/fileupload';
 import {FieldsetModule} from 'primeng/fieldset';
 import {EditorModule} from 'primeng/editor';
+import { GroupsComponent } from './groups/groups.component';
 
 
 
@@ -46,7 +47,8 @@ import {EditorModule} from 'primeng/editor';
     ToolbarComponent,
     TempWikiComponent,
     SettingsListComponent,
-    UploadFormComponent
+    UploadFormComponent,
+    GroupsComponent
   ],
   imports: [
     BrowserModule,

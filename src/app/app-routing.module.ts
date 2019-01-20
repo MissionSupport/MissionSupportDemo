@@ -9,6 +9,7 @@ import {SitesComponent} from './sites/sites.component';
 import {TempWikiComponent} from './temp-wiki/temp-wiki.component';
 import {SettingsListComponent} from './settings-list/settings-list.component';
 import {UploadFormComponent} from './upload-form/upload-form.component';
+import {GroupsComponent} from './groups/groups.component';
 
 
 const routes: Routes = [
@@ -46,7 +47,19 @@ const routes: Routes = [
   {
     path: 'sites/:id',
     canActivate: [AuthguardService],
-    component: SitesComponent
+    component: SitesComponent,
+//    children: [
+//      {
+//        path: '',
+//        redirectTo: 'groups',
+//        pathMatch: 'full'
+//      },
+//      {
+//        path: 'group/:groupId',
+//        canActivate: [AuthguardService],
+//        component: GroupsComponent
+//      },
+//    ]
   },
   {
     path: 'temp',
@@ -77,6 +90,11 @@ const routes: Routes = [
     component: UploadFormComponent,
     outlet: 'sidebar'
   },
+  {
+    path: 'sites/:siteId/group/:groupId',
+    canActivate: [AuthguardService],
+    component: GroupsComponent
+  }
 ];
 
 @NgModule({
