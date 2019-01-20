@@ -6,7 +6,6 @@ import {RegisterComponent} from './register/register.component';
 import {AuthguardService} from './service/authguard.service';
 import {ProfileComponent} from './profile/profile.component';
 import {SitesComponent} from './sites/sites.component';
-import {TempWikiComponent} from './temp-wiki/temp-wiki.component';
 import {SettingsListComponent} from './settings-list/settings-list.component';
 import {UploadFormComponent} from './upload-form/upload-form.component';
 import {GroupsComponent} from './groups/groups.component';
@@ -61,12 +60,6 @@ const routes: Routes = [
 //      },
 //    ]
   },
-  {
-    path: 'temp',
-    canActivate: [AuthguardService],
-    component: TempWikiComponent
-  }
-  ,
   {
     path: 'settingsOptions',
     canActivate: [AuthguardService],

@@ -23,7 +23,6 @@ import { MarkdownModule } from 'ngx-markdown';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import {SidebarModule} from 'primeng/sidebar';
-import { TempWikiComponent } from './temp-wiki/temp-wiki.component';
 import {InplaceModule} from 'primeng/inplace';
 import { SettingsListComponent } from './settings-list/settings-list.component';
 import { UploadFormComponent } from './upload-form/upload-form.component';
@@ -45,7 +44,6 @@ import { GroupsComponent } from './groups/groups.component';
     ProfileComponent,
     SitesComponent,
     ToolbarComponent,
-    TempWikiComponent,
     SettingsListComponent,
     UploadFormComponent,
     GroupsComponent

@@ -113,10 +113,10 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     console.log(e.properties.FORMAL_EN);
   }
 
-  addSite(e, region, siteName, groups) {
+  addSite(e, region, siteName) {
     // Persist a document id
     const id = this.db.createId();
-    const site: Site = { id, region, siteName, groups };
+    const site: Site = { id, region, siteName };
     this.siteCollection.doc(id).set(site);
   }
 

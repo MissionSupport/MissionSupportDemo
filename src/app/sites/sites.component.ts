@@ -7,6 +7,8 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {EditTask} from '../interfaces/edit-task';
 import {UserPreferences} from '../interfaces/user-preferences';
 import {SharedService} from '../globals';
+import {Site} from '../interfaces/site';
+import {Group} from '../interfaces/group';
 
 @Component({
   selector: 'app-sites',
@@ -17,16 +19,19 @@ import {SharedService} from '../globals';
 export class SitesComponent implements OnInit {
 
   id: string;
+  siteName: string;
   markdown: string;
 
   sites: Observable<{}[]>;
-  site: {};
+  site: Site;
   siteCollection: AngularFirestoreCollection;
   versionId: string;
   wikiId: string;
   sections = [];
   editText = [];
   hideme = [];
+
+  groups = []; // Contains an array of group ids
 
   editTasks: AngularFirestoreCollection<EditTask>;
   currentEdit: EditTask; // If current task is null it means that the user does not have an edit.
@@ -36,21 +41,17 @@ export class SitesComponent implements OnInit {
   userPreferences: UserPreferences;
 
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
-              public authInstance: AngularFireAuth,  private sharedService: SharedService) {
+              public authInstance: AngularFireAuth, private sharedService: SharedService) {
     this.id = this.route.snapshot.paramMap.get('id');
-    sharedService.onPageNav.emit(this.id);
     sharedService.onMainEvent.emit(false);
-    // Now we are going to get the latest version of markdown that is approved.
-    this.siteCollection = this.db.collection('Sites/' + this.id + '/versions', ref =>
-      ref.where('current', '==', true).limit(1));
-    this.sites = this.siteCollection.valueChanges();
-    this.sites.subscribe( item => {
-      console.log(item);
-      if (item.length >= 1) { // Is possible for more than one so we will just take the first.
-        this.site = item[0] as any;
-        // Here we will deal with information like approved by, current, last_modified
-      }
+    // Let's get the site name
+    this.db.doc(`Sites/${this.id}`).valueChanges().subscribe((data: Site) => {
+      this.siteName = data.siteName;
+      sharedService.onPageNav.emit(this.siteName);
     });
+    // Now we are going to get the latest version of markdown that is approved.
+    this.siteCollection = this.db.collection<Site>('Sites/' + this.id + '/versions', ref =>
+      ref.where('current', '==', true).limit(1));
     // When ever it loads the markup should be display on the page.
     // Now we want to get the user information and see if they are able to edit.
     // Users are only going to be allowed to be allowed to create one edit.
@@ -88,11 +89,30 @@ export class SitesComponent implements OnInit {
         });
       });
     });
+    const groupCollection = this.db.collection(`Sites/${this.id}/groups`);
+    groupCollection.snapshotChanges().subscribe(groupsData => {
+      console.log('test1111');
+      groupsData.map( a => {
+        const data = a.payload.doc.data();
+        const path = data['id'].path;
+        this.db.doc(path).get().subscribe( value => {
+          const groupData = value.data();
+          const name = groupData['name'];
+          const groupId  = groupData['id'];
+          const j = {'name': name,
+            'id': groupId};
+          this.groups.push(j);
+          console.log('Group name is: ');
+          console.log(j);
+        });
+      });
+    });
 
-
+    /*
     this.authInstance.auth.onAuthStateChanged(data => {
       this.updateUserPreferences(data.uid);
     });
+    */
   }
 
   submitEdit(title, i) {
@@ -110,6 +130,7 @@ export class SitesComponent implements OnInit {
     this.versionId = data;
     console.log('Version id is ' + this.versionId);
   }
+  /*
   updateUserPreferences(uid: string) {
     const pref = this.db.doc('user_preferences/' + uid).valueChanges();
     this.canApprove = false;
@@ -119,6 +140,7 @@ export class SitesComponent implements OnInit {
       this.canApprove = this.id in this.userPreferences.sites;
     });
   }
+  */
 
   ngOnInit() {
     console.log('id is ', this.id);
