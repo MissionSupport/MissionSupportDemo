@@ -23,11 +23,16 @@ import { MarkdownModule } from 'ngx-markdown';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import {SidebarModule} from 'primeng/sidebar';
-import { TempWikiComponent } from './temp-wiki/temp-wiki.component';
 import {InplaceModule} from 'primeng/inplace';
 import { SettingsListComponent } from './settings-list/settings-list.component';
 import { UploadFormComponent } from './upload-form/upload-form.component';
 import {AngularFireStorageModule, StorageBucket} from '@angular/fire/storage';
+import {ProgressBarModule} from 'primeng/progressbar';
+import {FileUploadModule} from 'primeng/fileupload';
+import {FieldsetModule} from 'primeng/fieldset';
+import {EditorModule} from 'primeng/editor';
+import { GroupsComponent } from './groups/groups.component';
+import { GroupadminComponent } from './admin/groupadmin/groupadmin.component';
 
 
 
@@ -40,9 +45,10 @@ import {AngularFireStorageModule, StorageBucket} from '@angular/fire/storage';
     ProfileComponent,
     SitesComponent,
     ToolbarComponent,
-    TempWikiComponent,
     SettingsListComponent,
-    UploadFormComponent
+    UploadFormComponent,
+    GroupsComponent,
+    GroupadminComponent
   ],
   imports: [
     BrowserModule,
@@ -58,6 +64,10 @@ import {AngularFireStorageModule, StorageBucket} from '@angular/fire/storage';
     BrowserAnimationsModule,
     SidebarModule,
     InplaceModule,
+    ProgressBarModule,
+    FileUploadModule,
+    FieldsetModule,
+    EditorModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

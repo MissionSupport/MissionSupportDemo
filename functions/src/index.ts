@@ -9,6 +9,5 @@ exports.createUserPreferences = functions.firestore.document('/users/{userId}').
   return admin.firestore().collection('user_preferences').doc(user).set({
     id: user,
     admin: false,
-    sites: [],
   });
 });

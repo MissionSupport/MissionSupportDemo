@@ -1,0 +1,27 @@
+<p-toast position="bottom-center" class="ui-messages-error"></p-toast>
+<!--<div  style = "display:flex; position:absolute; top:0; bottom:0; right:0; left:0">-->
+<!--<div>-->
+<!--<div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">-->
+<!--<textarea id="float-input1" size="30" pInputText [(ngModel)] = "markdown"></textarea>-->
+<!--<markdown [data]="markdown"></markdown>-->
+<!--</div>-->
+<!--</div>-->
+<div style="width: 100vw">
+  <a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canModify">Toggle Edit Mode</a>
+  <div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">
+    <div [hidden]="!hideMe[i]">
+      <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
+      <div class="p-grid" style="text-align: center">
+        <p-button class="p-col-6" (onClick)="hideMe[i] = !hideMe[i]">Cancel</p-button>
+        <p-button class="p-col-6" (click)="submitEdit(info.title, i)">Submit</p-button>
+      </div>
+    </div>
+    <p-fieldset legend={{info.title}} [toggleable]="true" [hidden]="hideMe[i]">
+      <markdown [data]="info.markup"></markdown>
+    </p-fieldset>
+    <div [hidden]="!editMode">
+      <a (click)="hideMe[i] = !hideMe[i]" style="font-size: smaller" [hidden]="hideMe[i]">edit?</a>
+    </div>
+  </div>
+</div>
+
