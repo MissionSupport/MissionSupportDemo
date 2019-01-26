@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
 import {MessageService} from 'primeng/api';
@@ -8,6 +8,7 @@ import {EditTask} from '../interfaces/edit-task';
 import {UserPreferences} from '../interfaces/user-preferences';
 import {SharedService} from '../globals';
 import {Site} from '../interfaces/site';
+import {Trip} from '../interfaces/trip';
 
 @Component({
   selector: 'app-sites',
@@ -20,6 +21,9 @@ export class SitesComponent implements OnInit {
   id: string;
   siteName: string;
   markdown: string;
+  viewWiki = true;
+  viewChecklist = false;
+  viewTrips = false;
 
   sites: Observable<{}[]>;
   site: Site;
@@ -29,6 +33,23 @@ export class SitesComponent implements OnInit {
   sections = [];
   editText = [];
   hideme = [];
+  footerHeight = 45;
+  // trips: Trip[];
+  trips = [
+    {
+      id: 'trip1',
+      tripName: 'Emory Team 12 - 7.12.18'
+    },
+    {
+      id: 'trip2',
+      tripName: 'Mercer Team 5 - 5.16.17'
+    },
+    {
+      id: 'trip3',
+      tripName: 'Emory Team 9 - 9.07.15'
+    },
+  ];
+  selectedTrip;
 
   groups = []; // Contains an array of group ids
 
@@ -40,7 +61,7 @@ export class SitesComponent implements OnInit {
   userPreferences: UserPreferences;
 
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
-              public authInstance: AngularFireAuth, private sharedService: SharedService) {
+              public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router) {
     this.id = this.route.snapshot.paramMap.get('id');
     sharedService.hideToolbar.emit(false);
     // Let's get the site name
@@ -184,6 +205,12 @@ export class SitesComponent implements OnInit {
       this.messageService.add({severity: 'error', summary: 'Edit Failed',
         detail: 'Edit failed to delete, does one exist?'});
     });
+  }
+
+  tripClick(): void {
+    // console.log(this.selectedSite);
+    this.router.navigate(['trip/' + this.selectedTrip.id]);
+    // this.router.navigate(['/temp']);
   }
 
 }

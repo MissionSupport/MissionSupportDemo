@@ -14,6 +14,8 @@ import {ProfileViewComponent} from './profile-view/profile-view.component';
 import {MyOrgsListComponent} from './my-orgs-list/my-orgs-list.component';
 import {MyTripsListComponent} from './my-trips-list/my-trips-list.component';
 import {CountryPageComponent} from './country-page/country-page.component';
+import {TripPageComponent} from './trip-page/trip-page.component';
+import {OrgPageComponent} from './org-page/org-page.component';
 
 
 const routes: Routes = [
@@ -121,6 +123,16 @@ const routes: Routes = [
     path: 'country',
     canActivate: [AuthguardService],
     component: CountryPageComponent,
+  },
+  {
+    path: 'trip/:id',
+    canActivate: [AuthguardService],
+    component: TripPageComponent,
+  },
+  {
+    path: 'org/:id',
+    canActivate: [AuthguardService],
+    component: OrgPageComponent,
   }
 ];
 

@@ -41,6 +41,7 @@ import { OrgsListComponent } from './orgs-list/orgs-list.component';
 import { MyOrgsListComponent } from './my-orgs-list/my-orgs-list.component';
 import { MyTripsListComponent } from './my-trips-list/my-trips-list.component';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
+import {AccordionModule} from 'primeng/accordion';
 
 
 
@@ -84,6 +85,7 @@ import {ScrollPanelModule} from 'primeng/scrollpanel';
     FieldsetModule,
     EditorModule,
     ScrollPanelModule,
+    AccordionModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

@@ -1,13 +1,13 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {SharedService} from '../globals';
-import {ActivatedRoute} from '@angular/router';
+import {Router} from '@angular/router';
 import {Site} from '../interfaces/site';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {Country} from '../interfaces/country';
+import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {EditTask} from '../interfaces/edit-task';
 import {PreDefined} from '../globals';
 import {forEach} from '@angular/router/src/utils/collection';
 import {json} from 'express';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-country-page',
@@ -33,24 +33,25 @@ export class CountryPageComponent implements OnInit {
   versionId;
   wikiId;
   mainHeight;
+  sites: Observable<Site[]>;
+  siteCollection: AngularFirestoreCollection<Site>;
+  selectedSite: Site;
 
 
 
-  constructor( private sharedService: SharedService, public route: ActivatedRoute, private readonly db: AngularFirestore,
+  constructor( private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined) {
     this.clientHeight = window.innerHeight;
     sharedService.hideToolbar.emit(false);
     this.footerHeight = 45;
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
-    // ToDO: Delete once implement other emit below
+    // ------------------------------------------------------------------------------------------------------
+    // ToDO: Delete once implement other stuff below (temp to check ui and nav)
     sharedService.onPageNav.emit('Country Name');
     for (let element of preDef.wikiCountry) {
       this.sections.push({title: element.title, markup: element.markup});
+      // this.editText.push({title: element.title, markup: element.markup});
     }
-
-    // json.wikiCountry.forEach(element => {
-    //
-    // })
     this.sections.push({title: 'hello', markup: '<p>TestingTesting 123</p>'});
     this.editText.push('<p>TestingTesting 123</p>');
     this.sections.push({title: 'baby shark', markup: '<p>Do do Do do dodo</p>'});
@@ -59,6 +60,15 @@ export class CountryPageComponent implements OnInit {
     this.editText.push('<p>Do do Do do dodo</p>');
     this.sections.push({title: 'daddy shark', markup: '<p>Do do Do do dodo</p>'});
     this.editText.push('<p>Do do Do do dodo</p>');
+
+    // TODO: Change this to get the 'Country/Sites' list instead
+    this.siteCollection = db.collection<Site>('Sites');
+    this.sites = this.siteCollection.valueChanges();
+    this.sites.subscribe( item => {
+      this.sites = item as any;
+    });
+
+    // ------------------------------------------------------------------------------------------------------
 
 
     // TODO: Rourke uncomment this once you have made the Countries DB entrys
@@ -104,6 +114,12 @@ export class CountryPageComponent implements OnInit {
     //     });
     //   });
     // });
+    // // TODO: get the countries sites
+    // this.siteCollection = db.collection<Site>('Country/Sites');
+    // this.sites = this.siteCollection.valueChanges();
+    // this.sites.subscribe( item => {
+    //   this.sites = item as any;
+    // });
   }
 
   ngOnInit() {
@@ -121,5 +137,11 @@ export class CountryPageComponent implements OnInit {
     jsonVariable[title] = this.editText[i];
     this.db.doc(`Countries/${this.id}/versions/${this.versionId}/wikiSections/${this.wikiId}`).update(jsonVariable);
     this.hideme[i] = !this.hideme[i];
+  }
+
+  siteClick(): void {
+    // console.log(this.selectedSite);
+    this.router.navigate(['sites/' + this.selectedSite.id]);
+    // this.router.navigate(['/temp']);
   }
 }

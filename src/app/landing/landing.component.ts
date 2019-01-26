@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {Site} from '../interfaces/site';
 import {SharedService} from '../globals';
+import {Country} from '../interfaces/country';
 
 @Component({
   selector: 'app-landing',
@@ -23,19 +24,35 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   svg;
   path;
   g;
-  sites: Observable<Site[]>;
-  siteCollection: AngularFirestoreCollection<Site>;
-  selectedSite: Site;
+  // countries: Observable<Country[]>;
+  countries: Country[];
+  countryCollection: AngularFirestoreCollection<Country>;
+  selectedCountry: Country;
 
 
 
   constructor(private readonly db: AngularFirestore, public router: Router, private sharedService: SharedService) {
-    this.siteCollection = db.collection<Site>('Sites');
-    this.sites = this.siteCollection.valueChanges();
-    this.sites.subscribe( item => {
-      this.sites = item as any;
-    });
-    console.log(this.sites);
+
+    // TODO: Uncomment once countries DB is set up
+    // this.countryCollection = db.collection<Country>('Countries');
+    // this.countries = this.countryCollection.valueChanges();
+    // this.countries.subscribe( item => {
+    //   this.countries = item as any;
+    // });
+    this.countries = [
+      {
+        id : 'blah blah',
+        countryName: 'USA',
+      },
+      {
+        id : 'blah blah2',
+        countryName: 'Zana',
+      },
+      {
+        id : 'blah blah3',
+        countryName: 'Hewwo I new Country OwO',
+      }
+    ];
     sharedService.hideToolbar.emit(false);
     sharedService.onPageNav.emit('Country Selection');
   }
@@ -112,16 +129,16 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     console.log(e.properties.FORMAL_EN);
   }
 
-  addSite(e, region, siteName) {
+  addCountry(e, region, siteName) {
     // Persist a document id
     const id = this.db.createId();
     const site: Site = { id, country: region, siteName };
-    this.siteCollection.doc(id).set(site);
+    this.countryCollection.doc(id).set(site);
   }
 
-  siteClick(): void {
+  countryClick(): void {
     // console.log(this.selectedSite);
-    this.router.navigate(['sites/' + this.selectedSite.id]);
+    this.router.navigate(['country/' + this.selectedCountry.id]);
     // this.router.navigate(['/temp']);
   }
 }

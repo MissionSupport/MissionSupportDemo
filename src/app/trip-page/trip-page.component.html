@@ -1,3 +1,48 @@
-<p>
-  trip-page works!
-</p>
+<p-toast position="bottom-center" class="ui-messages-error"></p-toast>
+
+<div id="mainBody" [ngStyle]="{'margin-bottom' : footerHeight + 10 + 'px'}" >
+
+
+  <div [hidden]="!viewWiki" style="width: 100vw">
+    <a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>
+    <div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">
+      <div [hidden]="!hideme[i]">
+        <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
+        <div class="p-grid" style="text-align: center">
+          <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]">Cancel</p-button>
+          <p-button class="p-col-6" (click)="submitEdit(info.title, i)">Submit</p-button>
+        </div>
+      </div>
+      <p-fieldset legend={{info.title}} [toggleable]="true" [hidden]="hideme[i]">
+        <markdown [data]="info.markup"></markdown>
+      </p-fieldset>
+      <div [hidden]="!editMode">
+        <a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>
+      </div>
+    </div>
+    <a (click)="submitEdit('test111', editText.length)" style="font-size: smaller" [hidden]="!editMode">Add new thing</a>
+  </div>
+
+  <div [hidden]="!viewAbout">
+    <h3>About</h3>
+    <p>Location: {{location}}</p>
+    <p>Leader: {{leader}}</p>
+    <p>Organization: <span><a (click)="groupClick()">{{group}}</a> </span></p>
+    <p>Team: {{team}}</p>
+    <p>Date: {{date}}</p>
+  </div>
+
+
+
+
+</div>
+
+
+<div id ="footer"  class="p-grid" [ngStyle]="{'height' : footerHeight + 'px'}" style="text-align: center; bottom: 0; position: fixed; width: 100%">
+  <div class="p-col-6" [ngStyle]="{'background-color' : viewWiki ? 'blue' : 'aqua' }">
+    <a (click)="viewWiki = true; viewAbout = false;"><p style="height: 100%" >Wiki</p></a>
+  </div>
+  <div class="p-col-6" [ngStyle]="{'background-color' : viewAbout ? 'blue' : 'aqua' }">
+    <a (click)="viewWiki= false; viewAbout = true;"><p style="height: 100%" >About</p></a>
+  </div>
+</div>
