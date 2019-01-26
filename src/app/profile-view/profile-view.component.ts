@@ -30,7 +30,7 @@ export class ProfileViewComponent implements OnInit {
         this.firstName = data.firstName;
         this.lastName = data.lastName;
         this.organization = data.organization;
-        // this.groups = data.groups;
+        // this.orgs = data.orgs;
       });
       this.db.doc(`user_preferences/${this.id}`).valueChanges().subscribe((data: UserPreferences) => {
         this.isAdmin = data.admin;
@@ -40,7 +40,7 @@ export class ProfileViewComponent implements OnInit {
     });
 
 
-    // this.db.doc(`groups/${this.id}`).valueChanges().subscribe((data: UserPreferences) => {
+    // this.db.doc(`orgs/${this.id}`).valueChanges().subscribe((data: UserPreferences) => {
     //   console.log(data);
     //   this.isAdmin = data.admin;
     //   this.sites = data.sites;

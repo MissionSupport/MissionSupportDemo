@@ -17,7 +17,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AngularFireModule} from '@angular/fire';
 import {MessageService} from 'primeng/api';
-import { ProfileComponent } from './profile/profile.component';
+import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { SitesComponent } from './sites/sites.component';
 import { MarkdownModule } from 'ngx-markdown';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
@@ -31,9 +31,16 @@ import {ProgressBarModule} from 'primeng/progressbar';
 import {FileUploadModule} from 'primeng/fileupload';
 import {FieldsetModule} from 'primeng/fieldset';
 import {EditorModule} from 'primeng/editor';
-import { GroupsComponent } from './groups/groups.component';
-import { GroupadminComponent } from './admin/groupadmin/groupadmin.component';
+import { OrgsComponent } from './orgs/orgs.component';
+import { OrgadminComponent } from './admin/orgAdmin/orgadmin.component';
 import { ProfileViewComponent } from './profile-view/profile-view.component';
+import { CountryPageComponent } from './country-page/country-page.component';
+import { TripPageComponent } from './trip-page/trip-page.component';
+import { OrgPageComponent } from './org-page/org-page.component';
+import { OrgsListComponent } from './orgs-list/orgs-list.component';
+import { MyOrgsListComponent } from './my-orgs-list/my-orgs-list.component';
+import { MyTripsListComponent } from './my-trips-list/my-trips-list.component';
+import {ScrollPanelModule} from 'primeng/scrollpanel';
 
 
 
@@ -43,14 +50,20 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
     LoginComponent,
     RegisterComponent,
     LandingComponent,
-    ProfileComponent,
+    ProfileEditComponent,
     SitesComponent,
     ToolbarComponent,
     SettingsListComponent,
     UploadFormComponent,
-    GroupsComponent,
-    GroupadminComponent,
-    ProfileViewComponent
+    OrgsComponent,
+    OrgadminComponent,
+    ProfileViewComponent,
+    CountryPageComponent,
+    TripPageComponent,
+    OrgPageComponent,
+    OrgsListComponent,
+    MyOrgsListComponent,
+    MyTripsListComponent
   ],
   imports: [
     BrowserModule,
@@ -70,6 +83,7 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
     FileUploadModule,
     FieldsetModule,
     EditorModule,
+    ScrollPanelModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

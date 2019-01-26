@@ -36,7 +36,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
       this.sites = item as any;
     });
     console.log(this.sites);
-    sharedService.onMainEvent.emit(false);
+    sharedService.hideToolbar.emit(false);
     sharedService.onPageNav.emit('Country Selection');
   }
   ngOnInit() {
@@ -97,7 +97,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     //       .attr('id', function (d) {
     //         return d.id;
     //       })
-    //       // firestore - this.get region determines color and when selecting what region to queary yo
+    //       // firestore - this.get country determines color and when selecting what country to queary yo
     //       // .attr('d', i => {
     //       //   // this.projection = this.projection = d3.geoMercator().fitSize([this.width, this.height], topology);
     //       //   // this.path =  d3.geoPath().projection(this.projection);
@@ -115,7 +115,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   addSite(e, region, siteName) {
     // Persist a document id
     const id = this.db.createId();
-    const site: Site = { id, region, siteName };
+    const site: Site = { id, country: region, siteName };
     this.siteCollection.doc(id).set(site);
   }
 

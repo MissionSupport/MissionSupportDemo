@@ -1,0 +1,40 @@
+<p-toast position="bottom-center" class="ui-messages-error"></p-toast>
+<p-scrollPanel [style]="{width: '100%', height: mainHeight + 'px'}" styleClass="custombar1">
+  <div id="mainBody" >
+
+    <div [hidden]="!viewWiki"  style="width: 99vw">
+        <a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>
+        <div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">
+          <div [hidden]="!hideme[i]">
+            <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
+            <div class="p-grid" style="text-align: center">
+              <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]">Cancel</p-button>
+              <p-button class="p-col-6" (click)="submitEdit(info.title, i)">Submit</p-button>
+            </div>
+          </div>
+          <p-fieldset legend={{info.title}} [toggleable]="true" [hidden]="hideme[i]">
+            <markdown [data]="info.markup"></markdown>
+          </p-fieldset>
+          <div [hidden]="!editMode">
+            <a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    <div [hidden]="!viewSites">
+      <p>Sites</p>
+    </div>
+  </div>
+</p-scrollPanel>
+
+<div id ="footer"  class="p-grid" [ngStyle]="{'height' : footerHeight + 'px'}" style="text-align: center; bottom: 0; position: fixed; width: 100%">
+  <div class="p-col-6" [ngStyle]="{'background-color' : viewWiki ? 'blue' : 'aqua' }">
+    <a (click)="viewWiki = true; viewSites = false;"><p  style="height: 100%" >Wiki</p></a>
+  </div>
+  <div class="p-col-6" [ngStyle]="{'background-color' : viewSites ? 'blue' : 'aqua' }">
+    <a (click)="viewWiki= false; viewSites = true;"><p   style="height: 100%" >Sites</p></a>
+  </div>
+</div>

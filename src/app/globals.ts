@@ -3,31 +3,58 @@ import {EventEmitter, Injectable} from '@angular/core';
 
 @Injectable()
 export class SharedService {
-  onMainEvent: EventEmitter<any> = new EventEmitter();
+  hideToolbar: EventEmitter<any> = new EventEmitter();
   onPageNav: EventEmitter<any> = new EventEmitter();
 }
 
 @Injectable()
 export class PreDefined {
-  wikiCountry = {
-    Communication: 'How much service is there for american carriers? What local carriers work well? What is the proccess to get cellular ' +
-      'data, if it is available? How common is internet access?',
-    Customs: 'What did you bring through customs? How did you get that medical equipment to your site? Was anything confiscated? ' +
-      'Did you work with customs before departing to ensure your stuff will make it? If so, please detail that proccess.',
-    Contacts: 'Were there any local, government or non-government, organizations you found useful? If so how did they help you? What ' +
-      'was thye realtionship like? What is their contact info? ',
-    Transit: 'How did you get from the airport, or port, to the site? Is the public transportation systems relaible? Can you drive ' +
-      'yourself, or did you book transportatiopn? What was your prefered method for traveling between cities?',
-    Culture: 'What cultural taboos should staff be aware of? Is there anything common in western culture that would offend locals? ' +
-      'Conversely, what cultural customs do they have which might offend staff? How did you deal with it? ',
-    Money: 'Is the US dollar prefereed? If no, where did you exchange currency? Is card taken or is it a primarily cash society? ' +
-      'Did you take all your cash at once, or did you continuosly withdraw smaller amounts? If so, where did you withdraw cash from?',
-    Comfort_and_Availability: 'What comforts and nesecities did you miss while in this country? What was readily available? ' +
-      'What should staff bring to stay comfortable during their trips?',
-    Crimes_and_Scams: 'What is the crime rate like? What scams will staff run across? Are foriegners more likely to be targeted?',
-    Population_Health: 'What level of care does the population generally recieve? Is any type of care noticably lacking? ' +
-      'What health issues seem to be common in this country?'
-  };
+  wikiCountry = [
+    {
+      title : 'Communication',
+      markup : 'How much service is there for american carriers? What local carriers work well? What is the proccess to get cellular ' +
+        'data, if it is available? How common is internet access?'
+    },
+    {
+      title: 'Customs',
+      markup: 'What did you bring through customs? How did you get that medical equipment to your site? Was anything confiscated? ' +
+        'Did you work with customs before departing to ensure your stuff will make it? If so, please detail that proccess.'
+    },
+    {
+      title: 'Contacts',
+      markup: 'Were there any local, government or non-government, organizations you found useful? If so how did they help you? What ' +
+        'was thye realtionship like? What is their contact info? '
+    },
+    {
+      title: 'Transit',
+      markup: 'How did you get from the airport, or port, to the site? Is the public transportation systems relaible? Can you drive ' +
+        'yourself, or did you book transportatiopn? What was your prefered method for traveling between cities?'
+    },
+    {
+      title: 'Culture',
+      markup: 'What cultural taboos should staff be aware of? Is there anything common in western culture that would offend locals? ' +
+        'Conversely, what cultural customs do they have which might offend staff? How did you deal with it? '
+    },
+    {
+      title: 'Money',
+      markup: 'Is the US dollar prefereed? If no, where did you exchange currency? Is card taken or is it a primarily cash society? ' +
+        'Did you take all your cash at once, or did you continuosly withdraw smaller amounts? If so, where did you withdraw cash from?'
+    },
+    {
+      title: 'Comfort_and_Availability',
+      markup: 'What comforts and nesecities did you miss while in this country? What was readily available? ' +
+        'What should staff bring to stay comfortable during their trips?'
+    },
+    {
+      title: 'Crimes_and_Scams',
+      markup: 'What is the crime rate like? What scams will staff run across? Are foriegners more likely to be targeted?'
+    },
+    {
+      title: 'Population_Health',
+      markup: 'What level of care does the population generally recieve? Is any type of care noticably lacking? ' +
+        'What health issues seem to be common in this country?'
+    }
+  ];
 
   wikiSite = {
     Pharmacuetical: 'Is there a place to get drugs nearby? How accessible are the drugs? If you do not bring everything you need,' +

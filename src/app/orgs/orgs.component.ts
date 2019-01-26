@@ -6,14 +6,14 @@ import {Page} from '../interfaces/page';
 
 @Component({
   selector: 'app-groups',
-  templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.css']
+  templateUrl: './orgs.component.html',
+  styleUrls: ['./orgs.component.css']
 })
-export class GroupsComponent implements OnInit {
+export class OrgsComponent implements OnInit {
 
   siteId: string;
   groupId: string;
-  groupElementId: string; // The id of the element in groups under site
+  groupElementId: string; // The id of the element in orgs under site
   pageId: string; // Represents the id of the current page we want to reference
   pageData: Page;
   sections = [];
@@ -26,7 +26,7 @@ export class GroupsComponent implements OnInit {
   constructor(private route: ActivatedRoute, private readonly db: AngularFirestore, private sharedService: SharedService) {
     this.siteId = this.route.snapshot.paramMap.get('siteId');
     this.groupId = this.route.snapshot.paramMap.get('groupId');
-    sharedService.onMainEvent.emit(false);
+    sharedService.hideToolbar.emit(false);
     // First thing we want to get is the current page
     this.db.collection(`Sites/${this.siteId}/groups`, ref => ref.limit(1)
     ).snapshotChanges().subscribe(data => {

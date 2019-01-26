@@ -42,7 +42,7 @@ export class SitesComponent implements OnInit {
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
               public authInstance: AngularFireAuth, private sharedService: SharedService) {
     this.id = this.route.snapshot.paramMap.get('id');
-    sharedService.onMainEvent.emit(false);
+    sharedService.hideToolbar.emit(false);
     // Let's get the site name
     this.db.doc(`Sites/${this.id}`).valueChanges().subscribe((data: Site) => {
       this.siteName = data.siteName;

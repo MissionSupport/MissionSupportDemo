@@ -1,5 +1,5 @@
 export interface Site {
   id: string;
-  region: string;
+  country: string;
   siteName: string;
 }
