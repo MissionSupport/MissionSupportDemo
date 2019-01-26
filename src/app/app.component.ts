@@ -1,13 +1,13 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import {Globals, SharedService} from './globals';
+import {SharedService} from './globals';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [Globals, SharedService],
+  providers: [SharedService],
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {

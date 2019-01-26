@@ -5,12 +5,11 @@ import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection}
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {Site} from '../interfaces/site';
-import {Globals, SharedService} from '../globals';
+import {SharedService} from '../globals';
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
-  providers: [Globals],
   styleUrls: ['./landing.component.css']
 })
 export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
@@ -38,7 +37,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     });
     console.log(this.sites);
     sharedService.onMainEvent.emit(false);
-    sharedService.onPageNav.emit('Region Selection');
+    sharedService.onPageNav.emit('Country Selection');
   }
   ngOnInit() {
   }
