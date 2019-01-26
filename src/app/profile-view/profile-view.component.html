@@ -1,0 +1,32 @@
+<p-toast position="bottom-center" class="ui-messages-error"></p-toast>
+<!--<div  style = "display:flex; position:absolute; top:0; bottom:0; right:0; left:0">-->
+<div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">
+  <h1 class="p-col">
+    My Profile
+  </h1>
+  <a [routerLink]="['',{ outlets: { sidebar: ['profileSide'] } }]"><p>Edit Profile Info</p></a>
+</div>
+<div>
+  <h3>Name</h3>
+  <span>{{firstName }} {{lastName}}</span>
+</div>
+<div>
+  <h3>Email</h3>
+  <span>{{email}}</span>
+</div>
+<div>
+  <h3>Organization</h3>
+  <span>{{organization}}</span>
+</div>
+<div>
+  <h3>Groups</h3>
+  <span>{{groups}}</span>
+</div>
+<div>
+  <h3>Permissions</h3>
+  <span>{{isAdmin}}</span>
+</div>
+<div>
+  <h3>My Media</h3>
+  <span>{{isAdmin}}</span>
+</div>
