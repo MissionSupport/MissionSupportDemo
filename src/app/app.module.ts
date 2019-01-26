@@ -34,7 +34,7 @@ import {EditorModule} from 'primeng/editor';
 import { GroupsComponent } from './groups/groups.component';
 import { GroupadminComponent } from './admin/groupadmin/groupadmin.component';
 import { ProfileViewComponent } from './profile-view/profile-view.component';
-
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
   declarations: [
@@ -69,6 +69,7 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
     FileUploadModule,
     FieldsetModule,
     EditorModule,
+    MenuModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

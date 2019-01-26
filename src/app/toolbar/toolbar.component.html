@@ -1,7 +1,8 @@
 <p-sidebar [(visible)]="display" position="left" (onShow) = "restoreFront($event)" >
   <router-outlet name="sidebar"></router-outlet>
-  <div style="text-align: center;">
-    <a (click)="restoreFront($event)"> Back</a>
+  <div style="text-align: center;" *ngIf="!this.router.url.includes('sidebar:settingsOptions')">
+    <!--<a (click)="restoreFront($event)"> Back</a>-->
+    <p-button icon="pi pi-arrow-left" styleClass="ui-button-rounded" (onClick)="restoreFront($event)"></p-button>
   </div>
 </p-sidebar>
 <div class="p-grid" style="height: 8%; width: 100vw; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.24);">
