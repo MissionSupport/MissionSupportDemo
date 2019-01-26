@@ -10,6 +10,7 @@ import {SettingsListComponent} from './settings-list/settings-list.component';
 import {UploadFormComponent} from './upload-form/upload-form.component';
 import {GroupsComponent} from './groups/groups.component';
 import {GroupadminComponent} from './admin/groupadmin/groupadmin.component';
+import {ProfileViewComponent} from './profile-view/profile-view.component';
 
 
 const routes: Routes = [
@@ -89,6 +90,12 @@ const routes: Routes = [
     path: 'sites/:siteId/group/:groupId',
     canActivate: [AuthguardService],
     component: GroupsComponent
+  },
+  {
+    path: 'profileView',
+    canActivate: [AuthguardService],
+    component: ProfileViewComponent,
+    outlet: 'sidebar'
   }
 ];
 

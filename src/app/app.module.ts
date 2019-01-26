@@ -33,6 +33,7 @@ import {FieldsetModule} from 'primeng/fieldset';
 import {EditorModule} from 'primeng/editor';
 import { GroupsComponent } from './groups/groups.component';
 import { GroupadminComponent } from './admin/groupadmin/groupadmin.component';
+import { ProfileViewComponent } from './profile-view/profile-view.component';
 
 
 
@@ -48,7 +49,8 @@ import { GroupadminComponent } from './admin/groupadmin/groupadmin.component';
     SettingsListComponent,
     UploadFormComponent,
     GroupsComponent,
-    GroupadminComponent
+    GroupadminComponent,
+    ProfileViewComponent
   ],
   imports: [
     BrowserModule,
