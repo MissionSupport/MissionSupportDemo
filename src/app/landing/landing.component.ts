@@ -81,6 +81,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
             .data(feature(topology, topology.objects.countriess).features)
             .enter().append('path')
             .attr('d', path)
+            .attr('id', (e) => e.properties.SOV_A3)
             .on('click', this.region_clicked);
 
       });
@@ -111,6 +112,10 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
   region_clicked(e) {
     console.log(e.properties.FORMAL_EN);
+    d3.select('.country_highlighted').style('fill', 'black');
+    d3.select('.country_highlighted').classed('country_highlighted', false);
+    d3.select('#' + e.properties.SOV_A3).style('fill', 'red');
+    d3.select('#' + e.properties.SOV_A3).classed('country_highlighted', true);
   }
 
   addSite(e, region, siteName) {

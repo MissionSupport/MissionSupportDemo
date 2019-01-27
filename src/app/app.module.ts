@@ -17,7 +17,6 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AngularFireModule} from '@angular/fire';
 import {MessageService} from 'primeng/api';
-import { ProfileComponent } from './profile/profile.component';
 import { SitesComponent } from './sites/sites.component';
 import { MarkdownModule } from 'ngx-markdown';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
@@ -42,7 +41,6 @@ import { MenuModule } from 'primeng/menu';
     LoginComponent,
     RegisterComponent,
     LandingComponent,
-    ProfileComponent,
     SitesComponent,
     ToolbarComponent,
     SettingsListComponent,
