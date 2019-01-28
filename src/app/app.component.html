@@ -1,3 +1,6 @@
-<app-toolbar style="width: 100%" [header]="pageName" [hidden] = "onMain"></app-toolbar>
-<router-outlet></router-outlet>
+<app-toolbar #toolbar style="width: 100%;" [header]="pageName" [hidden] = "onMain"></app-toolbar>
+<p-scrollPanel [style]="{width: '100%', height: height + 'px'}" styleClass="custombar1">
+  <router-outlet></router-outlet>
+</p-scrollPanel>
+
 

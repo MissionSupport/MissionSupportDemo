@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GroupadminComponent } from './groupadmin.component';
+import { CountryPageComponent } from './country-page.component';
 
-describe('GroupadminComponent', () => {
-  let component: GroupadminComponent;
-  let fixture: ComponentFixture<GroupadminComponent>;
+describe('CountryPageComponent', () => {
+  let component: CountryPageComponent;
+  let fixture: ComponentFixture<CountryPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GroupadminComponent ]
+      declarations: [ CountryPageComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GroupadminComponent);
+    fixture = TestBed.createComponent(CountryPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,5 +1,6 @@
 export interface Site {
+  current: string;
   id: string;
-  region: string;
   siteName: string;
+  tripIds: string[];
 }

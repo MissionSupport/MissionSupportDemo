@@ -5,7 +5,7 @@ import {MessageService} from 'primeng/api';
 import { auth } from 'firebase/app';
 import {log} from 'util';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {Globals} from '../globals';
+import {SharedService} from '../globals';
 
 @Component({
   selector: 'app-login',
@@ -21,8 +21,8 @@ export class LoginComponent implements OnInit {
     this.time = localStorage.getItem('login_time_verify') != null ? +localStorage.getItem('login_time_verify') : 0;
   }
   constructor(public router: Router, public authInstance: AngularFireAuth,
-              private messageService: MessageService, private globals: Globals) {
-    globals.toolHidden = true;
+              private messageService: MessageService, private sharedService: SharedService) {
+    sharedService.hideToolbar.emit(true);
   }
 
   loginClick() {
