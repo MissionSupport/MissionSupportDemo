@@ -3,7 +3,7 @@
 <div id="mainBody" [ngStyle]="{'margin-bottom' : footerHeight + 10 + 'px'}" >
 
   <div [hidden]="!viewWiki"  style="width: 99vw">
-      <a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>
+      <!--<a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>-->
       <div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">
         <div [hidden]="!hideme[i]">
           <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
@@ -15,9 +15,9 @@
         <p-fieldset legend={{info.title}} [toggleable]="true" [hidden]="hideme[i]">
           <markdown [data]="info.markup"></markdown>
         </p-fieldset>
-        <div [hidden]="!editMode">
-          <a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>
-        </div>
+        <!--<div [hidden]="!editMode">-->
+          <!--<a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>-->
+        <!--</div>-->
       </div>
     </div>
 

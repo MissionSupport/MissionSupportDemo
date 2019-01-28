@@ -18,7 +18,8 @@ export class SettingsListComponent implements OnInit {
       { label: 'Edit Checklist Preferences', icon: 'pi pi-fw pi-cog' },
       { label: 'View Permissions', icon: 'pi pi-fw pi-lock' },
       { label: 'Upload Media' , icon: 'pi pi-fw pi-cloud-upload', routerLink: ['', { outlets: { sidebar: ['uploadSide'] } }] },
-      { label: 'Manage Groups', icon: 'pi pi-fw pi-users', routerLink: ['', { outlets: { sidebar: ['manageGroup'] } }] }
+      { label: 'Manage Organizations', icon: 'pi pi-fw pi-users', routerLink: ['', { outlets: { sidebar: ['manageGroup'] } }] },
+      { label: 'My Trips', icon: 'pi pi-fw pi-briefcase', routerLink: ['', { outlets: { sidebar: ['myTripsSide'] } }] },
     ];
   }
 
