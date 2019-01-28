@@ -1,24 +1,28 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import {Globals, SharedService} from './globals';
+import {SharedService} from './globals';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [Globals, SharedService],
+  providers: [SharedService],
+
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements AfterContentInit {
+  @ViewChild('toolbar', {read: ElementRef}) toolbar: ElementRef;
   title = 'missionSupport1';
   pageName;
   onMain = true;
+  height;
+  toolbarHeight;
+  elmnt;
 
   constructor(db: AngularFirestore, private sharedService: SharedService) {
-    sharedService.onMainEvent.subscribe(
+    sharedService.hideToolbar.subscribe(
       (onMain) => {
-        console.log('event Activated  ' + onMain);
         this.onMain = onMain;
       }
     );
@@ -27,8 +31,15 @@ export class AppComponent {
         this.pageName = page;
       }
     );
+
+    this.height = window.innerHeight;
   }
 
+  ngAfterContentInit(): void {
+    console.log(this.toolbar.nativeElement.children.namedItem('innerToolbar').offsetHeight);
+    this.toolbarHeight = this.toolbar.nativeElement.children.namedItem('innerToolbar').offsetHeight;
+    this.height = window.innerHeight - this.toolbarHeight;
+  }
 
   // onActivate(componentRef) {
   //   console.log(componentRef.constructor.name);

@@ -1,0 +1,26 @@
+body {
+  min-height: 100%;
+  width: 100%;
+  display: table;
+}
+
+#mainBody {
+  /*min-height: 100%;*/
+  /*margin-bottom: 100px;*/
+  width: 100%;
+  /*margin-bottom: -271px;*/
+  /*display: table-row;*/
+}
+/*header-main {*/
+  /*height: 60px;*/
+/*}*/
+
+/*router-outlet {*/
+  /*position: absolute;*/
+/*}*/
+
+#footer {
+  /*height: 271px;*/
+  background-color: aqua;
+}
+

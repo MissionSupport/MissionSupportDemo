@@ -1,10 +1,10 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
 <!--<div  style = "display:flex; position:absolute; top:0; bottom:0; right:0; left:0">-->
 <!--<div>-->
-  <!--<div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">-->
-    <!--<textarea id="float-input1" size="30" pInputText [(ngModel)] = "markdown"></textarea>-->
-    <!--<markdown [data]="markdown"></markdown>-->
-  <!--</div>-->
+<!--<div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">-->
+<!--<textarea id="float-input1" size="30" pInputText [(ngModel)] = "markdown"></textarea>-->
+<!--<markdown [data]="markdown"></markdown>-->
+<!--</div>-->
 <!--</div>-->
 <div id="mainBody" [ngStyle]="{'margin-bottom' : footerHeight + 10 + 'px'}" >
 
@@ -27,13 +27,15 @@
       </div>
     </div>
     <a (click)="submitEdit('test111', editText.length)" style="font-size: smaller" [hidden]="!editMode">Add new thing</a>
-    <div *ngFor="let g of groups; let i = index" style="margin-top: 20px; padding-right: 35px">
-      <a routerLink="./group/{{g.id}}" ><p class="p-col p-col-2">{{g.name}}</p></a>
-    </div>
   </div>
 
-  <div [hidden]="!viewChecklist">
-    <h3>Checklist</h3>
+  <div [hidden]="!viewTeams">
+    <h3>Teams</h3>
+    <p-accordion [multiple]="false">
+      <p-accordionTab *ngFor="let team of teams" [header]=team.teamName>
+        {{team.teamMembers}}
+      </p-accordionTab>
+    </p-accordion>
   </div>
 
   <div [hidden]="!viewTrips">
@@ -50,13 +52,12 @@
 
 <div id ="footer"  class="p-grid" [ngStyle]="{'height' : footerHeight + 'px'}" style="text-align: center; bottom: 0; position: fixed; width: 100%">
   <div class="p-col-4" [ngStyle]="{'background-color' : viewWiki ? 'blue' : 'aqua' }">
-    <a (click)="viewWiki = true; viewChecklist = false; viewTrips = false;"><p style="height: 100%" >Wiki</p></a>
+    <a (click)="viewWiki = true; viewTeams = false; viewTrips = false;"><p style="height: 100%" >Wiki</p></a>
   </div>
-  <div class="p-col-4" [ngStyle]="{'background-color' : viewChecklist ? 'blue' : 'aqua' }">
-    <a (click)="viewWiki= false; viewChecklist = true; viewTrips = false;"><p style="height: 100%" >Checklist</p></a>
+  <div class="p-col-4" [ngStyle]="{'background-color' : viewTeams ? 'blue' : 'aqua' }">
+    <a (click)="viewWiki= false; viewTeams = true; viewTrips = false;"><p style="height: 100%" >Teams</p></a>
   </div>
   <div class="p-col-4" [ngStyle]="{'background-color' : viewTrips ? 'blue' : 'aqua' }">
-    <a (click)="viewWiki= false; viewChecklist = false; viewTrips = true;"><p style="height: 100%" >Trips</p></a>
+    <a (click)="viewWiki= false; viewTeams = false; viewTrips = true;"><p style="height: 100%" >Trips</p></a>
   </div>
 </div>
-

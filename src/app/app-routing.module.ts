@@ -4,12 +4,18 @@ import {LandingComponent} from './landing/landing.component';
 import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
 import {AuthguardService} from './service/authguard.service';
-import {ProfileComponent} from './profile/profile.component';
+import {ProfileEditComponent} from './profile-edit/profile-edit.component';
 import {SitesComponent} from './sites/sites.component';
 import {SettingsListComponent} from './settings-list/settings-list.component';
 import {UploadFormComponent} from './upload-form/upload-form.component';
-import {GroupsComponent} from './groups/groups.component';
-import {GroupadminComponent} from './admin/groupadmin/groupadmin.component';
+import {OrgsComponent} from './orgs/orgs.component';
+import {OrgadminComponent} from './admin/orgAdmin/orgadmin.component';
+import {ProfileViewComponent} from './profile-view/profile-view.component';
+import {MyOrgsListComponent} from './my-orgs-list/my-orgs-list.component';
+import {MyTripsListComponent} from './my-trips-list/my-trips-list.component';
+import {CountryPageComponent} from './country-page/country-page.component';
+import {TripPageComponent} from './trip-page/trip-page.component';
+import {OrgPageComponent} from './org-page/org-page.component';
 
 
 const routes: Routes = [
@@ -40,24 +46,19 @@ const routes: Routes = [
     // ]
   },
   {
-    path: 'profile',
-    canActivate: [AuthguardService],
-    component: ProfileComponent
-  },
-  {
-    path: 'sites/:id',
+    path: 'country/:countryId/site/:id',
     canActivate: [AuthguardService],
     component: SitesComponent,
 //    children: [
 //      {
 //        path: '',
-//        redirectTo: 'groups',
+//        redirectTo: 'orgs',
 //        pathMatch: 'full'
 //      },
 //      {
 //        path: 'group/:groupId',
 //        canActivate: [AuthguardService],
-//        component: GroupsComponent
+//        component: OrgsComponent
 //      },
 //    ]
   },
@@ -70,7 +71,7 @@ const routes: Routes = [
   {
     path: 'profileSide',
     canActivate: [AuthguardService],
-    component: ProfileComponent,
+    component: ProfileEditComponent,
     outlet: 'sidebar'
   },
   {
@@ -82,13 +83,46 @@ const routes: Routes = [
   {
     path: 'manageGroup',
     canActivate: [AuthguardService],
-    component: GroupadminComponent,
+    component: OrgadminComponent,
     outlet: 'sidebar'
   },
   {
     path: 'sites/:siteId/group/:groupId',
     canActivate: [AuthguardService],
-    component: GroupsComponent
+    component: OrgsComponent
+  },
+  {
+    path: 'profileView',
+    canActivate: [AuthguardService],
+    component: ProfileViewComponent,
+    outlet: 'sidebar'
+  },
+  {
+    path: 'myGroupsSide',
+    canActivate: [AuthguardService],
+    component: MyOrgsListComponent,
+    outlet: 'sidebar'
+  },
+  {
+    path: 'myTripsSide',
+    canActivate: [AuthguardService],
+    component: MyTripsListComponent,
+    outlet: 'sidebar'
+  },
+  {
+    path: 'country/:id',
+    canActivate: [AuthguardService],
+    component: CountryPageComponent,
+  },
+  {
+    path: 'trip/:id',
+    canActivate: [AuthguardService],
+    component: TripPageComponent,
+  },
+  {
+    path: 'org/:id',
+    canActivate: [AuthguardService],
+    component: OrgPageComponent,
   }
 ];
 

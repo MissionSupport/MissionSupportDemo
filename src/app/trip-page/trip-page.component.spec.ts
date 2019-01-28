@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GroupadminComponent } from './groupadmin.component';
+import { TripPageComponent } from './trip-page.component';
 
-describe('GroupadminComponent', () => {
-  let component: GroupadminComponent;
-  let fixture: ComponentFixture<GroupadminComponent>;
+describe('TripPageComponent', () => {
+  let component: TripPageComponent;
+  let fixture: ComponentFixture<TripPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GroupadminComponent ]
+      declarations: [ TripPageComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GroupadminComponent);
+    fixture = TestBed.createComponent(TripPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

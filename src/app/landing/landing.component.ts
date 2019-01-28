@@ -1,16 +1,15 @@
 import {Component, OnInit, AfterContentInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import * as d3 from 'd3';
 import {feature} from 'topojson/node_modules/topojson-client';
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from '@angular/fire/firestore';
-import {Observable} from 'rxjs';
+import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Router} from '@angular/router';
 import {Site} from '../interfaces/site';
-import {Globals, SharedService} from '../globals';
+import {SharedService} from '../globals';
+import {Country} from '../interfaces/country';
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
-  providers: [Globals],
   styleUrls: ['./landing.component.css']
 })
 export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
@@ -24,21 +23,19 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   svg;
   path;
   g;
-  sites: Observable<Site[]>;
-  siteCollection: AngularFirestoreCollection<Site>;
-  selectedSite: Site;
-
-
+  // countries: Observable<Country[]>;
+  countries: Country[];
+  selectedCountry: Country;
+  countryCollection: AngularFirestoreCollection<Country>;
 
   constructor(private readonly db: AngularFirestore, public router: Router, private sharedService: SharedService) {
-    this.siteCollection = db.collection<Site>('Sites');
-    this.sites = this.siteCollection.valueChanges();
-    this.sites.subscribe( item => {
-      this.sites = item as any;
+    this.countryCollection = db.collection<Country>('countries');
+    const countries = this.countryCollection.valueChanges();
+    countries.subscribe( item => {
+      this.countries = item;
     });
-    console.log(this.sites);
-    sharedService.onMainEvent.emit(false);
-    sharedService.onPageNav.emit('Region Selection');
+    sharedService.hideToolbar.emit(false);
+    sharedService.onPageNav.emit('Country Selection');
   }
   ngOnInit() {
   }
@@ -81,6 +78,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
             .data(feature(topology, topology.objects.countriess).features)
             .enter().append('path')
             .attr('d', path)
+            .attr('id', (e) => e.properties.SOV_A3)
             .on('click', this.region_clicked);
 
       });
@@ -98,7 +96,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     //       .attr('id', function (d) {
     //         return d.id;
     //       })
-    //       // firestore - this.get region determines color and when selecting what region to queary yo
+    //       // firestore - this.get country determines color and when selecting what country to queary yo
     //       // .attr('d', i => {
     //       //   // this.projection = this.projection = d3.geoMercator().fitSize([this.width, this.height], topology);
     //       //   // this.path =  d3.geoPath().projection(this.projection);
@@ -111,18 +109,15 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
   region_clicked(e) {
     console.log(e.properties.FORMAL_EN);
+    d3.select('.country_highlighted').style('fill', 'black');
+    d3.select('.country_highlighted').classed('country_highlighted', false);
+    d3.select('#' + e.properties.SOV_A3).style('fill', 'red');
+    d3.select('#' + e.properties.SOV_A3).classed('country_highlighted', true);
   }
 
-  addSite(e, region, siteName) {
-    // Persist a document id
-    const id = this.db.createId();
-    const site: Site = { id, region, siteName };
-    this.siteCollection.doc(id).set(site);
-  }
-
-  siteClick(): void {
+  countryClick(): void {
     // console.log(this.selectedSite);
-    this.router.navigate(['sites/' + this.selectedSite.id]);
+    this.router.navigate(['country/' + this.selectedCountry.id]);
     // this.router.navigate(['/temp']);
   }
 }

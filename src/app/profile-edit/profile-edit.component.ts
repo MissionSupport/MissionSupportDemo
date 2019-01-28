@@ -5,10 +5,10 @@ import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  templateUrl: './profile-edit.component.html',
+  styleUrls: ['./profile-edit.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileEditComponent implements OnInit {
 
   email: string;
   password: string;
