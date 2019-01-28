@@ -18,6 +18,8 @@ export class OrgPageComponent implements OnInit {
   editText = [];
   hideme = [];
   footerHeight = 45;
+  editMode = false;
+  canEdit = false;
   // trips: Trip[];
   trips = [
     {
@@ -55,7 +57,7 @@ export class OrgPageComponent implements OnInit {
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined) {
     sharedService.hideToolbar.emit(false);
     sharedService.onPageNav.emit('Org Name');
-    for (let element of preDef.wikiOrg) {
+    for (const element of preDef.wikiOrg) {
       this.sections.push({title: element.title, markup: element.markup});
       // this.editText.push({title: element.title, markup: element.markup});
     }
@@ -68,6 +70,9 @@ export class OrgPageComponent implements OnInit {
     // console.log(this.selectedSite);
     this.router.navigate(['trip/' + this.selectedTrip.id]);
     // this.router.navigate(['/temp']);
+  }
+
+  submitEdit(title, index): void {
   }
 
 }

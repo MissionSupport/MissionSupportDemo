@@ -1,6 +1,6 @@
 export interface Team {
+  admins: string[];
   id: string;
-  teamName: string;
-  teamMembers: string[];
-  // organization: any;
+  name: string;
+  trips: string[];
 }

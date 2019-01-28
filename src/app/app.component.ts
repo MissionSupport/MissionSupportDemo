@@ -8,6 +8,7 @@ import {SharedService} from './globals';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   providers: [SharedService],
+
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements AfterContentInit {

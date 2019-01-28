@@ -1,32 +1,48 @@
-<p-toast position="bottom-center" class="ui-messages-error"></p-toast>
+<p-toast position="bottom-center" key="profile-view" class="ui-messages-error"></p-toast>
 <!--<div  style = "display:flex; position:absolute; top:0; bottom:0; right:0; left:0">-->
 <div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">
-  <h1 class="p-col">
-    My Profile
-  </h1>
-  <a [routerLink]="['',{ outlets: { sidebar: ['profileSide'] } }]"><p>Edit Profile Info</p></a>
+  <h2>My Profile</h2>
 </div>
 <div>
-  <h3>Name</h3>
+  <h4>Name</h4>
   <span>{{firstName }} {{lastName}}</span>
 </div>
 <div>
-  <h3>Email</h3>
-  <span>{{email}}</span>
+  <h4>Email <i class="pi pi-pencil" style="cursor: pointer" (click)="editingEmail = true"></i> </h4>
+  <span *ngIf="!editingEmail">{{email}}</span>
+  <div *ngIf="editingEmail" class="ui-inputgroup">
+    <input type="email" pInputText placeholder="New Email" [(ngModel)]="newEmail">
+    <button pButton type="button" icon="pi pi-check" class="ui-button-success" (click)="updateEmail()"></button>
+    <button pButton type="button" (click)="editingEmail = false" class="ui-button-danger" icon="pi pi-times"></button>
+  </div>
 </div>
 <div>
-  <h3>Organization</h3>
+  <h4>Organization</h4>
   <span>{{organization}}</span>
 </div>
 <div>
-  <h3>Groups</h3>
+  <h4>Groups</h4>
   <span>{{groups}}</span>
 </div>
 <div>
-  <h3>Permissions</h3>
+  <h4>Permissions</h4>
   <span>{{isAdmin}}</span>
 </div>
 <div>
-  <h3>My Media</h3>
+  <h4>My Media</h4>
   <span>{{isAdmin}}</span>
+</div>
+<div [ngStyle]="!changingPassword ? {'padding-top': '20px'} : null">
+  <p-button *ngIf="!changingPassword" (onClick)="changingPassword = true" styleClass="ui-button-danger" label="Change Password"></p-button>
+  <div *ngIf="changingPassword">
+    <h4>Change Password</h4>
+    <span>
+      <input type="password" pInputText placeholder="New Password" [(ngModel)]="newPassword">
+      <p-button icon="pi pi-check" styleClass="ui-button-success" style="padding-left: 20px" (onClick)="changePassword()"></p-button>
+    </span>
+    <span>
+      <input type="password" pInputText placeholder="Confirm New Password" [(ngModel)]="confirmNewPassword">
+      <p-button (onClick)="changingPassword = false" icon="pi pi-times" styleClass="ui-button-danger" style="padding-left: 20px"></p-button>
+    </span>
+  </div>
 </div>

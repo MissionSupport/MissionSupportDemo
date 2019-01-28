@@ -4,7 +4,7 @@
 
 
   <div [hidden]="!viewWiki" style="width: 100vw">
-    <a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>
+    <!--<a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>-->
     <div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">
       <div [hidden]="!hideme[i]">
         <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
@@ -20,7 +20,7 @@
         <a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>
       </div>
     </div>
-    <a (click)="submitEdit('test111', editText.length)" style="font-size: smaller" [hidden]="!editMode">Add new thing</a>
+    <!--<a (click)="submitEdit('test111', editText.length)" style="font-size: smaller" [hidden]="!editMode">Add new thing</a>-->
   </div>
 
   <div [hidden]="!viewAbout">

@@ -1,12 +1,14 @@
-<p-sidebar [(visible)]="display" position="left" (onShow) = "restoreFront($event)" >
-  <router-outlet name="sidebar"></router-outlet>
-  <div style="text-align: center;">
-    <a (click)="restoreFront($event)"> Back</a>
+<p-sidebar [(visible)]="display" position="left" (onShow) = "restoreFront($event)">
+  <div style="position: fixed; top: 20px" *ngIf="!this.router.url.includes('sidebar:settingsOptions')">
+    <!--<a (click)="restoreFront($event)"> Back</a>-->
+    <p-button icon="pi pi-arrow-left" styleClass="ui-button-rounded" (onClick)="restoreFront($event)"></p-button>
   </div>
+  <router-outlet name="sidebar"></router-outlet>
 </p-sidebar>
 <div id="innerToolbar" class="p-grid" style="height: 8%; width: 100vw; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.24); ">
   <div class="p-col-fixed p-col-align-center" style="height: 90%;">
-    <a (click)="display = true"><img src="assets/icons/nut-icon.png" style="height: 100%; padding-top: 5px; padding-right: 5px"></a>
+    <!--<a routerLink="/profile"><img src="assets/icons/nut-icon.png" style="height: 90%"></a>-->
+    <a (click)="display = true"><img src="assets/icons/nut-icon.png" style="height: 100%; padding-top: 5px; padding-right: 5px; cursor: pointer;"></a>
   </div>
   <div class="p-col-align-center" style="font-size: x-large">
     {{header}}
