@@ -2,14 +2,14 @@
 <div  style = "display:flex; position:absolute; top:0; bottom:0; right:0; left:0">
   <div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">
     <h1 class="p-col">
-      Support    the Mission
+      Support the Mission
     </h1>
     <span class="ui-float-label p-col" >
-        <input id="float-input" type="text" size="30" pInputText [(ngModel)] = "email">
+        <input id="float-input" type="text" size="30" pInputText [(ngModel)] = "email" (keydown.enter)="loginClick()">
         <label for="float-input" style="margin-left: 8px">Email</label>
     </span>
-    <span class="ui-float-label p-col" style="margin-top:10px">
-        <input id="float-input2" type="password" size="30" pInputText [(ngModel)] = "password">
+    <span class="ui-float-label p-col" style="margin-top:20px">
+        <input id="float-input2" type="password" size="30" pInputText [(ngModel)] = "password" (keydown.enter)="loginClick()">
         <label for="float-input" style="margin-left: 8px">Password</label>
     </span>
     <div class="p-grid p-col-align-stretch p-justify-between">

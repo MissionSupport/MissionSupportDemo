@@ -1,14 +1,8 @@
-<div *ngIf="currentUpload">
-    <div class="p-grid" *ngFor="let upload of uploads">
-      <div class="p-col-2"><span>{{upload?.name}}</span></div>
-      <div class="progress p-col-8">
-        <p-progressBar [value] = "upload?.progress | async"></p-progressBar>
-      </div>
-    </div>
+<div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">
+  <h2>Media Upload</h2>
 </div>
 
 <div class="p-grid">
-  <span class="p-col-12 p-justify-center" style="text-align: center">Media Upload Page</span>
   <div class="p-col-6 p-justify-center" style="text-align: center">
     <p-fileUpload mode = "basic" customUpload="true" (uploadHandler)="uploadSingle($event)" chooseLabel="Upload Single"></p-fileUpload>
   </div>
@@ -17,6 +11,14 @@
   </div>
 </div>
 
+<div *ngIf="currentUpload">
+    <div class="p-grid" *ngFor="let upload of uploads">
+      <div class="p-col-4"><span>{{(upload?.name.length > 8) ? (upload?.name | slice:0:8) + '...': upload?.name}}</span></div>
+      <div class="progress p-col-8">
+        <p-progressBar [value] = "upload?.progress | async"></p-progressBar>
+      </div>
+    </div>
+</div>
 
 
 

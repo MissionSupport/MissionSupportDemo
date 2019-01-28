@@ -46,11 +46,6 @@ const routes: Routes = [
     // ]
   },
   {
-    path: 'profile',
-    canActivate: [AuthguardService],
-    component: ProfileEditComponent
-  },
-  {
     path: 'country/:countryId/site/:id',
     canActivate: [AuthguardService],
     component: SitesComponent,
@@ -116,11 +111,6 @@ const routes: Routes = [
   },
   {
     path: 'country/:id',
-    canActivate: [AuthguardService],
-    component: CountryPageComponent,
-  },
-  {
-    path: 'country',
     canActivate: [AuthguardService],
     component: CountryPageComponent,
   },
