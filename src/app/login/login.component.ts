@@ -3,8 +3,6 @@ import {Router} from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import {MessageService} from 'primeng/api';
 import { auth } from 'firebase/app';
-import {log} from 'util';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {SharedService} from '../globals';
 
 @Component({

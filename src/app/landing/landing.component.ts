@@ -29,7 +29,6 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   countryCollection: AngularFirestoreCollection<Country>;
 
   constructor(private readonly db: AngularFirestore, public router: Router, private sharedService: SharedService) {
-
     this.countryCollection = db.collection<Country>('countries');
     const countries = this.countryCollection.valueChanges();
     countries.subscribe( item => {
