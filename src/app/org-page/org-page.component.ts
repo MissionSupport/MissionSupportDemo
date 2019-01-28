@@ -57,7 +57,7 @@ export class OrgPageComponent implements OnInit {
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined) {
     sharedService.hideToolbar.emit(false);
     sharedService.onPageNav.emit('Org Name');
-    for (let element of preDef.wikiOrg) {
+    for (const element of preDef.wikiOrg) {
       this.sections.push({title: element.title, markup: element.markup});
       // this.editText.push({title: element.title, markup: element.markup});
     }
