@@ -18,6 +18,8 @@ export class OrgPageComponent implements OnInit {
   editText = [];
   hideme = [];
   footerHeight = 45;
+  editMode = false;
+  canEdit = false;
   // trips: Trip[];
   trips = [
     {
@@ -68,6 +70,9 @@ export class OrgPageComponent implements OnInit {
     // console.log(this.selectedSite);
     this.router.navigate(['trip/' + this.selectedTrip.id]);
     // this.router.navigate(['/temp']);
+  }
+
+  submitEdit(title, index): void {
   }
 
 }

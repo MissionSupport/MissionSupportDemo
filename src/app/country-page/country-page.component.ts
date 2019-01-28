@@ -1,13 +1,11 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SharedService} from '../globals';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Site} from '../interfaces/site';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
-import {EditTask} from '../interfaces/edit-task';
 import {PreDefined} from '../globals';
-import {forEach} from '@angular/router/src/utils/collection';
-import {json} from 'express';
 import {Observable} from 'rxjs';
+import {Country} from '../interfaces/country';
 
 @Component({
   selector: 'app-country-page',
@@ -23,7 +21,7 @@ export class CountryPageComponent implements OnInit {
   clientHeight: number;
   viewWiki = true;
   viewSites = false;
-  id;
+  countryId: string;
   countryName;
   countryCollection;
   editTasks;
@@ -33,56 +31,44 @@ export class CountryPageComponent implements OnInit {
   versionId;
   wikiId;
   mainHeight;
-  sites: Observable<Site[]>;
+  sites: Site[];
   siteCollection: AngularFirestoreCollection<Site>;
   selectedSite: Site;
+  countryData: Country;
+  editMode = false;
+  canEdit = false;
 
 
-
-  constructor( private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
-               private preDef: PreDefined) {
+  constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
+               private preDef: PreDefined, private route: ActivatedRoute) {
+    this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;
     sharedService.hideToolbar.emit(false);
     this.footerHeight = 45;
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
-    // ------------------------------------------------------------------------------------------------------
-    // ToDO: Delete once implement other stuff below (temp to check ui and nav)
-    sharedService.onPageNav.emit('Country Name');
-    for (let element of preDef.wikiCountry) {
-      this.sections.push({title: element.title, markup: element.markup});
-      // this.editText.push({title: element.title, markup: element.markup});
-    }
-    this.sections.push({title: 'hello', markup: '<p>TestingTesting 123</p>'});
-    this.editText.push('<p>TestingTesting 123</p>');
-    this.sections.push({title: 'baby shark', markup: '<p>Do do Do do dodo</p>'});
-    this.editText.push('<p>Do do Do do dodo</p>');
-    this.sections.push({title: 'mommy shark', markup: '<p>Do do Do do dodo</p>'});
-    this.editText.push('<p>Do do Do do dodo</p>');
-    this.sections.push({title: 'daddy shark', markup: '<p>Do do Do do dodo</p>'});
-    this.editText.push('<p>Do do Do do dodo</p>');
 
     // TODO: Change this to get the 'Country/Sites' list instead
-    this.siteCollection = db.collection<Site>('Sites');
-    this.sites = this.siteCollection.valueChanges();
-    this.sites.subscribe( item => {
-      this.sites = item as any;
+    this.siteCollection = db.collection<Site>(`countries/${this.countryId}/sites`);
+    this.siteCollection.valueChanges().subscribe( item => {
+      this.sites = item;
     });
 
-    // ------------------------------------------------------------------------------------------------------
-
-
-    // TODO: Rourke uncomment this once you have made the Countries DB entrys
-    // // TODO: Get country id from param
-    // //
-    // //
-    // this.id = this.route.snapshot.paramMap.get('id');
-    // // TODO: Subscribe to country (add rules as well)
-    // //
-    // //
-    // this.db.doc(`Countries/${this.id}`).valueChanges().subscribe((data: Country) => {
-    //   this.countryName = data.countryName;
-    //   sharedService.onPageNav.emit(this.countryName);
-    // });
+    this.db.doc(`countries/${this.countryId}`).valueChanges().subscribe((data: Country) => {
+      this.countryName = data.countryName;
+      this.countryData = data;
+      sharedService.onPageNav.emit(this.countryName);
+      this.db.doc(`countries/${this.countryId}/wiki/${this.countryData.current}`).valueChanges().subscribe( sectionData => {
+        this.sections = [];
+        this.editTasks = [];
+        for (const title in sectionData) {
+          if (sectionData.hasOwnProperty(title)) {
+            const markup = sectionData[title];
+            this.sections.push({title, markup});
+            this.editText.push(markup);
+          }
+        }
+      });
+    });
     // // TODO: Now we are going to get the latest version of markdown that is approved. IF WE DO THIS
     // //
     // //
@@ -135,13 +121,13 @@ export class CountryPageComponent implements OnInit {
     // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
     const jsonVariable = {};
     jsonVariable[title] = this.editText[i];
-    this.db.doc(`Countries/${this.id}/versions/${this.versionId}/wikiSections/${this.wikiId}`).update(jsonVariable);
+    this.db.doc(`countries/${this.countryId}/wikiSections/${this.wikiId}/versions/${this.versionId}`).update(jsonVariable);
     this.hideme[i] = !this.hideme[i];
   }
 
   siteClick(): void {
     // console.log(this.selectedSite);
-    this.router.navigate(['sites/' + this.selectedSite.id]);
+    this.router.navigate([`country/${this.countryId}/site/${this.selectedSite.id}`]);
     // this.router.navigate(['/temp']);
   }
 }

@@ -1,12 +1,6 @@
-import {Site} from './site';
-import {Country} from './country';
-
 export interface Trip {
+  current: string;
   id: string;
+  orgId: string;
   tripName: string;
-  // tripDate: any;
-  // team: any;
-  // organization: any;
-  // site: Site;
-  // country: Country;
 }

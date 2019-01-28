@@ -51,7 +51,7 @@ const routes: Routes = [
     component: ProfileEditComponent
   },
   {
-    path: 'sites/:id',
+    path: 'country/:countryId/site/:id',
     canActivate: [AuthguardService],
     component: SitesComponent,
 //    children: [

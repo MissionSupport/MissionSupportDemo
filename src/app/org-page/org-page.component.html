@@ -27,9 +27,6 @@
       </div>
     </div>
     <a (click)="submitEdit('test111', editText.length)" style="font-size: smaller" [hidden]="!editMode">Add new thing</a>
-    <div *ngFor="let g of groups; let i = index" style="margin-top: 20px; padding-right: 35px">
-      <a routerLink="./group/{{g.id}}" ><p class="p-col p-col-2">{{g.name}}</p></a>
-    </div>
   </div>
 
   <div [hidden]="!viewTeams">

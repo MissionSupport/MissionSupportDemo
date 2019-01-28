@@ -1,8 +1,7 @@
 import {Component, OnInit, AfterContentInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import * as d3 from 'd3';
 import {feature} from 'topojson/node_modules/topojson-client';
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection} from '@angular/fire/firestore';
-import {Observable} from 'rxjs';
+import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Router} from '@angular/router';
 import {Site} from '../interfaces/site';
 import {SharedService} from '../globals';
@@ -26,33 +25,16 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   g;
   // countries: Observable<Country[]>;
   countries: Country[];
-  countryCollection: AngularFirestoreCollection<Country>;
   selectedCountry: Country;
-
-
+  countryCollection: AngularFirestoreCollection<Country>;
 
   constructor(private readonly db: AngularFirestore, public router: Router, private sharedService: SharedService) {
 
-    // TODO: Uncomment once countries DB is set up
-    // this.countryCollection = db.collection<Country>('Countries');
-    // this.countries = this.countryCollection.valueChanges();
-    // this.countries.subscribe( item => {
-    //   this.countries = item as any;
-    // });
-    this.countries = [
-      {
-        id : 'blah blah',
-        countryName: 'USA',
-      },
-      {
-        id : 'blah blah2',
-        countryName: 'Zana',
-      },
-      {
-        id : 'blah blah3',
-        countryName: 'Hewwo I new Country OwO',
-      }
-    ];
+    this.countryCollection = db.collection<Country>('countries');
+    const countries = this.countryCollection.valueChanges();
+    countries.subscribe( item => {
+      this.countries = item;
+    });
     sharedService.hideToolbar.emit(false);
     sharedService.onPageNav.emit('Country Selection');
   }
@@ -127,13 +109,6 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
   region_clicked(e) {
     console.log(e.properties.FORMAL_EN);
-  }
-
-  addCountry(e, region, siteName) {
-    // Persist a document id
-    const id = this.db.createId();
-    const site: Site = { id, country: region, siteName };
-    this.countryCollection.doc(id).set(site);
   }
 
   countryClick(): void {
