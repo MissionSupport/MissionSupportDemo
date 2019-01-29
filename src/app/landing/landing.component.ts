@@ -111,8 +111,8 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     console.log(e.properties.FORMAL_EN);
     d3.select('.country_highlighted').style('fill', 'black');
     d3.select('.country_highlighted').classed('country_highlighted', false);
-    d3.select('#' + e.properties.SOV_A3).style('fill', 'red');
-    d3.select('#' + e.properties.SOV_A3).classed('country_highlighted', true);
+    d3.select('#' + e.properties.GU_A3).style('fill', 'red');
+    d3.select('#' + e.properties.GU_A3).classed('country_highlighted', true);
   }
 
   countryClick(): void {
