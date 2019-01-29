@@ -43,6 +43,7 @@ import { MyTripsListComponent } from './my-trips-list/my-trips-list.component';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {AccordionModule} from 'primeng/accordion';
 import { ToolbarModule } from 'primeng/toolbar';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { ToolbarModule } from 'primeng/toolbar';
     ScrollPanelModule,
     AccordionModule,
     ToolbarModule,
+    CardModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
