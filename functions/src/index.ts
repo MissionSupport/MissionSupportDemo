@@ -2,12 +2,26 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-
-exports.createUserPreferences = functions.firestore.document('/users/{userId}').onCreate((create, context) => {
-  const user = context.params.userId;
-  console.log('Creating user_preferences for', user);
-  return admin.firestore().collection('user_preferences').doc(user).set({
-    id: user,
+// Used after a user first creates an account
+exports.createUserPreferences = functions.auth.user().onCreate((user, context) => {
+  const userId = context.params.userId;
+  console.log('Creating user_preferences for', userId);
+  return admin.firestore().collection('user_preferences').doc(userId).set({
     admin: false,
+    id: user,
+    orgs: [],
+    teams: []
+  });
+});
+
+// Used after creating an org adding the reference to the user
+exports.createOrganization = functions.firestore.document('organizations/{orgId}').onCreate((snap, context) => {
+  const newData = snap.data();
+  const userId = newData.admins[0];
+  admin.firestore().doc(`user_preferences/${userId}`).get().then( data => {
+    console.log(data.data());
+    const array = data.data().orgs;
+    array.push(context.params.orgId);
+    admin.firestore().doc(`user_preferences/${userId}`).update({'orgs': array});
   });
 });

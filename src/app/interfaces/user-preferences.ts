@@ -4,5 +4,6 @@
 export interface UserPreferences {
   admin: false;
   id: string;
-  sites: string[];
+  orgs: string[];
+  teams: string[];
 }

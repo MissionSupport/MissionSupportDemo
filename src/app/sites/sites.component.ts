@@ -35,7 +35,7 @@ export class SitesComponent implements OnInit {
   hideme = [];
   footerHeight = 45;
   // trips: Trip[];
-  trips = [{'id': 'a', tripName: 'Emory Team 12 - 7.12.18'}];
+  trips = [];
   selectedTrip;
 
   groups = []; // Contains an array of group ids
@@ -109,6 +109,7 @@ export class SitesComponent implements OnInit {
       this.canEdit = false;
       this.userPreferences = data as UserPreferences;
       // Now let's see if the user can edit this page.
+      /*
       for (let i = 0; i < this.userPreferences.sites.length; i++) {
         if (this.userPreferences.sites[i] === this.siteId) {
           this.canEdit = true;
@@ -116,6 +117,7 @@ export class SitesComponent implements OnInit {
         }
       }
       console.log('User can edit ' + this.canEdit);
+      */
     });
   }
 

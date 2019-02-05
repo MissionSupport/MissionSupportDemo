@@ -18,7 +18,8 @@ export class ProfileViewComponent implements OnInit {
   firstName: string;
   lastName: string;
   organization: string;
-  sites;
+  orgs;
+  teams;
   groups;
   isAdmin;
 
@@ -43,7 +44,7 @@ export class ProfileViewComponent implements OnInit {
       });
       this.db.doc(`user_preferences/${this.id}`).valueChanges().subscribe((data: UserPreferences) => {
         this.isAdmin = data.admin;
-        this.sites = data.sites;
+        // this.sites = data.sites;
       });
       // TODO: this function only updates the email text input field after being clicked on. Needs to be fixed.
     });
