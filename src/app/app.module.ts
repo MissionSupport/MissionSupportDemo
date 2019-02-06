@@ -43,6 +43,11 @@ import { MyOrgsListComponent } from './my-orgs-list/my-orgs-list.component';
 import { MyTripsListComponent } from './my-trips-list/my-trips-list.component';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {AccordionModule} from 'primeng/accordion';
+import {ChecklistCreationPageComponent} from './checklist-creation-page/checklist-creation-page.component';
+import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
+import {CheckboxModule} from 'primeng/checkbox';
+import {InputMaskModule} from 'primeng/inputmask';
+import {RadioButtonModule} from 'primeng/radiobutton';
 
 @NgModule({
   declarations: [
@@ -63,7 +68,8 @@ import {AccordionModule} from 'primeng/accordion';
     OrgPageComponent,
     OrgsListComponent,
     MyOrgsListComponent,
-    MyTripsListComponent
+    MyTripsListComponent,
+    ChecklistCreationPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,6 +92,10 @@ import {AccordionModule} from 'primeng/accordion';
     MenuModule,
     ScrollPanelModule,
     AccordionModule,
+    TriStateCheckboxModule,
+    CheckboxModule,
+    InputMaskModule,
+    RadioButtonModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

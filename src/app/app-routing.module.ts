@@ -16,6 +16,7 @@ import {MyTripsListComponent} from './my-trips-list/my-trips-list.component';
 import {CountryPageComponent} from './country-page/country-page.component';
 import {TripPageComponent} from './trip-page/trip-page.component';
 import {OrgPageComponent} from './org-page/org-page.component';
+import {ChecklistCreationPageComponent} from './checklist-creation-page/checklist-creation-page.component';
 
 
 const routes: Routes = [
@@ -123,6 +124,11 @@ const routes: Routes = [
     path: 'org/:id',
     canActivate: [AuthguardService],
     component: OrgPageComponent,
+  },
+  {
+    path: 'list',
+    canActivate: [AuthguardService],
+    component: ChecklistCreationPageComponent,
   }
 ];
 

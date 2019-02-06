@@ -1,0 +1,2 @@
+declare module 'autocomplete-lhc';
+
