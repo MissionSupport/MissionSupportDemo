@@ -41,6 +41,12 @@ export class OrgPageComponent implements OnInit {
 
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,
               private readonly db: AngularFirestore, private route: ActivatedRoute) {
+    /*
+    this.route.params.subscribe((params) => {
+      this.orgId = params['id'];
+      this.ngOnInit();
+    });
+    */
   }
 
   ngOnInit() {
@@ -69,11 +75,10 @@ export class OrgPageComponent implements OnInit {
       this.tripsObservable.map(obs => {
         obs.subscribe((trip: Trip) => {
           if (this.trips.indexOf(trip) === -1) {
-            this.trips.push(trip);
+            this.trips = [...this.trips, trip];
           }
         });
       })
-
       this.tripIds.map(data => {
         data.subscribe();
       });
