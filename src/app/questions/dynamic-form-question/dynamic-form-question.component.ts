@@ -23,9 +23,14 @@ export class DynamicFormQuestionComponent implements AfterViewInit {
     new Def.Autocompleter.Prefetch(questionKey + 'drug_strengths', []);
     new Def.Autocompleter.Search(questionKey + 'rxterms',
       'https://clinicaltables.nlm.nih.gov/api/rxterms/v3/search?ef=STRENGTHS_AND_FORMS');
+    // console.log($('#' + questionKey + 'rxterms')[0]);
     Def.Autocompleter.Event.observeListSelections(questionKey + 'rxterms', function() {
       const drugField = $('#' + questionKey + 'rxterms')[0];
       const autocomp = drugField.autocomp;
+      console.log(drugField);
+      var el = <HTMLInputElement>document.getElementById(questionKey + 'rxterms');
+      el.value = drugField.value;
+      el.dispatchEvent(new Event('input'));
       const strengths =
         autocomp.getSelectedItemData()[0].data['STRENGTHS_AND_FORMS'];
       if (strengths) {

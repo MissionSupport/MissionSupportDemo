@@ -53,6 +53,7 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit() {
+    console.log(this.form);
     this.payLoad = JSON.stringify(this.form.value);
     console.log(this.payLoad);
   }
