@@ -1,154 +1,210 @@
-<!--<link href='https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/17.0.2/autocomplete-lhc.min.css' rel="stylesheet">-->
-<!--<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>-->
-<!--<script src='https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/17.0.2/autocomplete-lhc.min.js'></script>-->
-
 <p-triStateCheckbox [(ngModel)]="isHospital" label="Is this site a Hospital/Medical Facility?"></p-triStateCheckbox>
-<input type="text" id="rxterms" placeholder="Drug name">
-<input type="text" id="drug_strengths" placeholder="Strength list">
+<!--<input type="text" id="rxterms" placeholder="Drug name">-->
+<!--<input type="text" id="drug_strengths" placeholder="Strength list">-->
 
-<div [hidden]="!isHospital || isHospital == null">
-  <h3>General</h3>
-  <div>
-    <div class="p-grid">
-      <div class="p-col-12">
-        <p>Hospital Name</p>
-        <input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="hospitalName"/>
-      </div>
-      <div class="p-col-6">
-        <p>Name of Host</p>
-        <input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="hostName" />
-      </div>
-      <div class="p-col-6">
-        <p>Position at Hospital</p>
-        <input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="hostPos"/>
-      </div>
-      <div class="p-col-6">
-        <p>Host Email Address</p>
-        <input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="hostEmail"/>
-      </div>
-      <div class="p-col-6">
-        <p>Host Phone Number</p>
-        <p-inputMask [(ngModel)]="hostPhone" mask="(999)999-9999" placeholder="(999)999-9999"></p-inputMask>
-      </div>
-    </div>
-  </div>
+<!--<div [hidden]="!isHospital || isHospital == null">-->
+  <!--<h3>General</h3>-->
+  <!--<div>-->
+    <!--<div class="p-grid">-->
+      <!--<div class="p-col-12">-->
+        <!--<p>Hospital Name</p>-->
+        <!--<input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="hospitalName"/>-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p>Name of Host</p>-->
+        <!--<input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="hostName" />-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p>Position at Hospital</p>-->
+        <!--<input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="hostPos"/>-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p>Host Email Address</p>-->
+        <!--<input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="hostEmail"/>-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p>Host Phone Number</p>-->
+        <!--<p-inputMask [(ngModel)]="hostPhone" mask="(999)999-9999" placeholder="(999)999-9999"></p-inputMask>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
 
-  <h3>Hospital Infrastructure</h3>
-    <div class="p-grid">
-      <div class="p-col-4">
-        <p>Total Number of Beds</p>
-        <input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="numBeds"/>
-      </div>
-      <div class="p-col-4">
-        <p>Number of Med/Surg Beds</p>
-        <input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="numBeds"/>
-      </div>
-      <div class="p-col-4">
-        <p>Number Operating Rooms</p>
-        <input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="numBeds"/>
-      </div>
-      <div class="p-col-4">
-        <p>Number of clinic rooms (available for surgery)</p>
-        <input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="numBeds"/>
-      </div>
-      <div class="p-col-4">
-        <p-checkbox binary="true"  [(ngModel)]="pcau" label="PCAU?"></p-checkbox>
-      </div>
-      <div class="p-col-4">
-        <p-checkbox binary="true"  [(ngModel)]="pre_Op" label="Pre-Op?"></p-checkbox>
-      </div>
-      <div class="p-col-4">
-        <p>What is your primary source of electricity?</p>
-        <div class="p-col-12"><p-radioButton name="group1" value="City Grid" label="City Grid" [(ngModel)]="val1" inputId="opt1"></p-radioButton></div>
-        <div class="p-col-12"><p-radioButton name="group1" value="Generator" label="Generator" [(ngModel)]="val1" inputId="opt1"></p-radioButton></div>
-      </div>
-      <div class="p-col-4">
-        <p-checkbox binary="true"  [(ngModel)]="pwrOutLoc" label="Power Outlets located on wards?"></p-checkbox>
-      </div>
-      <div class="p-col-4">
-        <p>Picture of Outlet</p>
-        <p-fileUpload mode="basic" name="demo[]" url="./upload.php" accept="image/*" maxFileSize="1000000" (onUpload)="onBasicUpload($event)"></p-fileUpload>
-      </div>
-      <div class="p-col-12">
-        <p>What is your back-up power supply in case of power outage?</p>
-        <p-editor [(ngModel)]="text2" [style]="{'height':'200px'}">
-            <p-header>
-          <span class="ql-formats">
-              <button class="ql-bold" aria-label="Bold"></button>
-              <button class="ql-italic" aria-label="Italic"></button>
-              <button class="ql-underline" aria-label="Underline"></button>
-          </span>
-            </p-header>
-        </p-editor>
-      </div>
-      <div class="p-col-6">
-        <p-checkbox binary="true"  [(ngModel)]="gen_247" label="Do you have a generator available 24/7?"></p-checkbox>
-      </div>
-      <div class="p-col-6">
-        <p>Comments about generator/electricity</p>
-        <p-editor [(ngModel)]="text2" [style]="{'height':'70px'}">
-            <p-header>
-          <span class="ql-formats">
-              <button class="ql-bold" aria-label="Bold"></button>
-              <button class="ql-italic" aria-label="Italic"></button>
-              <button class="ql-underline" aria-label="Underline"></button>
-          </span>
-            </p-header>
-        </p-editor>
-      </div>
-      <div class="p-col-6">
-        <p-checkbox binary="true"  [(ngModel)]="gen_247" label="Do you have internet available at the hospital?"></p-checkbox>
-      </div>
-      <div class="p-col-6">
-        <p>Comments about internet (wifi, etc)</p>
-        <p-editor [(ngModel)]="text2" [style]="{'height':'70px'}">
-          <p-header>
-          <span class="ql-formats">
-              <button class="ql-bold" aria-label="Bold"></button>
-              <button class="ql-italic" aria-label="Italic"></button>
-              <button class="ql-underline" aria-label="Underline"></button>
-          </span>
-          </p-header>
-        </p-editor>
-      </div>
-      <div class="p-col-6">
-        <p-checkbox binary="true"  [(ngModel)]="gen_247" label="Do you have running water available 24/7?"></p-checkbox>
-      </div>
-      <div class="p-col-6">
-        <p-checkbox binary="true"  [(ngModel)]="gen_247" label="Do you have scrub sinks?"></p-checkbox>
-      </div>
-      <div class="p-col-12">
-        <p>Comments about access to water/sinks</p>
-        <p-editor [(ngModel)]="text2" [style]="{'height':'70px'}">
-          <p-header>
-          <span class="ql-formats">
-              <button class="ql-bold" aria-label="Bold"></button>
-              <button class="ql-italic" aria-label="Italic"></button>
-              <button class="ql-underline" aria-label="Underline"></button>
-          </span>
-          </p-header>
-        </p-editor>
-      </div>
+  <!--<h3>Hospital Infrastructure</h3>-->
+    <!--<div class="p-grid">-->
+      <!--<div class="p-col-4">-->
+        <!--<p>Total Number of Beds</p>-->
+        <!--<input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="numBeds"/>-->
+      <!--</div>-->
+      <!--<div class="p-col-4">-->
+        <!--<p>Number of Med/Surg Beds</p>-->
+        <!--<input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="numBeds"/>-->
+      <!--</div>-->
+      <!--<div class="p-col-4">-->
+        <!--<p>Number Operating Rooms</p>-->
+        <!--<input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="numBeds"/>-->
+      <!--</div>-->
+      <!--<div class="p-col-4">-->
+        <!--<p>Number of clinic rooms (available for surgery)</p>-->
+        <!--<input [disabled]="!hasEditRights" type="text" pInputText [(ngModel)]="numBeds"/>-->
+      <!--</div>-->
+      <!--<div class="p-col-4">-->
+        <!--<p-checkbox binary="true"  [(ngModel)]="pcau" label="PCAU?"></p-checkbox>-->
+      <!--</div>-->
+      <!--<div class="p-col-4">-->
+        <!--<p-checkbox binary="true"  [(ngModel)]="pre_Op" label="Pre-Op?"></p-checkbox>-->
+      <!--</div>-->
+      <!--<div class="p-col-4">-->
+        <!--<p>What is your primary source of electricity?</p>-->
+        <!--<div class="p-col-12"><p-radioButton name="group1" value="City Grid" label="City Grid" [(ngModel)]="val1" inputId="opt1"></p-radioButton></div>-->
+        <!--<div class="p-col-12"><p-radioButton name="group1" value="Generator" label="Generator" [(ngModel)]="val1" inputId="opt1"></p-radioButton></div>-->
+      <!--</div>-->
+      <!--<div class="p-col-4">-->
+        <!--<p-checkbox binary="true"  [(ngModel)]="pwrOutLoc" label="Power Outlets located on wards?"></p-checkbox>-->
+      <!--</div>-->
+      <!--<div class="p-col-4">-->
+        <!--<p>Picture of Outlet</p>-->
+        <!--<p-fileUpload mode="basic" name="demo[]" url="./upload.php" accept="image/*" maxFileSize="1000000" (onUpload)="onBasicUpload($event)"></p-fileUpload>-->
+      <!--</div>-->
+      <!--<div class="p-col-12">-->
+        <!--<p>What is your back-up power supply in case of power outage?</p>-->
+        <!--<p-editor [(ngModel)]="text2" [style]="{'height':'200px'}">-->
+            <!--<p-header>-->
+          <!--<span class="ql-formats">-->
+              <!--<button class="ql-bold" aria-label="Bold"></button>-->
+              <!--<button class="ql-italic" aria-label="Italic"></button>-->
+              <!--<button class="ql-underline" aria-label="Underline"></button>-->
+          <!--</span>-->
+            <!--</p-header>-->
+        <!--</p-editor>-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p-checkbox binary="true"  [(ngModel)]="gen_247" label="Do you have a generator available 24/7?"></p-checkbox>-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p>Comments about generator/electricity</p>-->
+        <!--<p-editor [(ngModel)]="text2" [style]="{'height':'70px'}">-->
+            <!--<p-header>-->
+          <!--<span class="ql-formats">-->
+              <!--<button class="ql-bold" aria-label="Bold"></button>-->
+              <!--<button class="ql-italic" aria-label="Italic"></button>-->
+              <!--<button class="ql-underline" aria-label="Underline"></button>-->
+          <!--</span>-->
+            <!--</p-header>-->
+        <!--</p-editor>-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p-checkbox binary="true"  [(ngModel)]="gen_247" label="Do you have internet available at the hospital?"></p-checkbox>-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p>Comments about internet (wifi, etc)</p>-->
+        <!--<p-editor [(ngModel)]="text2" [style]="{'height':'70px'}">-->
+          <!--<p-header>-->
+          <!--<span class="ql-formats">-->
+              <!--<button class="ql-bold" aria-label="Bold"></button>-->
+              <!--<button class="ql-italic" aria-label="Italic"></button>-->
+              <!--<button class="ql-underline" aria-label="Underline"></button>-->
+          <!--</span>-->
+          <!--</p-header>-->
+        <!--</p-editor>-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p-checkbox binary="true"  [(ngModel)]="gen_247" label="Do you have running water available 24/7?"></p-checkbox>-->
+      <!--</div>-->
+      <!--<div class="p-col-6">-->
+        <!--<p-checkbox binary="true"  [(ngModel)]="gen_247" label="Do you have scrub sinks?"></p-checkbox>-->
+      <!--</div>-->
+      <!--<div class="p-col-12">-->
+        <!--<p>Comments about access to water/sinks</p>-->
+        <!--<p-editor [(ngModel)]="text2" [style]="{'height':'70px'}">-->
+          <!--<p-header>-->
+          <!--<span class="ql-formats">-->
+              <!--<button class="ql-bold" aria-label="Bold"></button>-->
+              <!--<button class="ql-italic" aria-label="Italic"></button>-->
+              <!--<button class="ql-underline" aria-label="Underline"></button>-->
+          <!--</span>-->
+          <!--</p-header>-->
+        <!--</p-editor>-->
+      <!--</div>-->
 
-    </div>
-  <h3>Operating Room</h3>
-  <h3>Wards</h3>
-  <h3>Supplies/Equipment</h3>
-  <h3>Ambulance</h3>
-  <h3>Case Volume and Staffing</h3>
-  <h3>Personnel</h3>
-  <h3>Education/QI</h3>
-  <h3>Communication</h3>
-  <h3>Other Groups</h3>
-  <h3>Partnership</h3>
-  <h3>Logistics</h3>
-  <h3>Accommodations</h3>
-</div>
+    <!--</div>-->
+  <!--<h3>Operating Room</h3>-->
+  <!--<h3>Wards</h3>-->
+  <!--<h3>Supplies/Equipment</h3>-->
+  <!--<h3>Ambulance</h3>-->
+  <!--<h3>Case Volume and Staffing</h3>-->
+  <!--<h3>Personnel</h3>-->
+  <!--<h3>Education/QI</h3>-->
+  <!--<h3>Communication</h3>-->
+  <!--<h3>Other Groups</h3>-->
+  <!--<h3>Partnership</h3>-->
+  <!--<h3>Logistics</h3>-->
+  <!--<h3>Accommodations</h3>-->
+<!--</div>-->
 
-<div [hidden]="isHospital || isHospital == null">
-  not hospital
-</div>
+<!--<div [hidden]="isHospital || isHospital == null">-->
+  <!--not hospital-->
+<!--</div>-->
+
+<!--<div>-->
+  <!--here regardless-->
+  <!--<form [formGroup]="myForm">-->
+    <!--<input formControlName="email">-->
+
+    <!--<h4>Cell Phone</h4>-->
+
+    <!--<div formGroupName="cellPhone">-->
+      <!--<input formControlName="area">-->
+      <!--<input formControlName="prefix">-->
+      <!--<input formControlName="line">-->
+    <!--</div>-->
+
+    <!--<h4>Home Phone</h4>-->
+
+    <!--<div formGroupName="homePhone">-->
+      <!--<input formControlName="area">-->
+      <!--<input formControlName="prefix">-->
+      <!--<input formControlName="line">-->
+    <!--</div>-->
+
+  <!--</form>-->
+<!--</div>-->
+
 
 <div>
-  here regardless
+  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+
+    <div *ngFor="let question of questions" class="form-row">
+      <app-question [question]="question" [form]="form"></app-question>
+    </div>
+
+    <div class="form-row">
+      <button type="submit" [disabled]="!form.valid">Save</button>
+    </div>
+  </form>
+
+  <div *ngIf="payLoad" class="form-row">
+    <strong>Saved the following values</strong><br>{{payLoad}}
+  </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

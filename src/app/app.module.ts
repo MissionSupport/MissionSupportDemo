@@ -48,6 +48,10 @@ import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 import {CheckboxModule} from 'primeng/checkbox';
 import {InputMaskModule} from 'primeng/inputmask';
 import {RadioButtonModule} from 'primeng/radiobutton';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DynamicFormQuestionComponent } from './questions/dynamic-form-question/dynamic-form-question.component';
+import {DropdownModule} from 'primeng/dropdown';
+import {KeyFilterModule} from 'primeng/keyfilter';
 
 @NgModule({
   declarations: [
@@ -70,6 +74,7 @@ import {RadioButtonModule} from 'primeng/radiobutton';
     MyOrgsListComponent,
     MyTripsListComponent,
     ChecklistCreationPageComponent,
+    DynamicFormQuestionComponent,
   ],
   imports: [
     BrowserModule,
@@ -96,6 +101,9 @@ import {RadioButtonModule} from 'primeng/radiobutton';
     CheckboxModule,
     InputMaskModule,
     RadioButtonModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    KeyFilterModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

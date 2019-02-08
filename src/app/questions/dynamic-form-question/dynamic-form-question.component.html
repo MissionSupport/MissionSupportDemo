@@ -1,0 +1,36 @@
+<div [formGroup]="form">
+
+
+  <div [class] = "question.gridSize" [ngSwitch]="question.controlType" style="display: block">
+    <label class="p-col-12" [attr.for]="question.key">{{question.label}}</label>
+    <div class="p-col-12" *ngSwitchCase="'radio'" [id]="question.key">
+      <p-radioButton [formControlName]="question.key" *ngFor="let opt of question.options" [name]="question.key" [value]="opt.key"
+                      [label]="opt.value"></p-radioButton>
+          <!--<input  [formControlName]="question.key" *ngFor="let opt of question.options" [name]="question.key" [value]="opt.value"-->
+          <!--[id]="question.key" [type]="question.type">-->
+    </div>
+
+
+    <input class="p-col-12"  pInputText *ngSwitchCase="'textbox'" [formControlName]="question.key"
+           [id]="question.key" [type]="question.type" [pKeyFilter]="question.keyFilter">
+
+
+
+    <div class="p-col-12" *ngSwitchCase="'dropdown'" [id]="question.key">
+      <p-dropdown [options]="question.options" [optionLabel]="'value'"  [formControlName]="question.key" [name]="question.key"></p-dropdown>
+    </div>
+          <!--<select [id]="question.key" *ngSwitchCase="'dropdown'" [formControlName]="question.key">-->
+          <!--<option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>-->
+          <!--</select>-->
+
+    <div class="p-col-12" *ngSwitchCase="'medtextbox'" [id]="question.key">
+      <input pInputText (focus)="searchDrugs(question.key)" type="text" [id]="question.key + 'rxterms'" placeholder="Drug name" [formControlName]="question.key">
+      <input pInputText type="text" [id]="question.key + 'drug_strengths'" placeholder="Strength list" [formControlName]="question.key">
+    </div>
+    <!--<input pInputText *ngSwitchCase="'medtextbox'" [formControlName]="question.key"-->
+           <!--[id]="question.key" [type]="question.type">-->
+
+  </div>
+
+  <!--<div class="errorMessage" *ngIf="!isValid">{{question.label}} is required</div>-->
+</div>
