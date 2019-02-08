@@ -34,7 +34,7 @@
 </div>
 <!--</p-scrollPanel>-->
 
-<div id ="footer"  class="p-grid" [ngStyle]="{'height' : footerHeight + 'px'}" style="text-align: center; bottom: 0; position: fixed; width: 100%">
+<!-- <div id ="footer"  class="p-grid" [ngStyle]="{'height' : footerHeight + 'px'}" style="text-align: center; bottom: 0; position: fixed; width: 100%">
   <div class="p-col-6" [ngStyle]="{'background-color' : viewWiki ? 'blue' : 'aqua' }">
     <a (click)="viewWiki = true; viewSites = false;"><p  style="height: 100%" >Wiki</p></a>
   </div>
@@ -42,3 +42,23 @@
     <a (click)="viewWiki= false; viewSites = true;"><p   style="height: 100%" >Sites</p></a>
   </div>
 </div>
+ -->
+
+ <p-toolbar [style]="{'background': 'none', 'padding': '0', 'border': 'none', 'position': 'fixed', 'bottom': '0', 'left': '0', 'width': '100%', 'height': '50px'}">
+    <button class="footer-button" pButton type="button"
+      style="width: 50%; height: 100%; border: none; border-radius: 0"
+      (click)="viewWiki = true; viewSites = false">
+      <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
+      <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
+        <span>Wiki</span>
+      </div>
+    </button>
+    <button class="footer-button" pButton type="button"
+      style="width: 50%; height: 100%; border: none; border-radius: 0"
+      (click)="viewWiki = false; viewSites = true">
+      <i class="pi pi-sitemap" [ngStyle]="{'opacity': !viewSites ? '0.5' : '1'}"></i>
+      <div [ngStyle]="{'opacity': !viewSites ? '0.5' : '1'}">
+        <span>Sites</span>
+      </div>
+    </button>
+ </p-toolbar>

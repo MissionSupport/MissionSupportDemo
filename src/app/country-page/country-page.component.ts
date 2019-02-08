@@ -1,10 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Site} from '../interfaces/site';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {PreDefined} from '../globals';
-import {Observable} from 'rxjs';
 import {Country} from '../interfaces/country';
 
 @Component({
@@ -37,7 +36,6 @@ export class CountryPageComponent implements OnInit {
   countryData: Country;
   editMode = false;
   canEdit = false;
-
 
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined, private route: ActivatedRoute) {

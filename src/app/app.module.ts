@@ -17,7 +17,6 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AngularFireModule} from '@angular/fire';
 import {MessageService} from 'primeng/api';
-import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { SitesComponent } from './sites/sites.component';
 import { MarkdownModule } from 'ngx-markdown';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
@@ -43,6 +42,17 @@ import { MyOrgsListComponent } from './my-orgs-list/my-orgs-list.component';
 import { MyTripsListComponent } from './my-trips-list/my-trips-list.component';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {AccordionModule} from 'primeng/accordion';
+import {ChecklistCreationPageComponent} from './checklist-creation-page/checklist-creation-page.component';
+import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
+import {CheckboxModule} from 'primeng/checkbox';
+import {InputMaskModule} from 'primeng/inputmask';
+import {RadioButtonModule} from 'primeng/radiobutton';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DynamicFormQuestionComponent } from './questions/dynamic-form-question/dynamic-form-question.component';
+import {DropdownModule} from 'primeng/dropdown';
+import {KeyFilterModule} from 'primeng/keyfilter';
+import { ToolbarModule } from 'primeng/toolbar';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   declarations: [
@@ -50,7 +60,6 @@ import {AccordionModule} from 'primeng/accordion';
     LoginComponent,
     RegisterComponent,
     LandingComponent,
-    ProfileEditComponent,
     SitesComponent,
     ToolbarComponent,
     SettingsListComponent,
@@ -63,7 +72,9 @@ import {AccordionModule} from 'primeng/accordion';
     OrgPageComponent,
     OrgsListComponent,
     MyOrgsListComponent,
-    MyTripsListComponent
+    MyTripsListComponent,
+    ChecklistCreationPageComponent,
+    DynamicFormQuestionComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,6 +97,15 @@ import {AccordionModule} from 'primeng/accordion';
     MenuModule,
     ScrollPanelModule,
     AccordionModule,
+    ToolbarModule,
+    CardModule,
+    TriStateCheckboxModule,
+    CheckboxModule,
+    InputMaskModule,
+    RadioButtonModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    KeyFilterModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
