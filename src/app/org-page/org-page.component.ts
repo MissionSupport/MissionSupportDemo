@@ -41,6 +41,12 @@ export class OrgPageComponent implements OnInit {
 
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,
               private readonly db: AngularFirestore, private route: ActivatedRoute) {
+    /*
+    this.route.params.subscribe((params) => {
+      this.orgId = params['id'];
+      this.ngOnInit();
+    });
+    */
   }
 
   ngOnInit() {
