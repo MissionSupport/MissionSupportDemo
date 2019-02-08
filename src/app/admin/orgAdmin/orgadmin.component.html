@@ -1,3 +1,16 @@
-<p>
-  orgadmin works!
-</p>
+<div [hidden]="!showMainMenu" style="width: 100vw">
+  <a [hidden] ="!allowOrgCreation" (click)="showOrgCreationMethod()" style="font-size: smaller">Create new org</a>
+</div>
+<div [hidden]="!showOrgCreation">
+  <span class="ui-float-label p-col" >
+    <input id="float-input3" type="text" size="30" pInputText [(ngModel)] = "orgName">
+    <label for="float-input3" style="margin-left: 8px">Organization Name</label>
+  </span>
+  <div class="p-grid p-col-align-stretch p-justify-between">
+    <a (click)="showMainOrgMethod()" ><p class="p-col p-col-2">Cancel</p></a>
+    <p-button class="p-col p-col-3 p-col-align-center" label="Submit" (onClick)="createOrg()"></p-button>
+  </div>
+</div>
+<div *ngFor="let info of orgList | async;" style="margin-top: 20px; padding-right: 35px">
+  <a routerLink="/org/{{(info | async)?.id}}" ><p class="p-col p-col-2">{{(info | async)?.name}}</p></a>
+</div>
