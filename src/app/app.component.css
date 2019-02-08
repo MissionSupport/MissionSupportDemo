@@ -23,3 +23,11 @@ body {
 .custombar1 .ui-scrollpanel-bar {
   opacity: 0;
 }
+
+.footer-button > .ui-button-text {
+  display: none !important;
+}
+
+.footer-button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-empty:focus {
+  box-shadow: none;
+}
