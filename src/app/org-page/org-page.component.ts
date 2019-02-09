@@ -78,7 +78,7 @@ export class OrgPageComponent implements OnInit {
             this.trips = [...this.trips, trip];
           }
         });
-      })
+      });
       this.tripIds.map(data => {
         data.subscribe();
       });
