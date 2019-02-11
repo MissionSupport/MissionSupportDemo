@@ -4,7 +4,6 @@ import {LandingComponent} from './landing/landing.component';
 import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
 import {AuthguardService} from './service/authguard.service';
-import {ProfileEditComponent} from './profile-edit/profile-edit.component';
 import {SitesComponent} from './sites/sites.component';
 import {SettingsListComponent} from './settings-list/settings-list.component';
 import {UploadFormComponent} from './upload-form/upload-form.component';
@@ -67,12 +66,6 @@ const routes: Routes = [
     path: 'settingsOptions',
     canActivate: [AuthguardService],
     component: SettingsListComponent,
-    outlet: 'sidebar'
-  },
-  {
-    path: 'profileSide',
-    canActivate: [AuthguardService],
-    component: ProfileEditComponent,
     outlet: 'sidebar'
   },
   {

@@ -11,9 +11,9 @@
 
   <div [hidden]="!viewWiki" style="width: 100vw">
     <a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>
-    <div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">
+    <div *ngFor="let info of sections | async; let i = index" style="margin-top: 20px; padding-right: 35px">
       <div [hidden]="!hideme[i]">
-        <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
+        <p-editor type="text" [(ngModel)]= "sections[i]" [style]="{'height':'320px'}" ></p-editor>
         <div class="p-grid" style="text-align: center">
           <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]">Cancel</p-button>
           <p-button class="p-col-6" (click)="submitEdit(info.title, i)">Submit</p-button>
@@ -49,7 +49,7 @@
 </div>
 
 
-<div id ="footer"  class="p-grid" [ngStyle]="{'height' : footerHeight + 'px'}" style="text-align: center; bottom: 0; position: fixed; width: 100%">
+<!-- <div id ="footer"  class="p-grid" [ngStyle]="{'height' : footerHeight + 'px'}" style="text-align: center; bottom: 0; position: fixed; width: 100%">
   <div class="p-col-4" [ngStyle]="{'background-color' : viewWiki ? 'blue' : 'aqua' }">
     <a (click)="viewWiki = true; viewChecklist = false; viewTrips = false;"><p style="height: 100%" >Wiki</p></a>
   </div>
@@ -60,4 +60,35 @@
     <a (click)="viewWiki= false; viewChecklist = false; viewTrips = true;"><p style="height: 100%" >Trips</p></a>
   </div>
 </div>
+ -->
+
+<p-toolbar [style]="{'background': 'none', 'padding': '0', 'border': 'none', 'position': 'fixed', 'bottom': '0', 'left': '0', 'width': '100%', 'height': '50px'}">
+  <button class="footer-button" pButton type="button"
+    style="height: 100%; border: none; border-radius: 0"
+    [ngStyle]="{'width': 100/3 + '%'}"
+    (click)="viewWiki = true; viewChecklist = false; viewTrips = false">
+    <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
+    <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
+      <span>Wiki</span>
+    </div>
+  </button>
+  <button class="footer-button" pButton type="button"
+    style="height: 100%; border: none; border-radius: 0"
+    [ngStyle]="{'width': 100/3 + '%'}"
+    (click)="viewWiki = false; viewChecklist = true; viewTrips = false">
+    <i class="pi pi-list" [ngStyle]="{'opacity': !viewChecklist ? '0.5' : '1'}"></i>
+    <div [ngStyle]="{'opacity': !viewChecklist ? '0.5' : '1'}">
+      <span>Checklist</span>
+    </div>
+  </button>
+  <button class="footer-button" pButton type="button"
+    style="height: 100%; border: none; border-radius: 0"
+    [ngStyle]="{'width': 100/3 + '%'}"
+    (click)="viewWiki = false; viewChecklist = false; viewTrips = true">
+    <i class="pi pi-briefcase" [ngStyle]="{'opacity': !viewTrips ? '0.5' : '1'}"></i>
+    <div [ngStyle]="{'opacity': !viewTrips ? '0.5' : '1'}">
+      <span>Trips</span>
+    </div>
+  </button>
+</p-toolbar>
 

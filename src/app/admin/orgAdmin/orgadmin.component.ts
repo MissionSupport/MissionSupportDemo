@@ -3,13 +3,16 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {Organization} from '../../interfaces/organization';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../../interfaces/user-preferences';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {flatMap, map, switchMap} from 'rxjs/operators';
 import {PreDefined} from '../../globals';
+import {Trip} from '../../interfaces/trip';
+import {Team} from '../../interfaces/team';
 
 @Component({
   selector: 'app-groupadmin',
   templateUrl: './orgadmin.component.html',
+  providers: [PreDefined],
   styleUrls: ['./orgadmin.component.css']
 })
 export class OrgadminComponent implements OnInit {
@@ -18,6 +21,7 @@ export class OrgadminComponent implements OnInit {
   showOrgCreation = false;
 
   orgName: string;
+
   allowOrgCreation = false; // we want to delay org creation after a user creates one
 
   orgList: Observable<Observable<Organization>[]>;

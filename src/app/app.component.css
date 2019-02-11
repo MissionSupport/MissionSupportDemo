@@ -1,10 +1,14 @@
 html {
    height: 100%;
    background: #466368;
+
+  /*background: #e1e8f0;*/
    /*background: linear-gradient(to top, #648880, transparent);*/
    background-repeat: no-repeat;
    background-size: inherit;
    background-image: linear-gradient(to top, #d299c2 0%, #fef9d7 100%);
+
+
   /*background-image: linear-gradient(to top, #fddb92 0%, #d1fdff 100%);*/
   /*background-image: linear-gradient(to top, #9890e3 0%, #b1f4cf 100%);*/
   /*background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);*/
@@ -22,4 +26,12 @@ body {
 
 .custombar1 .ui-scrollpanel-bar {
   opacity: 0;
+}
+
+.footer-button > .ui-button-text {
+  display: none !important;
+}
+
+.footer-button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-empty:focus {
+  box-shadow: none;
 }

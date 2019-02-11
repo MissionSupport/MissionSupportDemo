@@ -17,7 +17,6 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AngularFireModule} from '@angular/fire';
 import {MessageService} from 'primeng/api';
-import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { SitesComponent } from './sites/sites.component';
 import { MarkdownModule } from 'ngx-markdown';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
@@ -52,6 +51,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicFormQuestionComponent } from './questions/dynamic-form-question/dynamic-form-question.component';
 import {DropdownModule} from 'primeng/dropdown';
 import {KeyFilterModule} from 'primeng/keyfilter';
+import { ToolbarModule } from 'primeng/toolbar';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,6 @@ import {KeyFilterModule} from 'primeng/keyfilter';
     LoginComponent,
     RegisterComponent,
     LandingComponent,
-    ProfileEditComponent,
     SitesComponent,
     ToolbarComponent,
     SettingsListComponent,
@@ -97,6 +97,15 @@ import {KeyFilterModule} from 'primeng/keyfilter';
     MenuModule,
     ScrollPanelModule,
     AccordionModule,
+    ToolbarModule,
+    CardModule,
+    TriStateCheckboxModule,
+    CheckboxModule,
+    InputMaskModule,
+    RadioButtonModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    KeyFilterModule,
     TriStateCheckboxModule,
     CheckboxModule,
     InputMaskModule,

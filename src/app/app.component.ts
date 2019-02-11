@@ -18,6 +18,7 @@ export class AppComponent implements AfterContentInit {
   onMain = true;
   height;
   toolbarHeight;
+  hasEditRights = false;
   elmnt;
 
   constructor(db: AngularFirestore, private sharedService: SharedService) {
@@ -29,6 +30,11 @@ export class AppComponent implements AfterContentInit {
     sharedService.onPageNav.subscribe(
       (page) => {
         this.pageName = page;
+      }
+    );
+    sharedService.canEdit.subscribe(
+      (hasEditRights) => {
+        this.hasEditRights = hasEditRights;
       }
     );
 

@@ -1,10 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Site} from '../interfaces/site';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {PreDefined} from '../globals';
-import {Observable} from 'rxjs';
 import {Country} from '../interfaces/country';
 
 @Component({
@@ -38,12 +37,12 @@ export class CountryPageComponent implements OnInit {
   editMode = false;
   canEdit = false;
 
-
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined, private route: ActivatedRoute) {
     this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;
     sharedService.hideToolbar.emit(false);
+    sharedService.canEdit.emit(true);
     this.footerHeight = 45;
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
 

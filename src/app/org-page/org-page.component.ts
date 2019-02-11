@@ -7,6 +7,8 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {Organization} from '../interfaces/organization';
 import {Observable, Subscribable, Subscription} from 'rxjs';
 import {exhaustMap, flatMap, map} from 'rxjs/operators';
+import {AngularFireAuth} from '@angular/fire/auth';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-group-page',
@@ -17,6 +19,7 @@ import {exhaustMap, flatMap, map} from 'rxjs/operators';
 export class OrgPageComponent implements OnInit {
   orgId: string;
   orgName: string;
+  currentWikiId: string;
   markdown: string;
   viewWiki = true;
   viewTeams = false;
@@ -38,9 +41,14 @@ export class OrgPageComponent implements OnInit {
 
   orgObservable: Observable<Organization>;
 
-
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,
-              private readonly db: AngularFirestore, private route: ActivatedRoute) {
+              private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
+    /*
+    this.route.params.subscribe((params) => {
+      this.orgId = params['id'];
+      this.ngOnInit();
+    });
+    */
   }
 
   ngOnInit() {
@@ -69,87 +77,25 @@ export class OrgPageComponent implements OnInit {
       this.tripsObservable.map(obs => {
         obs.subscribe((trip: Trip) => {
           if (this.trips.indexOf(trip) === -1) {
-            this.trips.push(trip);
+            this.trips = [...this.trips, trip];
           }
         });
-      })
-
+      });
       this.tripIds.map(data => {
         data.subscribe();
       });
-      /*
-      console.log(this.teams);
-      this.trips = this.teams.map(team => {
-        // This is each team in the observable list for trips
-        console.log('lel');
-        console.log(team);
-        return team.pipe(exhaustMap (tr => {
-          console.log('lelelelel');
-          console.log(tr);
-          return tr.trips.map(t => {
-            console.log(t);
-            console.log('sdvfbhjksdfhksdfhk');
-            return this.db.doc(`trips/${t}`).valueChanges().pipe(map((data: Trip) => {
-              console.log('sdvfbhjksdfhksdsfsdfsdfdfhk');
-              console.log(data);
-              return data;
-            }));
-          });
-        }));
-      });
-      */
       return org;
     }));
 
     this.orgObservable.subscribe((org: Organization) => {
       this.orgName = org.name;
+      this.currentWikiId = org.currentWiki;
       this.sharedService.onPageNav.emit(this.orgName);
+      // Check if the user can edit
+      this.authInstance.auth.onAuthStateChanged(user => {
+        this.canEdit = org.admins.includes(user.uid);
+      });
     });
-
-    /*
-    const teamSubscribes = [];
-    this.db.doc(`organizations/${this.orgId}`).valueChanges().subscribe((data: Organization) => {
-      this.orgName = data.name;
-      sharedService.onPageNav.emit(this.orgName);
-      this.teams = [];
-      this.teamIds = [];
-      this.tripIds = [];
-      this.trips = [];
-      // unsubscribe from past
-      for (const subs of teamSubscribes) {
-        subs.unsubscribe();
-      }
-      for (const t of data.teamIds) {
-        const teamSub = this.db.doc(`teams/${t}`).valueChanges().subscribe((team: Team) => {
-          const index = this.teamIds.indexOf(team.id);
-          if (index > -1) { // Already contained and needs to be reloaded
-            this.teams[index] = team;
-          } else {
-            this.teamIds.push(team.id);
-            this.teams.push(team);
-            teamSubscribes.push(teamSub);
-          }
-          // Now lets get the trips
-          for (const trip of team.trips) {
-            this.db.doc(`trips/${trip}`).valueChanges().subscribe((tr: Trip) => {
-              const i = this.teamIds.indexOf(tr.id);
-              if (i > -1) { // Already contained and needs to be reloaded
-                this.trips[i] = tr;
-              } else {
-                this.tripIds.push(tr.id);
-                this.trips.push(tr);
-                console.log(tr);
-              }
-            });
-          }
-        });
-      }
-    });
-    for (const element of preDef.wikiOrg) {
-      this.sections.push({title: element.title, markup: element.markup});
-      // this.editText.push({title: element.title, markup: element.markup});
-    }
-    */
   }
 
   test() {
@@ -163,6 +109,31 @@ export class OrgPageComponent implements OnInit {
     // this.router.navigate(['/temp']);
   }
 
-  submitEdit(title, index): void {
+  /**
+   * Used for updating an already existing wiki entry.
+   */
+  submitWikiEdit(title, index): void {
+    const json = {};
+    json[title] = this.editText[index];
+    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
+  }
+
+  /**
+   * Used for generating a new wiki entry
+   */
+  submitNewWikiEdit(title, text): void {
+    const json = {};
+    json[title] = text;
+    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
+  }
+
+  /**
+   * Used for updating the title of an entry.
+   */
+  updateWikiTitle(oldTitle, newTitle, index): void {
+    const json = {};
+    json[oldTitle] = firebase.firestore.FieldValue.delete();
+    json[newTitle] = this.sections[index];
+    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
   }
 }
