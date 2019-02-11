@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
+import { SidebarService } from '../service/sidebar.service';
 
 @Component({
   selector: 'app-settings-list',
@@ -10,7 +13,7 @@ export class SettingsListComponent implements OnInit {
 
   menuItems: MenuItem[];
 
-  constructor() { }
+  constructor(public authInstance: AngularFireAuth, public router: Router, private sidebarService: SidebarService) { }
 
   ngOnInit() {
     this.menuItems = [
@@ -20,7 +23,16 @@ export class SettingsListComponent implements OnInit {
       { label: 'Upload Media' , icon: 'pi pi-fw pi-cloud-upload', routerLink: ['', { outlets: { sidebar: ['uploadSide'] } }] },
       { label: 'Manage Organizations', icon: 'pi pi-fw pi-users', routerLink: ['', { outlets: { sidebar: ['manageGroup'] } }] },
       { label: 'My Trips', icon: 'pi pi-fw pi-briefcase', routerLink: ['', { outlets: { sidebar: ['myTripsSide'] } }] },
+      { label: 'Log Out', icon: 'pi pi-fw pi-sign-out', command: () => {
+        this.authInstance.auth.signOut().then(() => {
+          localStorage.removeItem('user');
+          this.sidebarService.toggle();
+          this.router.navigate(['/']);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      } }
     ];
   }
-
 }

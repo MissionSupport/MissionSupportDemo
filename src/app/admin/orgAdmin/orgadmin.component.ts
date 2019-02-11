@@ -19,17 +19,8 @@ export class OrgadminComponent implements OnInit {
 
   showMainMenu = true;
   showOrgCreation = false;
-  showOrgMangement = false;
-  showTeamMangement = false;
 
   orgName: string;
-  orgManagementName: string; // Used with orgmanagement
-  orgManagementId: string;
-  orgManagementTeams: Observable<Observable<Trip>[]>;
-
-  teamName: string;
-  teamId: string;
-  team: Observable<Team>;
 
   allowOrgCreation = false; // we want to delay org creation after a user creates one
 
@@ -63,42 +54,11 @@ export class OrgadminComponent implements OnInit {
   showOrgCreationMethod() {
     this.showMainMenu = false;
     this.showOrgCreation = true;
-    this.showOrgMangement = false;
-    this.showTeamMangement = false;
   }
 
   showMainOrgMethod() {
     this.showMainMenu = true;
     this.showOrgCreation = false;
-    this.showOrgMangement = false;
-    this.showTeamMangement = false;
-  }
-
-  showOrgManagementMethod(org) {
-    this.showMainMenu = false;
-    this.showOrgCreation = false;
-    this.showOrgMangement = true;
-    this.showTeamMangement = false;
-    this.orgManagementId = org;
-    this.orgManagementTeams = this.db.doc(`organizations/${org}`).valueChanges().pipe(map((data: Organization) => {
-      this.orgManagementName = data.name;
-      return data.teamIds.map(id => {
-        return this.db.doc(`teams/${id}`).valueChanges().pipe(map((trip: Trip) => {
-          return trip;
-        }));
-      });
-    }));
-  }
-
-  showTeamManagementMethod(id) {
-    this.showMainMenu = false;
-    this.showOrgCreation = false;
-    this.showOrgMangement = false;
-    this.showTeamMangement = true;
-    this.teamId = id;
-    this.team = this.db.doc(`teams/${id}`).valueChanges().pipe(map((team: Team) => {
-      return team;
-    }));
   }
 
   createOrg() {
