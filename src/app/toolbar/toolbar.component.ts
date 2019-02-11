@@ -26,26 +26,26 @@ export class ToolbarComponent implements OnInit {
   }
 
   navBack(event) {
-    window.history.back();
-
-    // console.log(this._aRoute.snapshot._routerState.url);
-    // console.log(this.router.routerState.snapshot);
-    // console.log(this.router.parseUrl(this.router.routerState.snapshot.url));
-
-
-    // const routerLink = this._aRoute.parent.snapshot.pathFromRoot
-    //   .map((s) => s.url)
-    //   .reduce((a, e) => {
-    //     // Do NOT add last path!
-    //     if (a.length + e.length !== this._aRoute.parent.snapshot.pathFromRoot.length) {
-    //       return a.concat(e);
-    //     }
-    //     return a;
-    //   })
-    //   .map((s) => s.path);
-    // this.router.navigate(routerLink);
+    this.navHelper(this.router.parseUrl(this.router.url).root.children.primary.segments);
   }
-
+  navHelper(urlSegs) {
+    var url = '';
+    for (var i = 0; i < urlSegs.length - 1; i++) {
+      url = url + '/' + urlSegs[i].toString();
+    }
+    if (url === '') {
+      url = '/landing';
+    }
+    this.router.navigateByUrl(url)
+      .then(data => {
+        console.log('Route exists, redirection is done');
+      })
+      .catch(e => {
+        console.log('Route does not exists, redirection edit');
+        const segs = this.router.parseUrl(url).root.children.primary.segments;
+        this.navHelper(segs);
+      });
+  }
   editMode() {
 
   }

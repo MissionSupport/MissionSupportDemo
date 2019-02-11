@@ -5,6 +5,7 @@ import {TextboxQuestion} from './question-textbox';
 import {RadioQuestion} from './question-radio';
 import {MedicineTextboxQuestion} from './question-medicine-textbox';
 import {FreeResponseQuestion} from './question-free-response';
+import {MedicineMultipleTextboxQuestion} from './question-medicine-multiple-textbox';
 
 
 
@@ -78,9 +79,15 @@ export class QuestionService {
       new FreeResponseQuestion( {
         key: 'textInput',
         label: 'Editor',
-        height: '100'
+        height: '100',
+        gridSize: 'p-col-10'
         }
-      )
+      ),
+      new MedicineMultipleTextboxQuestion({
+        key: 'medtextMultibox1',
+        label: 'Look Up Medicine (mult)',
+        gridSize: 'p-col-2'
+      }),
     ];
 
     return questions.sort((a, b) => a.order - b.order);

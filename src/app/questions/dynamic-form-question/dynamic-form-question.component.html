@@ -34,6 +34,20 @@
       <p-editor [(ngModel)]="text" [style]="{'height' : question.height + 'px'}" [formControlName]="question.key" [id]="question.key"></p-editor>
     </div>
 
+    <div *ngSwitchCase="'medmulttextbox'">
+      <div formArrayName="medTextMulti"
+           *ngFor="let item of form.get(question.key).controls; let i = index;">
+        <div [formGroupName]="question.key + i">
+          <input pInputText (focus)="searchDrugs(question.key + i)" type="text" [id]="question.key + i + 'rxterms'" placeholder="Drug name" [formControlName]="drugName">
+          <input pInputText type="text" [id]="question.key + i +'drug_strengths'" placeholder="Strength list" [formControlName]="stength">
+        </div>
+
+        <!--Chosen name: {{ form.controls.items.controls[i].controls.name.value }}-->
+      </div>
+      <p-button (onClick)="addField(question.key)"> Add</p-button>
+    </div>
+
+
   </div>
 
   <!--<div class="errorMessage" *ngIf="!isValid">{{question.label}} is required</div>-->
