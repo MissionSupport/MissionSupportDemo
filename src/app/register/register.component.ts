@@ -17,9 +17,33 @@ export class RegisterComponent implements OnInit {
   emailConfirm: string;
   password: string;
   passwordConfirm: string;
+
+  showPassword: boolean;
+  showPasswordConfirm: boolean;
+  showPasswordIcon = 'pi pi-eye-slash';
+  showPasswordConfirmIcon = 'pi pi-eye-slash';
+
   constructor(public router: Router, public authInstance: AngularFireAuth, private messageService: MessageService,
               private db: AngularFirestore) { }
   ngOnInit() {
+  }
+
+  togglePasswordCheck() {
+    this.showPassword = !this.showPassword;
+    if (this.showPassword) {
+      this.showPasswordIcon = 'pi pi-eye';
+    } else {
+      this.showPasswordIcon = 'pi pi-eye-slash';
+    }
+  }
+
+  toggleConfirmPasswordCheck() {
+    this.showPasswordConfirm = !this.showPasswordConfirm;
+    if (this.showPasswordConfirm) {
+      this.showPasswordConfirmIcon = 'pi pi-eye';
+    } else {
+      this.showPasswordConfirmIcon = 'pi pi-eye-slash';
+    }
   }
 
   registerClick() {
