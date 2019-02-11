@@ -31,7 +31,8 @@ export class SitesComponent implements OnInit, OnDestroy {
   hideme = [];
   footerHeight = 45;
   // trips: Trip[];
-  trips = [];
+  trips: Observable<Trip>[];
+  tripValues: Trip[];
   selectedTrip;
 
   checkList: Observable<any[]>;
@@ -77,6 +78,20 @@ export class SitesComponent implements OnInit, OnDestroy {
           }
           return array;
         }));
+
+      // Let's get the trips information
+      this.tripValues = [];
+      this.trips = site.tripIds.map(id => {
+        return this.db.doc(`trips/${id}`).valueChanges().pipe(map((trip: Trip) => {
+          return trip;
+        }));
+      });
+      this.trips.map(ob => {
+        // TODO this will cause memory leaks, primeng can only work with [..., new element] so no idea how to do this otherwise.
+        ob.subscribe((trip: Trip) => {
+          this.tripValues = [...this.tripValues, trip];
+        });
+      });
     });
   }
 
