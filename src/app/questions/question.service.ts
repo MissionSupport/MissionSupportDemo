@@ -4,6 +4,7 @@ import {DropdownQuestion} from './question-dropdown';
 import {TextboxQuestion} from './question-textbox';
 import {RadioQuestion} from './question-radio';
 import {MedicineTextboxQuestion} from './question-medicine-textbox';
+import {FreeResponseQuestion} from './question-free-response';
 
 
 
@@ -74,6 +75,12 @@ export class QuestionService {
         label: 'Look Up Medicine',
         order: 2
       }),
+      new FreeResponseQuestion( {
+        key: 'textInput',
+        label: 'Editor',
+        height: '100'
+        }
+      )
     ];
 
     return questions.sort((a, b) => a.order - b.order);

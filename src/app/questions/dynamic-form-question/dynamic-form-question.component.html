@@ -1,7 +1,8 @@
 <div [formGroup]="form">
 
 
-  <div [class] = "question.gridSize" [ngSwitch]="question.controlType" style="display: block">
+  <div class= "p-col-12" [ngSwitch]="question.controlType">
+    <!--[class] = "question.gridSize"-->
     <label class="p-col-12" [attr.for]="question.key">{{question.label}}</label>
     <div class="p-col-12" *ngSwitchCase="'radio'" [id]="question.key">
       <p-radioButton [formControlName]="question.key" *ngFor="let opt of question.options" [name]="question.key" [value]="opt.key"
@@ -29,6 +30,9 @@
     </div>
     <!--<input pInputText *ngSwitchCase="'medtextbox'" [formControlName]="question.key"-->
            <!--[id]="question.key" [type]="question.type">-->
+    <div class="p-col-12" *ngSwitchCase="'freeResponse'" [id]="question.key">
+      <p-editor [(ngModel)]="text" [style]="{'height' : question.height + 'px'}" [formControlName]="question.key" [id]="question.key"></p-editor>
+    </div>
 
   </div>
 

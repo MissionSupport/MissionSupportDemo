@@ -1,4 +1,4 @@
-<p-triStateCheckbox [(ngModel)]="isHospital" label="Is this site a Hospital/Medical Facility?"></p-triStateCheckbox>
+<!--<p-triStateCheckbox [(ngModel)]="isHospital" label="Is this site a Hospital/Medical Facility?"></p-triStateCheckbox>-->
 <!--<input type="text" id="rxterms" placeholder="Drug name">-->
 <!--<input type="text" id="drug_strengths" placeholder="Strength list">-->
 
@@ -171,13 +171,13 @@
 
 
 <div>
-  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="p-grid">
 
-    <div *ngFor="let question of questions" class="form-row">
+    <div *ngFor="let question of questions" [class] = "question.gridSize" class="form-row">
       <app-question [question]="question" [form]="form"></app-question>
     </div>
 
-    <div class="form-row">
+    <div class="form-row p-col-12">
       <button type="submit" [disabled]="!form.valid">Save</button>
     </div>
   </form>
