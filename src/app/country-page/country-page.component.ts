@@ -42,6 +42,7 @@ export class CountryPageComponent implements OnInit {
     this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;
     sharedService.hideToolbar.emit(false);
+    sharedService.canEdit.emit(true);
     this.footerHeight = 45;
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
 

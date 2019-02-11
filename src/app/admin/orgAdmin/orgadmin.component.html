@@ -13,4 +13,16 @@
 </div>
 <div [hidden]="!showMainMenu" *ngFor="let info of orgList | async;" style="margin-top: 20px; padding-right: 35px">
   <a routerLink="/org/{{(info | async)?.id}}" ><p class="p-col p-col-2">{{(info | async)?.name}}</p></a>
+  <input #myControl [value]="(info | async)?.id" type="hidden" />
+  <a (click)="showOrgManagementMethod(myControl.value)"><p class="p-col p-col-2">Edit</p></a>
+</div>
+<div [hidden]="!showOrgMangement" style="width: 100vw">
+  <label for="float-input3" style="margin-left: 8px"><b>Organization: </b>{{orgManagementName}}</label>
+  <div style="margin-top: 20px; padding-right: 35px"><b>Teams</b></div>
+  <div *ngFor="let info of orgManagementTeams | async" style="margin-top: 20px; padding-right: 35px">
+    <p>{{(info | async)?.name}}</p>
+    <input #myControl [value]="(info | async)?.id" type="hidden" />
+    <p-button class="p-col p-col-3 p-col-align-center" label="Submit"
+              (onClick)="showTeamManagementMethod(myControl.value)"></p-button>
+  </div>
 </div>

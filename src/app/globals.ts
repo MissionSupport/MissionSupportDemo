@@ -5,6 +5,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 export class SharedService {
   hideToolbar: EventEmitter<any> = new EventEmitter();
   onPageNav: EventEmitter<any> = new EventEmitter();
+  canEdit: EventEmitter<any> = new EventEmitter();
 }
 
 @Injectable()

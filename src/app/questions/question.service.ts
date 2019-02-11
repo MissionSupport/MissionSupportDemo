@@ -4,6 +4,8 @@ import {DropdownQuestion} from './question-dropdown';
 import {TextboxQuestion} from './question-textbox';
 import {RadioQuestion} from './question-radio';
 import {MedicineTextboxQuestion} from './question-medicine-textbox';
+import {FreeResponseQuestion} from './question-free-response';
+import {MedicineMultipleTextboxQuestion} from './question-medicine-multiple-textbox';
 
 
 
@@ -73,6 +75,18 @@ export class QuestionService {
         key: 'medtextbox3',
         label: 'Look Up Medicine',
         order: 2
+      }),
+      new FreeResponseQuestion( {
+        key: 'textInput',
+        label: 'Editor',
+        height: '100',
+        gridSize: 'p-col-10'
+        }
+      ),
+      new MedicineMultipleTextboxQuestion({
+        key: 'medtextMultibox1',
+        label: 'Look Up Medicine (mult)',
+        gridSize: 'p-col-2'
       }),
     ];
 

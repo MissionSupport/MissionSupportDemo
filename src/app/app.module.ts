@@ -53,6 +53,7 @@ import {DropdownModule} from 'primeng/dropdown';
 import {KeyFilterModule} from 'primeng/keyfilter';
 import { ToolbarModule } from 'primeng/toolbar';
 import { CardModule } from 'primeng/card';
+import { PasswordModule } from 'primeng/password';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,14 @@ import { CardModule } from 'primeng/card';
     ReactiveFormsModule,
     DropdownModule,
     KeyFilterModule,
+    TriStateCheckboxModule,
+    CheckboxModule,
+    InputMaskModule,
+    RadioButtonModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    KeyFilterModule,
+    PasswordModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

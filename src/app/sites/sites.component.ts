@@ -48,6 +48,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
     sharedService.hideToolbar.emit(false);
+    sharedService.canEdit.emit(true);
     this.siteObservable = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`)
       .valueChanges().pipe(map((site: Site) => {
       return site;

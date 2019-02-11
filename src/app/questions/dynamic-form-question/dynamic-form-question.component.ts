@@ -1,8 +1,9 @@
 import {AfterViewInit, Component, Input} from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {QuestionBase} from '../question-base';
 
 import 'autocomplete-lhc';
+import {MedicineTextboxQuestion} from '../question-medicine-textbox';
 declare var $: any;
 declare var Def: any;
 
@@ -15,6 +16,8 @@ export class DynamicFormQuestionComponent implements AfterViewInit {
   @Input() form: FormGroup;
   get isValid() { return this.form.controls[this.question.key].valid; }
 
+  constructor(private formBuilder: FormBuilder ) {
+  }
   ngAfterViewInit() {
 
   }
@@ -36,6 +39,19 @@ export class DynamicFormQuestionComponent implements AfterViewInit {
       if (strengths) {
         $('#' + questionKey + 'drug_strengths')[0].autocomp.setListAndField(strengths, '');
       }
+    });
+  }
+
+  addField(questionKey) {
+    console.log(this.form.get(questionKey));
+    const formm = this.form.get(questionKey) as FormArray;
+    formm.push(this.createItem());
+  }
+
+  createItem(): FormGroup {
+    return this.formBuilder.group({
+      drugName: '',
+      stength: '',
     });
   }
 }
