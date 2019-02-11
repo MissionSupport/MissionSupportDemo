@@ -1,40 +1,60 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
-<div  style = "display:flex; position:absolute; top:0; bottom:0; right:0; left:0">
+<div style="display:flex; position:absolute; top:0; bottom:0; right:15px; left:0">
   <div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">
-    <h1 class="p-col">
-      Join the Mission
-    </h1>
-    <span class="ui-float-label p-col" >
-        <input id="float-input3" type="text" size="30" pInputText [(ngModel)] = "firstName">
-        <label for="float-input3" style="margin-left: 8px">First Name</label>
-    </span>
-    <span class="ui-float-label p-col" style="margin-top:10px" >
-        <input id="float-input4" type="text" size="30" pInputText [(ngModel)] = "lastName">
-        <label for="float-input4" style="margin-left: 8px">Last Name</label>
-    </span>
-    <span class="ui-float-label p-col" style="margin-top:10px">
-        <input id="float-input5" type="text" size="30" pInputText [(ngModel)] = "orginization">
-        <label for="float-input5" style="margin-left: 8px">Organization</label>
-    </span>
-    <span class="ui-float-label p-col" style="margin-top:10px">
-        <input id="float-input6" type="text" size="30" pInputText [(ngModel)] = "email">
-        <label for="float-input6" style="margin-left: 8px">Email</label>
-    </span>
-    <span class="ui-float-label p-col" style="margin-top:10px">
-        <input id="float-input9" type="text" size="30" pInputText [(ngModel)] = "emailConfirm">
-        <label for="float-input9" style="margin-left: 8px">Confirm Email</label>
-    </span>
-    <span class="ui-float-label p-col" style="margin-top:10px">
-        <input id="float-input2" type="password" size="30" pInputText [(ngModel)] = "password">
-        <label for="float-input2" style="margin-left: 8px">Password</label>
-    </span>
-    <span class="ui-float-label p-col" style="margin-top:10px">
-        <input id="float-input7" type="password" size="30" pInputText [(ngModel)] = "passwordConfirm">
-        <label for="float-input7" style="margin-left: 8px">Confirm Password</label>
-    </span>
-    <div class="p-grid p-col-align-stretch p-justify-between">
-      <a routerLink="/" ><p class="p-col p-col-2">Cancel</p></a>
-      <p-button class="p-col p-col-3 p-col-align-center" label="Register" (onClick)="registerClick()"></p-button>
-    </div>
+    <p-card>
+      <p-header>
+        <p style="text-align: center; font-size: 24px; padding-top: 20px">Join the Mission</p>
+      </p-header>
+      <span class="p-col">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+          <input placeholder="First Name" type="text" size="34" pInputText [(ngModel)] = "firstName" >
+        </div>
+      </span>
+      <span class="p-col">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+          <input placeholder="Last Name" type="text" size="34" pInputText [(ngModel)] = "lastName" >
+        </div>
+      </span>
+      <span class="p-col">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon"><i class="pi pi-briefcase"></i></span>
+          <input placeholder="Organization" type="text" size="34" pInputText [(ngModel)] = "orginization" >
+        </div>
+      </span>
+      <span class="p-col">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+          <input placeholder="Email Address" type="text" size="34" pInputText [(ngModel)] = "email" >
+        </div>
+      </span>
+      <span class="p-col">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+          <input placeholder="Confirm Email Address" type="text" size="34" pInputText [(ngModel)] = "emailConfirm" >
+        </div>
+      </span>
+      <span class="p-col">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
+          <input placeholder="Password" type="password" size="30" pPassword [(ngModel)] = "password" [showPassword]="showPassword" [feedback]="false">
+          <button pButton type="button" [icon]="showPasswordIcon" (click)="togglePasswordCheck()"></button>
+        </div>
+      </span>
+      <span class="p-col">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
+          <input placeholder="Confirm Password" type="password" size="30" pPassword [(ngModel)] = "passwordConfirm" [showPassword]="showPasswordConfirm" [feedback]="false">
+          <button pButton type="button" [icon]="showPasswordConfirmIcon" (click)="toggleConfirmPasswordCheck()"></button>
+        </div>
+      </span>
+
+      <button pButton label="Register" style="width: 100%" (click)="registerClick()"></button>
+
+      <p-footer>
+        <p style="text-align: center"><a routerLink="/">Cancel</a></p>
+      </p-footer>
+    </p-card>
   </div>
 </div>
