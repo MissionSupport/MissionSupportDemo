@@ -100,8 +100,8 @@ export class PreDefined {
         ' or run out, what is the process for getting more?'
     },
     {
-      title: 'Assistence',
-      markup: 'What level of assistence can you expect form local staff? What types of training will the staff have?'
+      title: 'Assistance',
+      markup: 'What level of assistance can you expect form local staff? What types of training will the staff have?'
     },
     {
       title: 'Conditions',
@@ -111,7 +111,7 @@ export class PreDefined {
     {
       title: 'Technology',
       markup: 'What level of technology do they have, and what is the condition of the Technology. ' +
-        'Do they Have a dedicated maintence team? Is there a Lab/OR/Imaging/Etc. What are the hours? How is this techoology managed?'
+        'Do they Have a dedicated maintenance team? Is there a Lab/OR/Imaging/Etc. What are the hours? How is this technology managed?'
     },
     {
       title: 'Security',
@@ -119,7 +119,7 @@ export class PreDefined {
     },
     {
       title: 'Living_and_Transportation',
-      markup: 'What is nearby accomodation? Should staff live near the site, ' +
+      markup: 'What is nearby accommodation? Should staff live near the site, ' +
         'or somewhere else? How should staff commute the site, walk, transit, or cars?'
     },
     {
@@ -136,8 +136,8 @@ export class PreDefined {
         ' or run out, what is the process for getting more?'
     },
     {
-      title: 'Assistence',
-      markup: 'What level of assistence can you expect form local staff? What types of training will the staff have?'
+      title: 'Assistance',
+      markup: 'What level of assistance can you expect form local staff? What types of training will the staff have?'
     },
     {
       title: 'Conditions',
@@ -147,7 +147,7 @@ export class PreDefined {
     {
       title: 'Technology',
       markup: 'What level of technology do they have, and what is the condition of the Technology. ' +
-        'Do they Have a dedicated maintence team? Is there a Lab/OR/Imaging/Etc. What are the hours? How is this techoology managed?'
+        'Do they Have a dedicated maintenance team? Is there a Lab/OR/Imaging/Etc. What are the hours? How is this technology managed?'
     },
     {
       title: 'Security',
@@ -155,7 +155,7 @@ export class PreDefined {
     },
     {
       title: 'Living_and_Transportation',
-      markup: 'What is nearby accomodation? Should staff live near the site, ' +
+      markup: 'What is nearby accommodation? Should staff live near the site, ' +
         'or somewhere else? How should staff commute the site, walk, transit, or cars?'
     },
     {
