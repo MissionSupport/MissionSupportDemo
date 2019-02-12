@@ -7,6 +7,7 @@ export class SharedService {
   onPageNav: EventEmitter<any> = new EventEmitter();
   canEdit: EventEmitter<any> = new EventEmitter();
   addSection: EventEmitter<any> = new EventEmitter();
+  addName: EventEmitter<any> = new EventEmitter();
 }
 
 @Injectable()

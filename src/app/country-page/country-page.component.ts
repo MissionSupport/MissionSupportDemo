@@ -46,6 +46,7 @@ export class CountryPageComponent implements OnInit {
     this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;
     sharedService.hideToolbar.emit(false);
+    sharedService.addName.emit('New Section');
     // ToDo : edit based on rights
     sharedService.canEdit.emit(true);
     sharedService.addSection.subscribe(

@@ -18,7 +18,7 @@
     <div style="padding-right: 15px; text-align: center" (click)="addSection()" [style.display]="!hasEditRights ? 'none' : 'inline-block'">
       <i class="pi pi-plus"></i>
       <div>
-        <span style="font-size: small">New Section</span>
+        <span style="font-size: small">{{addName}}</span>
       </div>
     </div>
     <!--<a (click)="toggleEditMode()" [hidden]="!hasEditRights"><img src="assets/icons/pencil.png" style="height: 100%; padding-top: 5px; padding-right: 5px; cursor: pointer;"></a>-->

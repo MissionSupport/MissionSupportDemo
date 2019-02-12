@@ -1,23 +1,29 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
 
 <p-dialog header="New Section Creation" [(visible)]="showNewSectionPopup">
-  <div style="width: 300px;">
-    <p>Section Title</p>
-    <input type="text" pInputText [(ngModel)]="newSectionName"/>
-    <p style="margin-top: 20px;">Section Text</p>
-    <p-editor [(ngModel)]="newSectionText" [style]="{'height': '200px'}">
-      <p-header>
-          <span class="ql-formats">
-              <button class="ql-bold" aria-label="Bold"></button>
-              <button class="ql-italic" aria-label="Italic"></button>
-              <button class="ql-underline" aria-label="Underline"></button>
-          </span>
-      </p-header>
-    </p-editor>
+  <div [hidden]="!viewWiki">
+    <div style="width: 300px;" >
+      <p>Section Title</p>
+      <input type="text" pInputText [(ngModel)]="newSectionName"/>
+      <p style="margin-top: 20px;">Section Text</p>
+      <p-editor [(ngModel)]="newSectionText" [style]="{'height': '200px'}">
+        <p-header>
+            <span class="ql-formats">
+                <button class="ql-bold" aria-label="Bold"></button>
+                <button class="ql-italic" aria-label="Italic"></button>
+                <button class="ql-underline" aria-label="Underline"></button>
+            </span>
+        </p-header>
+      </p-editor>
+    </div>
+    <div class="p-grid" style="text-align: center; padding-top: 10px">
+      <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
+      <p-button class="p-col-6" (onClick)="submitNewSection()" label ="Submit"></p-button>
+    </div>
   </div>
-  <div class="p-grid" style="text-align: center; padding-top: 10px">
-    <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
-    <p-button class="p-col-6" (onClick)="submitNewSection()" label ="Submit"></p-button>
+  <div style="width: 300px;" [hidden]="!viewSites">
+    <p>Add New Site</p>
+
   </div>
 </p-dialog>
 
@@ -89,7 +95,7 @@
  <p-toolbar [style]="{'background': 'none', 'padding': '0', 'border': 'none', 'position': 'fixed', 'bottom': '0', 'left': '0', 'width': '100%', 'height': '50px'}">
     <button class="footer-button" pButton type="button"
       style="width: 50%; height: 100%; border: none; border-radius: 0"
-      (click)="viewWiki = true; viewSites = false">
+      (click)="viewWiki = true; viewSites = false; sharedService.addName.emit('New Section');">
       <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
         <span>Wiki</span>
@@ -97,7 +103,7 @@
     </button>
     <button class="footer-button" pButton type="button"
       style="width: 50%; height: 100%; border: none; border-radius: 0"
-      (click)="viewWiki = false; viewSites = true">
+      (click)="viewWiki = false; viewSites = true; sharedService.addName.emit('New Site');">
       <i class="pi pi-sitemap" [ngStyle]="{'opacity': !viewSites ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewSites ? '0.5' : '1'}">
         <span>Sites</span>

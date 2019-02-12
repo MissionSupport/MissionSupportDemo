@@ -13,6 +13,7 @@ export class ToolbarComponent implements OnInit {
   @Input() header;
   @Input() hasEditRights;
   @Input() editMode;
+  @Input() addName;
   display;
   constructor(public router: Router, private _aRoute: ActivatedRoute, private _location: Location, public sidebarService: SidebarService,
               private sharedService: SharedService) {

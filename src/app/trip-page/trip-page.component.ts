@@ -43,6 +43,7 @@ export class TripPageComponent implements OnInit {
     sharedService.hideToolbar.emit(false);
     this.footerHeight = 45;
     this.tripId = this.route.snapshot.paramMap.get('id');
+    sharedService.addName.emit('New Section');
     const trip = this.db.doc(`trips/${this.tripId}`);
     trip.valueChanges().subscribe((t: Trip) => {
       sharedService.onPageNav.emit(t.tripName);

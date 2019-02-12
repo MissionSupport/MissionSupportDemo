@@ -21,6 +21,7 @@ export class AppComponent implements AfterContentInit {
   hasEditRights = false;
   elmnt;
   editMode = false;
+  addName;
 
   constructor(db: AngularFirestore, private sharedService: SharedService) {
     sharedService.hideToolbar.subscribe(
@@ -36,6 +37,11 @@ export class AppComponent implements AfterContentInit {
     sharedService.canEdit.subscribe(
       (hasEditRights) => {
         this.hasEditRights = hasEditRights;
+      }
+    );
+    sharedService.addName.subscribe(
+      (addName) => {
+        this.addName = addName;
       }
     );
 

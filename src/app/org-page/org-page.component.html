@@ -1,22 +1,32 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
 <p-dialog header="New Section Creation" [(visible)]="showNewSectionPopup">
-  <div style="width: 300px;">
-    <p>Section Title</p>
-    <input type="text" pInputText [(ngModel)]="newSectionName"/>
-    <p style="margin-top: 20px;">Section Text</p>
-    <p-editor [(ngModel)]="newSectionText" [style]="{'height': '200px'}">
-      <p-header>
-          <span class="ql-formats">
-              <button class="ql-bold" aria-label="Bold"></button>
-              <button class="ql-italic" aria-label="Italic"></button>
-              <button class="ql-underline" aria-label="Underline"></button>
-          </span>
-      </p-header>
-    </p-editor>
+  <div [hidden]="!viewWiki">
+    <div style="width: 300px;" >
+      <p>Section Title</p>
+      <input type="text" pInputText [(ngModel)]="newSectionName"/>
+      <p style="margin-top: 20px;">Section Text</p>
+      <p-editor [(ngModel)]="newSectionText" [style]="{'height': '200px'}">
+        <p-header>
+            <span class="ql-formats">
+                <button class="ql-bold" aria-label="Bold"></button>
+                <button class="ql-italic" aria-label="Italic"></button>
+                <button class="ql-underline" aria-label="Underline"></button>
+            </span>
+        </p-header>
+      </p-editor>
+    </div>
+    <div class="p-grid" style="text-align: center; padding-top: 10px">
+      <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
+      <p-button class="p-col-6" (onClick)="submitNewSection()" label ="Submit"></p-button>
+    </div>
   </div>
-  <div class="p-grid" style="text-align: center; padding-top: 10px">
-    <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
-    <p-button class="p-col-6" (onClick)="submitNewSection()" label ="Submit"></p-button>
+  <div style="width: 300px;" [hidden]="!viewTeams">
+    <p>Add New Team</p>
+
+  </div>
+  <div style="width: 300px;" [hidden]="!viewTrips">
+    <p>Add New Trip</p>
+
   </div>
 </p-dialog>
 
@@ -48,7 +58,7 @@
       <div [hidden]="!hideme[i]">
         <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
         <div class="p-grid" style="text-align: center; padding-top: 5px">
-          <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]" label="Cancel"></p-button>
+          <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i];" label="Cancel"></p-button>
           <p-button class="p-col-6" (click)="submitWikiEdit(info.title, i)" label="Submit"></p-button>
         </div>
       </div>
@@ -105,7 +115,7 @@
     <button class="footer-button" pButton type="button"
       style="height: 100%; border: none; border-radius: 0"
       [ngStyle]="{'width': 100/3 + '%'}"
-      (click)="viewWiki = true; viewTeams = false; viewTrips = false">
+      (click)="viewWiki = true; viewTeams = false; viewTrips = false; sharedService.addName.emit('New Section');">
       <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
         <span>Wiki</span>
@@ -114,7 +124,7 @@
     <button class="footer-button" pButton type="button"
       style="height: 100%; border: none; border-radius: 0"
       [ngStyle]="{'width': 100/3 + '%'}"
-      (click)="viewWiki = false; viewTeams = true; viewTrips = false">
+      (click)="viewWiki = false; viewTeams = true; viewTrips = false; sharedService.addName.emit('New Team');">
       <i class="pi pi-users" [ngStyle]="{'opacity': !viewTeams ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewTeams ? '0.5' : '1'}">
         <span>Teams</span>
@@ -123,7 +133,7 @@
     <button class="footer-button" pButton type="button"
       style="height: 100%; border: none; border-radius: 0"
       [ngStyle]="{'width': 100/3 + '%'}"
-      (click)="viewWiki = false; viewTeams = false; viewTrips = true">
+      (click)="viewWiki = false; viewTeams = false; viewTrips = true; sharedService.addName.emit('New Trip');">
       <i class="pi pi-briefcase" [ngStyle]="{'opacity': !viewTrips ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewTrips ? '0.5' : '1'}">
         <span>Trips</span>

@@ -56,6 +56,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     sharedService.hideToolbar.emit(false);
     // ToDo : edit based on rights
     sharedService.canEdit.emit(true);
+    sharedService.addName.emit('New Section');
     sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
