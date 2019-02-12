@@ -1,0 +1,7 @@
+<div class="p-grid p-dir-col" style="height: 100%; width: 100%;">
+  <div id="svgContainer" class = "p-col-12 p-col-align-start" style="height: 60%">
+  </div>
+  <span id="listContainer" class = "p-col-12 p-col-align-end"  style="height: 40%; width: 100%">
+    <p-listbox [options]="sites" [(ngModel)]="selectedSite" [style] = "{'width':'100%'}" optionLabel="siteName" (click)="siteClick()"></p-listbox>
+  </span>
+</div>

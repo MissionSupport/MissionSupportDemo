@@ -16,6 +16,7 @@ import {CountryPageComponent} from './country-page/country-page.component';
 import {TripPageComponent} from './trip-page/trip-page.component';
 import {OrgPageComponent} from './org-page/org-page.component';
 import {ChecklistCreationPageComponent} from './checklist-creation-page/checklist-creation-page.component';
+import {SiteSearchComponent} from './site-search/site-search.component';
 
 
 const routes: Routes = [
@@ -122,6 +123,10 @@ const routes: Routes = [
     path: 'list',
     canActivate: [AuthguardService],
     component: ChecklistCreationPageComponent,
+  },
+  {
+    path: 'search-sites',
+    component: SiteSearchComponent,
   }
 ];
 

@@ -53,7 +53,8 @@ import {DropdownModule} from 'primeng/dropdown';
 import {KeyFilterModule} from 'primeng/keyfilter';
 import { ToolbarModule } from 'primeng/toolbar';
 import { CardModule } from 'primeng/card';
-import {PasswordModule} from 'primeng/password';
+import { PasswordModule } from 'primeng/password';
+import { SiteSearchComponent } from './site-search/site-search.component';
 import {DialogModule} from 'primeng/dialog';
 
 @NgModule({
@@ -77,6 +78,7 @@ import {DialogModule} from 'primeng/dialog';
     MyTripsListComponent,
     ChecklistCreationPageComponent,
     DynamicFormQuestionComponent,
+    SiteSearchComponent,
   ],
   imports: [
     BrowserModule,
