@@ -6,6 +6,7 @@ export class SharedService {
   hideToolbar: EventEmitter<any> = new EventEmitter();
   onPageNav: EventEmitter<any> = new EventEmitter();
   canEdit: EventEmitter<any> = new EventEmitter();
+  addSection: EventEmitter<any> = new EventEmitter();
 }
 
 @Injectable()

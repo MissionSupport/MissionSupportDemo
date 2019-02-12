@@ -35,6 +35,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
       this.countries = item;
     });
     sharedService.hideToolbar.emit(false);
+    sharedService.canEdit.emit(false);
     sharedService.onPageNav.emit('Country Selection');
   }
   ngOnInit() {
