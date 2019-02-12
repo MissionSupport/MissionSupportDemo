@@ -20,6 +20,7 @@ export class AppComponent implements AfterContentInit {
   toolbarHeight;
   hasEditRights = false;
   elmnt;
+  editMode = false;
 
   constructor(db: AngularFirestore, private sharedService: SharedService) {
     sharedService.hideToolbar.subscribe(

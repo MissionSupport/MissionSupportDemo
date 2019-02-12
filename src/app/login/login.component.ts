@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
   constructor(public router: Router, public authInstance: AngularFireAuth,
               private messageService: MessageService, private sharedService: SharedService) {
     sharedService.hideToolbar.emit(true);
+    sharedService.canEdit.emit(false);
   }
 
   loginClick() {

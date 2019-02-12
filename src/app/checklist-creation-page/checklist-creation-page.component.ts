@@ -29,6 +29,7 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
     this.questions = service.getQuestions();
 
     sharedService.hideToolbar.emit(false);
+    sharedService.canEdit.emit(false);
     sharedService.onPageNav.emit('Checklist Creation');
   }
 

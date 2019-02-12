@@ -1,26 +1,72 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
+<p-dialog header="New Section Creation" [(visible)]="showNewSectionPopup">
+  <div style="width: 300px;">
+    <p>Section Title</p>
+    <input type="text" pInputText [(ngModel)]="newSectionName"/>
+    <p style="margin-top: 20px;">Section Text</p>
+    <p-editor [(ngModel)]="newSectionText" [style]="{'height': '200px'}">
+      <p-header>
+          <span class="ql-formats">
+              <button class="ql-bold" aria-label="Bold"></button>
+              <button class="ql-italic" aria-label="Italic"></button>
+              <button class="ql-underline" aria-label="Underline"></button>
+          </span>
+      </p-header>
+    </p-editor>
+  </div>
+  <div class="p-grid" style="text-align: center; padding-top: 10px">
+    <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
+    <p-button class="p-col-6" (onClick)="submitNewSection()" label ="Submit"></p-button>
+  </div>
+</p-dialog>
+
 
 <div id="mainBody" [ngStyle]="{'margin-bottom' : footerHeight + 10 + 'px'}" >
 
 
+  <!--<div [hidden]="!viewWiki" style="width: 100vw">-->
+    <!--&lt;!&ndash;<a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>&ndash;&gt;-->
+    <!--<div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">-->
+      <!--<div [hidden]="!hideme[i]">-->
+        <!--<p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>-->
+        <!--<div class="p-grid" style="text-align: center">-->
+          <!--<p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]">Cancel</p-button>-->
+          <!--<p-button class="p-col-6" (click)="submitEdit(info.title, i)">Submit</p-button>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<p-fieldset legend={{info.title}} [toggleable]="true" [hidden]="hideme[i]">-->
+        <!--<markdown [data]="info.markup"></markdown>-->
+      <!--</p-fieldset>-->
+      <!--<div [hidden]="!editMode">-->
+        <!--<a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;<a (click)="submitEdit('test111', editText.length)" style="font-size: smaller" [hidden]="!editMode">Add new thing</a>&ndash;&gt;-->
+  <!--</div>-->
+
   <div [hidden]="!viewWiki" style="width: 100vw">
-    <!--<a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>-->
     <div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">
       <div [hidden]="!hideme[i]">
         <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
-        <div class="p-grid" style="text-align: center">
-          <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]">Cancel</p-button>
-          <p-button class="p-col-6" (click)="submitEdit(info.title, i)">Submit</p-button>
+        <div class="p-grid" style="text-align: center; padding-top: 5px">
+          <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]" label="Cancel"></p-button>
+          <p-button class="p-col-6" (click)="submitEdit(info.title, i)" label="Submit"></p-button>
         </div>
       </div>
-      <p-fieldset legend={{info.title}} [toggleable]="true" [hidden]="hideme[i]">
+      <p-fieldset [toggleable]="true" [hidden]="hideme[i]">
+        <p-header>
+          {{info.title}}
+          <div [style.display]="!editMode ? 'none' : 'inline-block'">
+            <i class="pi pi-pencil" style="cursor: pointer; padding-left: 10px" (click)="hideme[i] = !hideme[i]"></i>
+          </div>
+        </p-header>
         <markdown [data]="info.markup"></markdown>
       </p-fieldset>
-      <div [hidden]="!editMode">
-        <a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>
-      </div>
     </div>
     <!--<a (click)="submitEdit('test111', editText.length)" style="font-size: smaller" [hidden]="!editMode">Add new thing</a>-->
+    <!--<div *ngFor="let g of groups; let i = index" style="margin-top: 20px; padding-right: 35px">-->
+      <!--<a routerLink="./group/{{g.id}}" ><p class="p-col p-col-2">{{g.name}}</p></a>-->
+    <!--</div>-->
   </div>
 
   <div [hidden]="!viewAbout">

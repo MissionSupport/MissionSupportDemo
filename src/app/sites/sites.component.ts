@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
@@ -20,6 +20,7 @@ import {Country} from '../interfaces/country';
 
 export class SitesComponent implements OnInit, OnDestroy {
 
+
   siteId: string;
   viewWiki = true;
   viewChecklist = false;
@@ -29,6 +30,7 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   sections: Observable<any[]>;
   hideme = [];
+  editText = [];
   footerHeight = 45;
   // trips: Trip[];
   trips: Observable<Trip>[];
@@ -40,15 +42,25 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   groups = []; // Contains an array of group ids
 
-  canEdit = false; // This is used to see if a user can approve edits
-  editMode = false; // If the user is in edit mode we want the screen to change
+  // canEdit = false; // This is used to see if a user can approve edits
+  // TODO: Change to proper value based on edit privileges
+  editMode = true;  // this means the user can edit
+  showNewSectionPopup = false;
+  newSectionText;
+  newSectionName;
 
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
               public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router) {
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
     sharedService.hideToolbar.emit(false);
+    // ToDo : edit based on rights
     sharedService.canEdit.emit(true);
+    sharedService.addSection.subscribe(
+      () => {
+        this.showNewSectionPopup = true;
+      }
+    );
     this.siteObservable = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`)
       .valueChanges().pipe(map((site: Site) => {
       return site;
@@ -63,6 +75,7 @@ export class SitesComponent implements OnInit, OnDestroy {
             if (data.hasOwnProperty(title)) {
               const markup = data[title];
               array.push({title, markup});
+              this.editText.push(markup);
             }
           }
           return array;
@@ -104,10 +117,24 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   tripClick(): void {
-    // console.log(this.selectedSite);
     this.router.navigate(['trip/' + this.selectedTrip.id]);
-    // this.router.navigate(['/temp']);
   }
 
+  submitNewSection() {
+    console.log(this.newSectionName, this.newSectionText);
+    // TODO: if(add works )
+    this.showNewSectionPopup = false;
+  }
+
+  submitEdit(title, i) {
+    // this.editText[i] is the data we with to push into firebase with the section header title
+    // to then revert the page to the view do "hidden[i] = !hidden[i];"
+    // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
+    const jsonVariable = {};
+    jsonVariable[title] = this.editText[i];
+    // this.db.doc(`countries/${this.countryId}/wikiSections/${this.wikiId}/versions/${this.versionId}`).update(jsonVariable);
+    console.log(jsonVariable);
+    this.hideme[i] = !this.hideme[i];
+  }
 }
 
