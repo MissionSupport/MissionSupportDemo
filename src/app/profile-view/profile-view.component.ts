@@ -21,7 +21,7 @@ export class ProfileViewComponent implements OnInit {
   orgs;
   teams;
   groups;
-  isAdmin;
+  isAdmin: boolean;
 
   editingEmail: boolean;
   newEmail: string;
