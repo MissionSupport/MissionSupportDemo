@@ -56,6 +56,7 @@ import { CardModule } from 'primeng/card';
 import { PasswordModule } from 'primeng/password';
 import { SiteSearchComponent } from './site-search/site-search.component';
 import {DialogModule} from 'primeng/dialog';
+import {AutoCompleteModule} from 'primeng/primeng';
 
 @NgModule({
   declarations: [
@@ -119,6 +120,7 @@ import {DialogModule} from 'primeng/dialog';
     KeyFilterModule,
     PasswordModule,
     DialogModule,
+    AutoCompleteModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

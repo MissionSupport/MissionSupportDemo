@@ -4,6 +4,7 @@ import {Site} from '../interfaces/site';
 import {Country} from '../interfaces/country';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {SharedService} from '../globals';
 
 @Component({
   selector: 'app-site-search',
@@ -20,9 +21,12 @@ export class SiteSearchComponent implements OnInit {
   countriesObservable: Observable<Country[]>;
 
   selectedSite: Site;
-  selectedCountry: Country;
+  filterSites: Site[];
 
-  constructor(private readonly db: AngularFirestore, public router: Router) {
+  constructor(private readonly db: AngularFirestore, public router: Router, private sharedService: SharedService) {
+    sharedService.hideToolbar.emit(false);
+    sharedService.canEdit.emit(false);
+    sharedService.onPageNav.emit('Site Selection');
     this.sites = [];
     this.countries = [];
     this.countriesObservable = db.collection<Country>(`countries`).valueChanges();
@@ -41,6 +45,7 @@ export class SiteSearchComponent implements OnInit {
         });
       });
     });
+
     // can't get it to work outside the loop since the db collection is async too rip
     // this.countries.forEach( (country: Country) => {
     //   this.sitesObservable = db.collection<Site>(`countries/${country.id}/sites`).valueChanges();
@@ -73,7 +78,6 @@ export class SiteSearchComponent implements OnInit {
     //   }));
     // }
 
-
   }
 
   ngOnInit() {
@@ -83,16 +87,19 @@ export class SiteSearchComponent implements OnInit {
 
   siteClick(): void {
 
-    // creates a subscription in function so might cause data leaks if we remove this
-    this.countries.forEach( (country: Country) => {
-      this.db.collection<Site>(`countries/${country.id}/sites`).valueChanges().subscribe( (sites: Site[]) => {
-        sites.forEach( (site: Site) => {
-          if (site.id === this.selectedSite.id) {
-            this.router.navigate([`country/${country.id}/site/${site.id}`]);
-          }
-        });
-      });
-    });
+    this.router.navigate([`country/${this.selectedSite.countryID}/site/${this.selectedSite.id}`]);
+  }
+
+  filterSite(event): void {
+    const query = event.query;
+    let filtered: Site[] = [];
+    for (let i = 0; i < this.sites.length; i++) {
+      const site: Site = this.sites[i];
+      if (site.siteName.toLowerCase().indexOf(query.toLowerCase()) === 0) {
+        filtered = [...filtered, site];
+      }
+    }
+    this.filterSites = filtered;
   }
 
 }
