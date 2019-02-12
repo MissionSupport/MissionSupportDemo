@@ -21,11 +21,18 @@
     </div>
   </div>
   <div style="width: 300px;" [hidden]="!viewChecklist">
-    <p>Add New Checklist</p>
+    <p>Add New Checklist Item</p>
 
   </div>
   <div style="width: 300px;" [hidden]="!viewTrips">
-    <p>Add New Trip</p>
+    <p style="margin-top: 10px">Org hosting Trip</p>
+    <input type="text" pInputText [(ngModel)]="newTripOrg"/>
+    <p style="margin-top: 10px">Team on Trip</p>
+    <input type="text" pInputText [(ngModel)]="newTripTeam"/>
+    <div class="p-grid" style="text-align: center; padding-top: 10px">
+      <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
+      <p-button class="p-col-6" (onClick)="submitNewTrip()" label ="Submit"></p-button>
+    </div>
 
   </div>
 </p-dialog>

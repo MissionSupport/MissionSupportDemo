@@ -21,7 +21,7 @@
     </div>
   </div>
   <div style="width: 300px;" [hidden]="!viewAbout">
-    <p>Add New About</p>
+    <p>Add New About Information</p>
   </div>
 </p-dialog>
 
@@ -109,7 +109,7 @@
     </button>
     <button class="footer-button" pButton type="button"
       style="width: 50%; height: 100%; border: none; border-radius: 0"
-      (click)="viewWiki = false; viewAbout = true; sharedService.addName.emit('New Site');">
+      (click)="viewWiki = false; viewAbout = true; sharedService.addName.emit('New About Info');">
       <i class="pi pi-info-circle" [ngStyle]="{'opacity': !viewAbout ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewAbout ? '0.5' : '1'}">
         <span>About</span>

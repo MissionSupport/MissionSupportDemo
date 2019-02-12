@@ -21,11 +21,35 @@
     </div>
   </div>
   <div style="width: 300px;" [hidden]="!viewTeams">
-    <p>Add New Team</p>
+    <p>New Team Name</p>
+    <input type="text" pInputText [(ngModel)]="newTeamName"/>
+    <p style="margin-top: 10px">New Team Members</p>
+    <form #formRef="ngForm">
+      <div *ngFor="let member of members; let i = index" class="col-sm-3">
+        <div class="form-group">
+          <input pInputText type="text" [(ngModel)]="members[i].value" name="name{{i}}" class="form-control" #name="ngModel" required />
+        </div>
+        <br />
+      </div>
+      <p-button [disabled]="!formRef.form.valid" (click)="addAnotherMember()" label="Add another member"></p-button>
+    </form>
+    <div class="p-grid" style="text-align: center; padding-top: 10px">
+      <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
+      <p-button class="p-col-6" (onClick)="submitNewTeam()" label ="Submit"></p-button>
+    </div>
 
   </div>
   <div style="width: 300px;" [hidden]="!viewTrips">
-    <p>Add New Trip</p>
+    <p>Country of Trip</p>
+    <input type="text" pInputText [(ngModel)]="newTripCountry"/>
+    <p style="margin-top: 10px">Site of Trip</p>
+    <input type="text" pInputText [(ngModel)]="newTripSite"/>
+    <p style="margin-top: 10px">Team on Trip</p>
+    <input type="text" pInputText [(ngModel)]="newTripTeam"/>
+    <div class="p-grid" style="text-align: center; padding-top: 10px">
+      <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
+      <p-button class="p-col-6" (onClick)="submitNewTrip()" label ="Submit"></p-button>
+    </div>
 
   </div>
 </p-dialog>

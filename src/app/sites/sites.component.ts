@@ -48,6 +48,8 @@ export class SitesComponent implements OnInit, OnDestroy {
   showNewSectionPopup = false;
   newSectionText;
   newSectionName;
+  newTripOrg;
+  newTripTeam;
 
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
               public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router) {
@@ -136,6 +138,11 @@ export class SitesComponent implements OnInit, OnDestroy {
     // this.db.doc(`countries/${this.countryId}/wikiSections/${this.wikiId}/versions/${this.versionId}`).update(jsonVariable);
     console.log(jsonVariable);
     this.hideme[i] = !this.hideme[i];
+  }
+
+  submitNewTrip() {
+    console.log(this.countryId, this.siteId, this.newTripOrg, this.newTripTeam);
+    this.showNewSectionPopup = false;
   }
 }
 

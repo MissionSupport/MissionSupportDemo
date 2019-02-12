@@ -40,6 +40,8 @@ export class CountryPageComponent implements OnInit {
   showNewSectionPopup = false;
   newSectionText;
   newSectionName;
+  newSiteName;
+  isNewSiteHospital;
 
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined, private route: ActivatedRoute) {
@@ -144,6 +146,11 @@ export class CountryPageComponent implements OnInit {
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
     // TODO: if(add works )
+    this.showNewSectionPopup = false;
+  }
+
+  submitNewSite() {
+    console.log(this.countryId, this.newSiteName, this.isNewSiteHospital);
     this.showNewSectionPopup = false;
   }
 }

@@ -22,8 +22,15 @@
     </div>
   </div>
   <div style="width: 300px;" [hidden]="!viewSites">
-    <p>Add New Site</p>
-
+    <p>New Site Name</p>
+    <input type="text" pInputText [(ngModel)]="newSiteName"/>
+    <p style="margin-top: 10px">Is this site a hospital?</p>
+    <div><p-radioButton name="group1" value="yes" label="Yes" [(ngModel)]="isNewSiteHospital" inputId="opt1"></p-radioButton></div>
+    <div><p-radioButton name="group1" value="no" label="No" [(ngModel)]="isNewSiteHospital" inputId="opt2"></p-radioButton></div>
+    <div class="p-grid" style="text-align: center; padding-top: 10px">
+      <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
+      <p-button class="p-col-6" (onClick)="submitNewSite()" label ="Submit"></p-button>
+    </div>
   </div>
 </p-dialog>
 

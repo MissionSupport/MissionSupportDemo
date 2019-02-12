@@ -45,6 +45,12 @@ export class OrgPageComponent implements OnInit {
   showNewSectionPopup = false;
   newSectionText;
   newSectionName;
+  newTeamName;
+  newTripCountry;
+  newTripSite;
+  newTripTeam;
+
+  members = [{value: ''}];
 
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,
               private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
@@ -153,6 +159,20 @@ export class OrgPageComponent implements OnInit {
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
     // TODO: if(add works )
+    this.showNewSectionPopup = false;
+  }
+
+  addAnotherMember() {
+    this.members.push({value: ''});
+  }
+
+  submitNewTeam() {
+    console.log(this.orgName, this.newTeamName, this.members);
+    this.showNewSectionPopup = false;
+  }
+
+  submitNewTrip() {
+    console.log(this.newTripCountry, this.newTripSite, this.newTripTeam);
     this.showNewSectionPopup = false;
   }
 }
