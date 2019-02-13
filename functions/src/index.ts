@@ -3,12 +3,13 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 // Used after a user first creates an account
-exports.createUserPreferences = functions.auth.user().onCreate((user, context) => {
-  const userId = context.params.userId;
+exports.createUserPreferences = functions.auth.user().onCreate(user => {
+  const userId = user.uid;
+  console.log(user);
   console.log('Creating user_preferences for', userId);
   return admin.firestore().collection('user_preferences').doc(userId).set({
     admin: false,
-    id: user,
+    id: userId,
     orgs: [],
     teams: []
   });
