@@ -20,7 +20,7 @@
       <span class="p-col">
         <div class="ui-inputgroup">
           <span class="ui-inputgroup-addon"><i class="pi pi-briefcase"></i></span>
-          <input placeholder="Organization" type="text" size="34" pInputText [(ngModel)] = "orginization" >
+          <input placeholder="Organization" type="text" size="34" pInputText [(ngModel)] = "organization" >
         </div>
       </span>
       <span class="p-col">
@@ -38,14 +38,14 @@
       <span class="p-col">
         <div class="ui-inputgroup">
           <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
-          <input placeholder="Password" type="password" size="30" pPassword [(ngModel)] = "password" [showPassword]="showPassword" [feedback]="false">
+          <input pPassword placeholder="Password" type="password" size="30" [(ngModel)] = "password" [feedback]="false" [showPassword]="showPassword">
           <button pButton type="button" [icon]="showPasswordIcon" (click)="togglePasswordCheck()"></button>
         </div>
       </span>
       <span class="p-col">
         <div class="ui-inputgroup">
           <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
-          <input placeholder="Confirm Password" type="password" size="30" pPassword [(ngModel)] = "passwordConfirm" [showPassword]="showPasswordConfirm" [feedback]="false">
+          <input pPassword placeholder="Confirm Password" type="password" size="30"  [(ngModel)] = "passwordConfirm"  [feedback]="false" [showPassword]="showPasswordConfirm">
           <button pButton type="button" [icon]="showPasswordConfirmIcon" (click)="toggleConfirmPasswordCheck()"></button>
         </div>
       </span>

@@ -31,7 +31,15 @@
     <!--<input pInputText *ngSwitchCase="'medtextbox'" [formControlName]="question.key"-->
            <!--[id]="question.key" [type]="question.type">-->
     <div class="p-col-12" *ngSwitchCase="'freeResponse'" [id]="question.key">
-      <p-editor [(ngModel)]="text" [style]="{'height' : question.height + 'px'}" [formControlName]="question.key" [id]="question.key"></p-editor>
+      <p-editor [(ngModel)]="text" [style]="{'height' : question.height + 'px'}" [formControlName]="question.key" [id]="question.key">
+        <p-header>
+        <span class="ql-formats">
+            <button class="ql-bold" aria-label="Bold"></button>
+            <button class="ql-italic" aria-label="Italic"></button>
+            <button class="ql-underline" aria-label="Underline"></button>
+        </span>
+        </p-header>
+      </p-editor>
     </div>
 
     <div *ngSwitchCase="'medmulttextbox'">

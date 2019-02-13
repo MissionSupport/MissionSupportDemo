@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import {Location} from '@angular/common';
 import {Router, ActivatedRoute} from '@angular/router';
 import { SidebarService } from '../service/sidebar.service';
+import {SharedService} from '../globals';
 
 @Component({
   selector: 'app-toolbar',
@@ -11,8 +12,12 @@ import { SidebarService } from '../service/sidebar.service';
 export class ToolbarComponent implements OnInit {
   @Input() header;
   @Input() hasEditRights;
+  @Input() editMode;
+  @Input() addName;
   display;
-  constructor(public router: Router, private _aRoute: ActivatedRoute, private _location: Location, public sidebarService: SidebarService) { }
+  constructor(public router: Router, private _aRoute: ActivatedRoute, private _location: Location, public sidebarService: SidebarService,
+              private sharedService: SharedService) {
+  }
 
   ngOnInit() {
     this.sidebarService.change.subscribe((isOpen: boolean) => {
@@ -22,7 +27,6 @@ export class ToolbarComponent implements OnInit {
 
   restoreFront(event) {
     this.router.navigate(['', { outlets: { sidebar: ['settingsOptions'] } }]);
-    // this._location.back();
   }
 
   navBack(event) {
@@ -46,8 +50,13 @@ export class ToolbarComponent implements OnInit {
         this.navHelper(segs);
       });
   }
-  editMode() {
+  // toggleEditMode() {
+  //   this.editMode = !this.editMode;
+  //   this.sharedService.editToggle.emit(this.editMode);
+  // }
 
+  addSection() {
+    this.sharedService.addSection.emit();
   }
 
 }

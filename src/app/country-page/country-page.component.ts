@@ -34,15 +34,28 @@ export class CountryPageComponent implements OnInit {
   siteCollection: AngularFirestoreCollection<Site>;
   selectedSite: Site;
   countryData: Country;
-  editMode = false;
   canEdit = false;
+  // TODO: Change to proper value based on edit privileges
+  editMode = true;  // this means the user can edit
+  showNewSectionPopup = false;
+  newSectionText;
+  newSectionName;
+  newSiteName;
+  isNewSiteHospital;
 
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined, private route: ActivatedRoute) {
     this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;
     sharedService.hideToolbar.emit(false);
+    sharedService.addName.emit('New Section');
+    // ToDo : edit based on rights
     sharedService.canEdit.emit(true);
+    sharedService.addSection.subscribe(
+      () => {
+        this.showNewSectionPopup = true;
+      }
+    );
     this.footerHeight = 45;
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
 
@@ -128,5 +141,16 @@ export class CountryPageComponent implements OnInit {
     // console.log(this.selectedSite);
     this.router.navigate([`country/${this.countryId}/site/${this.selectedSite.id}`]);
     // this.router.navigate(['/temp']);
+  }
+
+  submitNewSection() {
+    console.log(this.newSectionName, this.newSectionText);
+    // TODO: if(add works )
+    this.showNewSectionPopup = false;
+  }
+
+  submitNewSite() {
+    console.log(this.countryId, this.newSiteName, this.isNewSiteHospital);
+    this.showNewSectionPopup = false;
   }
 }

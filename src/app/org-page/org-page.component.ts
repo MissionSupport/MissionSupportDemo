@@ -30,7 +30,6 @@ export class OrgPageComponent implements OnInit {
   editHeaderText: string; // Used for setting a field when submitting an edit
   hideme = [];
   footerHeight = 45;
-  editMode = false;
   canEdit = false;
   tripIds: Observable<string>[];
   tripsObservable: Observable<Trip>[];
@@ -41,6 +40,18 @@ export class OrgPageComponent implements OnInit {
 
   orgObservable: Observable<Organization>;
 
+  // TODO: Change to proper value based on edit privileges
+  editMode = true;  // this means the user can edit
+  showNewSectionPopup = false;
+  newSectionText;
+  newSectionName;
+  newTeamName;
+  newTripCountry;
+  newTripSite;
+  newTripTeam;
+
+  members = [{value: ''}];
+
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,
               private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
     /*
@@ -49,6 +60,14 @@ export class OrgPageComponent implements OnInit {
       this.ngOnInit();
     });
     */
+    // ToDo : edit based on rights
+    sharedService.canEdit.emit(true);
+    sharedService.addName.emit('New Section');
+    sharedService.addSection.subscribe(
+      () => {
+        this.showNewSectionPopup = true;
+      }
+    );
   }
 
   ngOnInit() {
@@ -135,5 +154,25 @@ export class OrgPageComponent implements OnInit {
     json[oldTitle] = firebase.firestore.FieldValue.delete();
     json[newTitle] = this.sections[index];
     this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
+  }
+
+  submitNewSection() {
+    console.log(this.newSectionName, this.newSectionText);
+    // TODO: if(add works )
+    this.showNewSectionPopup = false;
+  }
+
+  addAnotherMember() {
+    this.members.push({value: ''});
+  }
+
+  submitNewTeam() {
+    console.log(this.orgName, this.newTeamName, this.members);
+    this.showNewSectionPopup = false;
+  }
+
+  submitNewTrip() {
+    console.log(this.newTripCountry, this.newTripSite, this.newTripTeam);
+    this.showNewSectionPopup = false;
   }
 }

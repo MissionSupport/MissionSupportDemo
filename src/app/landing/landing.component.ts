@@ -6,6 +6,10 @@ import {Router} from '@angular/router';
 import {Site} from '../interfaces/site';
 import {SharedService} from '../globals';
 import {Country} from '../interfaces/country';
+import {flatMap, map} from 'rxjs/operators';
+import {Organization} from '../interfaces/organization';
+import {Team} from '../interfaces/team';
+import {Trip} from '../interfaces/trip';
 
 @Component({
   selector: 'app-landing',
@@ -35,6 +39,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
       this.countries = item;
     });
     sharedService.hideToolbar.emit(false);
+    sharedService.canEdit.emit(false);
     sharedService.onPageNav.emit('Country Selection');
   }
   ngOnInit() {

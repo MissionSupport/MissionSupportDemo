@@ -1,4 +1,4 @@
-<app-toolbar #toolbar style="width: 100%;" [header]="pageName" [hidden] = "onMain" [hasEditRights]="hasEditRights"></app-toolbar>
+<app-toolbar #toolbar style="width: 100%;" [header]="pageName" [hidden] = "onMain" [hasEditRights]="hasEditRights" [editMode]="editMode" [addName]="addName"></app-toolbar>
 <p-scrollPanel [style]="{width: '100%', height: height + 'px'}" styleClass="custombar1">
   <router-outlet></router-outlet>
 </p-scrollPanel>

@@ -54,6 +54,9 @@ import {KeyFilterModule} from 'primeng/keyfilter';
 import { ToolbarModule } from 'primeng/toolbar';
 import { CardModule } from 'primeng/card';
 import { PasswordModule } from 'primeng/password';
+import { SiteSearchComponent } from './site-search/site-search.component';
+import {DialogModule} from 'primeng/dialog';
+import {AutoCompleteModule} from 'primeng/primeng';
 
 @NgModule({
   declarations: [
@@ -76,6 +79,7 @@ import { PasswordModule } from 'primeng/password';
     MyTripsListComponent,
     ChecklistCreationPageComponent,
     DynamicFormQuestionComponent,
+    SiteSearchComponent,
   ],
   imports: [
     BrowserModule,
@@ -115,6 +119,8 @@ import { PasswordModule } from 'primeng/password';
     DropdownModule,
     KeyFilterModule,
     PasswordModule,
+    DialogModule,
+    AutoCompleteModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

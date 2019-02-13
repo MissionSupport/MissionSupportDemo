@@ -22,8 +22,13 @@ export class TripPageComponent implements OnInit {
   hideme = [];
   org: Organization;
   tripId: string;
-  editMode = false;
   canEdit = false;
+
+  // TODO: Change to proper value based on edit privileges
+  editMode = true;  // this means the user can edit
+  showNewSectionPopup = false;
+  newSectionText;
+  newSectionName;
 
   // TODO: get all of these from actual database
   location = 'USA';
@@ -38,9 +43,17 @@ export class TripPageComponent implements OnInit {
     sharedService.hideToolbar.emit(false);
     this.footerHeight = 45;
     this.tripId = this.route.snapshot.paramMap.get('id');
+    sharedService.addName.emit('New Section');
     const trip = this.db.doc(`trips/${this.tripId}`);
     trip.valueChanges().subscribe((t: Trip) => {
       sharedService.onPageNav.emit(t.tripName);
+      // ToDo : edit based on rights
+      sharedService.canEdit.emit(true);
+      sharedService.addSection.subscribe(
+        () => {
+          this.showNewSectionPopup = true;
+        }
+      );
       // Get wiki information
       trip.collection('wiki').doc(t.current).valueChanges().subscribe(data => {
         this.sections = [];
@@ -71,6 +84,12 @@ export class TripPageComponent implements OnInit {
     jsonVariable[title] = this.editText[i];
     // this.db.doc(`Countries/${this.id}/versions/${this.versionId}/wikiSections/${this.wikiId}`).update(jsonVariable);
     this.hideme[i] = !this.hideme[i];
+  }
+
+  submitNewSection() {
+    console.log(this.newSectionName, this.newSectionText);
+    // TODO: if(add works )
+    this.showNewSectionPopup = false;
   }
 
   groupClick(): void {

@@ -12,7 +12,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 export class RegisterComponent implements OnInit {
   firstName: string;
   lastName: string;
-  orginization: string;
+  organization: string;
   email: string;
   emailConfirm: string;
   password: string;
@@ -47,7 +47,7 @@ export class RegisterComponent implements OnInit {
   }
 
   registerClick() {
-    if (!this.firstName || !this.lastName || !this.orginization) {
+    if (!this.firstName || !this.lastName || !this.organization) {
       this.messageService.add({severity: 'error', summary: 'Registration Error', detail: 'All fields must be set'});
     } else if (this.email === this.emailConfirm) {
       if (this.password === this.passwordConfirm) {
@@ -66,12 +66,22 @@ export class RegisterComponent implements OnInit {
             this.db.collection('users').doc(userId).set({
               firstName: this.firstName,
               lastName: this.lastName,
-              organization: this.orginization,
+              organization: this.organization,
               userId: userId
             }).then(() => {
               console.log('Document written with ID: ', userId);
             }).catch(failure => {
               console.log('Document failed with ID: ', failure);
+            });
+            this.db.collection(`user_preferences`).doc(userId).set({
+              id: userId,
+              admin: false,
+              sites: [],
+              orgs: []
+            }).then( () => {
+              console.log('Preferences created with ID: ', userId);
+            }). catch( failure => {
+              console.log('Preferences failed with ID: ', failure);
             });
             this.router.navigate(['']);
           })
