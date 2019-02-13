@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Input} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {QuestionBase} from '../question-base';
 
 import 'autocomplete-lhc';
@@ -51,7 +51,8 @@ export class DynamicFormQuestionComponent implements AfterViewInit {
   createItem(): FormGroup {
     return this.formBuilder.group({
       drugName: '',
-      stength: '',
+      strength: '',
     });
   }
+
 }

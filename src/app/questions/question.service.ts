@@ -86,7 +86,7 @@ export class QuestionService {
       new MedicineMultipleTextboxQuestion({
         key: 'medtextMultibox1',
         label: 'Look Up Medicine (mult)',
-        gridSize: 'p-col-2'
+        gridSize: 'p-col-12'
       }),
     ];
 
