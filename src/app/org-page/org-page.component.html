@@ -17,7 +17,7 @@
     </div>
     <div class="p-grid" style="text-align: center; padding-top: 10px">
       <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
-      <p-button class="p-col-6" (onClick)="submitNewSection()" label ="Submit"></p-button>
+      <p-button class="p-col-6" (onClick)="submitNewSection(); showNewSectionPopup = false" label ="Submit"></p-button>
     </div>
   </div>
   <div style="width: 300px;" [hidden]="!viewTeams">
@@ -78,18 +78,18 @@
     <!--&lt;!&ndash;<a (click)="submitNewWikiEdit(editHeaderText, editText.length)" style="font-size: smaller" [hidden]="!editMode">Add new thing</a>&ndash;&gt;-->
   <!--</div>-->
   <div [hidden]="!viewWiki" style="width: 100vw">
-    <div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">
+    <div *ngFor="let info of sections | async; let i = index" style="margin-top: 20px; padding-right: 35px">
       <div [hidden]="!hideme[i]">
-        <p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>
+        <p-editor type="text" [(ngModel)]= "info.markup" [style]="{'height':'320px'}" ></p-editor>
         <div class="p-grid" style="text-align: center; padding-top: 5px">
           <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i];" label="Cancel"></p-button>
-          <p-button class="p-col-6" (click)="submitWikiEdit(info.title, i)" label="Submit"></p-button>
+          <p-button class="p-col-6" (click)="submitWikiEdit(info.title, info.markup); hideme[i] = !hideme[i];" label="Submit"></p-button>
         </div>
       </div>
       <p-fieldset [toggleable]="true" [hidden]="hideme[i]">
         <p-header>
           {{info.title}}
-          <div [style.display]="!editMode ? 'none' : 'inline-block'">
+          <div [style.display]="!canEditWiki ? 'none' : 'inline-block'">
             <i class="pi pi-pencil" style="cursor: pointer; padding-left: 10px" (click)="hideme[i] = !hideme[i]"></i>
           </div>
         </p-header>
@@ -140,7 +140,7 @@
       style="height: 100%; border: none; border-radius: 0"
       [ngStyle]="{'width': 100/3 + '%'}"
       (click)="viewWiki = true; viewTeams = false; viewTrips = false; sharedService.addName.emit('New Section');
-          sharedService.canEdit.emit(editMode);">
+          sharedService.canEdit.emit(canEditWiki);">
       <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
         <span>Wiki</span>
