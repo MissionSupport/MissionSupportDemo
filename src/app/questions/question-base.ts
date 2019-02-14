@@ -16,7 +16,7 @@ export class QuestionBase<T> {
     controlType?: string,
     gridSize?: string
   } = {}) {
-    this.value = options.value;
+    this.value = options.value || '';
     this.key = options.key || '';
     this.label = options.label || '';
     this.required = !!options.required;
