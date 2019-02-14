@@ -30,7 +30,6 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   sections: Observable<any[]>;
   hideme = [];
-  editText = [];
   footerHeight = 45;
   // trips: Trip[];
   trips: Observable<Trip>[];
@@ -44,7 +43,7 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   // canEdit = false; // This is used to see if a user can approve edits
   // TODO: Change to proper value based on edit privileges
-  editMode = true;  // this means the user can edit
+  canEditWiki: Observable<boolean>;  // this means the user can edit wiki
   showNewSectionPopup = false;
   newSectionText;
   newSectionName;
@@ -57,7 +56,6 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.countryId = this.route.snapshot.paramMap.get('countryId');
     sharedService.hideToolbar.emit(false);
     // ToDo : edit based on rights
-    sharedService.canEdit.emit(true);
     sharedService.addName.emit('New Section');
     sharedService.addSection.subscribe(
       () => {
@@ -78,7 +76,6 @@ export class SitesComponent implements OnInit, OnDestroy {
             if (data.hasOwnProperty(title)) {
               const markup = data[title];
               array.push({title, markup});
-              this.editText.push(markup);
             }
           }
           return array;
@@ -110,6 +107,20 @@ export class SitesComponent implements OnInit, OnDestroy {
         });
       });
     });
+
+    let wikiSubscibe = null;
+    this.authInstance.auth.onAuthStateChanged(user => {
+      if (wikiSubscibe) {
+        wikiSubscibe.unsubscribe();
+      }
+      this.canEditWiki = this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
+        return pref.admin;
+      }));
+
+      wikiSubscibe = this.canEditWiki.subscribe(can => {
+        sharedService.canEdit.emit(can);
+      });
+    });
   }
 
   ngOnInit() {
@@ -129,15 +140,11 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.showNewSectionPopup = false;
   }
 
-  submitEdit(title, i) {
+  submitEdit(title, markup) {
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
     // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
     const jsonVariable = {};
-    jsonVariable[title] = this.editText[i];
-    // this.db.doc(`countries/${this.countryId}/wikiSections/${this.wikiId}/versions/${this.versionId}`).update(jsonVariable);
-    console.log(jsonVariable);
-    this.hideme[i] = !this.hideme[i];
   }
 
   submitNewTrip() {

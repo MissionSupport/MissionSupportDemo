@@ -97,14 +97,13 @@ export class CountryPageComponent implements OnInit {
   ngOnInit() {
   }
 
-  submitEdit(title, i) {
+  submitEdit(title, markup) {
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
     // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
     const jsonVariable = {};
-    jsonVariable[title] = this.editText[i];
-    //this.db.doc(`countries/${this.countryId}/wikiSections/${this.wikiId}/versions/${this.versionId}`).update(jsonVariable);
-    this.hideme[i] = !this.hideme[i];
+    jsonVariable[title] = markup;
+    this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`).update(jsonVariable);
   }
 
   siteClick(): void {
@@ -128,5 +127,33 @@ export class CountryPageComponent implements OnInit {
   submitNewSite() {
     console.log(this.countryId, this.newSiteName, this.isNewSiteHospital);
     this.showNewSectionPopup = false;
+    // Now save to the database
+    const siteId = this.db.createId();
+    const wikiId = this.db.createId();
+    const checklistId = this.db.createId();
+    const site: Site = {
+      current: wikiId,
+      countryID: this.countryId,
+      currentCheckList: checklistId,
+      isHospital: this.isNewSiteHospital,
+      id: siteId,
+      siteName: this.newSiteName,
+      tripIds: []
+    };
+    this.db.doc(`countries/${this.countryId}/sites/${siteId}`).set(site).then(() => {
+      console.log('Successfully created site, generating wiki and checklist');
+      const wikiData = {};
+      for (const x of this.preDef.wikiSite) {
+        wikiData[x.title] = x.markup;
+      }
+      this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(wikiData);
+      /** TODO get checklist predefined and add it.
+      const checklistData = {};
+      for (const x of this.preDef.) {
+        wikiData[x.title] = x.markup;
+      }
+      this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(checklistData);
+       */
+    });
   }
 }
