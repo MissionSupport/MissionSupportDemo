@@ -9,6 +9,7 @@ import {flatMap, map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-country-page',
@@ -26,9 +27,7 @@ export class CountryPageComponent implements OnInit {
   viewSites = false;
   countryId: string;
   countryName;
-  editTasks;
   sections: Observable<any[]>;
-  editText = [];
   hideme = [];
   wikiId: string;
   mainHeight;
@@ -36,9 +35,7 @@ export class CountryPageComponent implements OnInit {
   siteCollection: AngularFirestoreCollection<Site>;
   selectedSite: Site;
   countryData: Country;
-  canEdit: Observable<boolean>;
   // TODO: Change to proper value based on edit privileges
-  editMode = true;  // this means the user can edit
   showNewSectionPopup = false;
   newSectionText;
   newSectionName;
@@ -46,12 +43,10 @@ export class CountryPageComponent implements OnInit {
   isNewSiteHospital;
 
   // ToDO change based on permissions
-  canEditSites = false;
+  canEditWiki: Observable<boolean>; // Editing wiki
+  canEditSites: Observable<boolean>; // editing site
 
-  titleEdit;
-  confirmTitleEdit;
   titleEdits = [];
-  titleEditsConfirm = [];
 
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
@@ -81,13 +76,12 @@ export class CountryPageComponent implements OnInit {
       sharedService.onPageNav.emit(this.countryName);
       return this.db.doc(`countries/${this.countryId}/wiki/${this.countryData.current}`).valueChanges().pipe( map(sectionData => {
         const sections = [];
+        this.titleEdits = [];
         for (const title in sectionData) {
           if (sectionData.hasOwnProperty(title)) {
             const markup = sectionData[title];
             sections.push({title, markup});
-            this.editText.push(markup);
-            this.titleEdits.push();
-            this.titleEditsConfirm.push();
+            this.titleEdits.push(title);
           }
         }
         return sections;
@@ -96,10 +90,11 @@ export class CountryPageComponent implements OnInit {
 
     this.authInstance.auth.onAuthStateChanged(user => {
       console.log(user);
-      this.canEdit = this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
+      this.canEditSites = this.canEditWiki =
+        this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
         return pref.admin;
       }));
-      this.canEdit.subscribe(data => {
+      this.canEditWiki.subscribe(data => {
         sharedService.canEdit.emit(data);
       });
     });
@@ -108,19 +103,19 @@ export class CountryPageComponent implements OnInit {
   ngOnInit() {
   }
 
-  submitEdit(title, i, titleEdit, confirmTitleEdit) {
-    if (confirmTitleEdit) {
-      // TODo implement:
-      // changeSectionHeader(titleEdit)
-      console.log(titleEdit);
-    }
+  submitEdit(title, markup, newTitle, confirm) {
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
     // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
     const jsonVariable = {};
-    jsonVariable[title] = this.editText[i];
-    // this.db.doc(`countries/${this.countryId}/wikiSections/${this.wikiId}/versions/${this.versionId}`).update(jsonVariable);
-    this.hideme[i] = !this.hideme[i];
+    if (confirm) {
+      jsonVariable[newTitle] = markup;
+      jsonVariable[title] = firebase.firestore.FieldValue.delete();
+    } else {
+      jsonVariable[title] = markup;
+    }
+    this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`).update(jsonVariable);
+    console.log(title, markup, newTitle, confirm);
   }
 
   siteClick(): void {
@@ -144,5 +139,33 @@ export class CountryPageComponent implements OnInit {
   submitNewSite() {
     console.log(this.countryId, this.newSiteName, this.isNewSiteHospital);
     this.showNewSectionPopup = false;
+    // Now save to the database
+    const siteId = this.db.createId();
+    const wikiId = this.db.createId();
+    const checklistId = this.db.createId();
+    const site: Site = {
+      current: wikiId,
+      countryID: this.countryId,
+      currentCheckList: checklistId,
+      isHospital: this.isNewSiteHospital,
+      id: siteId,
+      siteName: this.newSiteName,
+      tripIds: []
+    };
+    this.db.doc(`countries/${this.countryId}/sites/${siteId}`).set(site).then(() => {
+      console.log('Successfully created site, generating wiki and checklist');
+      const wikiData = {};
+      for (const x of this.preDef.wikiSite) {
+        wikiData[x.title] = x.markup;
+      }
+      this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(wikiData);
+      /** TODO get checklist predefined and add it.
+      const checklistData = {};
+      for (const x of this.preDef.) {
+        wikiData[x.title] = x.markup;
+      }
+      this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(checklistData);
+       */
+    });
   }
 }
