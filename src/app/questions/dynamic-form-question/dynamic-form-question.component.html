@@ -5,8 +5,11 @@
     <label class="p-col-12" [attr.for]="question.key" >{{question.label}}</label>
 
     <div class="p-col-12" *ngSwitchCase="'radio'" [id]="question.key">
-      <p-radioButton [formControlName]="'value'" *ngFor="let opt of question.options" [name]="question.key" [value]="opt.key"
-                      [label]="opt.value"></p-radioButton>
+      <div *ngFor="let opt of question.options">
+        <p-radioButton [formControlName]="'value'"  [name]="question.key" [value]="opt.key"
+                       [label]="opt.value"></p-radioButton>
+      </div>
+
     </div>
 
 
@@ -16,16 +19,16 @@
 
 
     <div class="p-col-12" *ngSwitchCase="'dropdown'" [id]="question.key">
-      <p-dropdown [options]="question.options" [optionLabel]="'value'"  [formControlName]="'value'" [name]="question.key"></p-dropdown>
+      <p-dropdown [options]="question.options" [optionLabel]="'value'"  [formControlName]="'value'" [name]="question.key" placeholder="Select from Dropdown"></p-dropdown>
     </div>
 
     <div class="p-col-12" *ngSwitchCase="'medtextbox'" [id]="question.key">
       <input pInputText (focus)="searchDrugs(question.key)" [value]= "question.value" type="text" [id]="question.key + 'rxterms'" placeholder="Drug name" [formControlName]="'value'">
-      <input pInputText type="text" [id]="question.key + 'drug_strengths'" [value]= "question.value" placeholder="Strength list" [formControlName]="'value'">
+      <input pInputText type="text" [id]="question.key + 'drug_strengths'" [value]= "question.value" placeholder="Strength list" [formControlName]="'strength'">
     </div>
 
     <div class="p-col-12" *ngSwitchCase="'freeResponse'" [id]="question.key">
-      <p-editor [(ngModel)]="text" [style]="{'height' : question.height + 'px'}" [formControlName]="'value'" [id]="question.key">
+      <p-editor [style]="{'height' : question.height + 'px'}" [formControlName]="'value'" [id]="question.key">
         <p-header>
         <span class="ql-formats">
             <button class="ql-bold" aria-label="Bold"></button>
@@ -37,18 +40,15 @@
     </div>
 
     <div *ngSwitchCase="'medmulttextbox'" [formArrayName]="'value'">
-      <div
-           *ngFor="let item of form.get(question.key).get('value').controls; let i = index;">
-        <div [formGroupName]="i">
+      <div *ngFor="let item of form.get(question.key).get('value').controls; let i = index;">
+        <div [formGroupName]="i" style="margin-top: 10px">
           <input pInputText (focus)="searchDrugs(question.key + i)" type="text" [id]="question.key + i + 'rxterms'" placeholder="Drug name" formControlName="drugName">
           <input pInputText type="text" [id]="question.key + i +'drug_strengths'" placeholder="Strength list" formControlName="strength">
         </div>
 
-        <!--Chosen name: {{ form.controls.items.controls[i].controls.name.value }}-->
       </div>
-      <p-button (onClick)="addField(question.key, 'value')" label="Add"></p-button>
+      <p-button (onClick)="addField(question.key, 'value')" label="Add" style="margin-top: 10px"></p-button>
     </div>
-
 
   </div>
 

@@ -171,14 +171,16 @@
 
 
 <div>
-  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="p-grid">
+  <!--<div *ngFor = "let form of forms; let i = index"></div>-->
+  <h2>Hospital Form</h2>
+  <form [formGroup]="form" class="p-grid">
 
     <div *ngFor="let question of questions" [class] = "question.gridSize" class="form-row">
       <app-question [question]="question" [form]="form"></app-question>
     </div>
 
     <div class="form-row p-col-12">
-      <button type="submit" [disabled]="!form.valid">Save</button>
+      <p-button (onClick)="onSubmit()" type="submit" [disabled]="!form.valid" label="Save"></p-button>
     </div>
   </form>
 
