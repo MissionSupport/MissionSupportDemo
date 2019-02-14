@@ -81,7 +81,7 @@ export class CountryPageComponent implements OnInit {
           if (sectionData.hasOwnProperty(title)) {
             const markup = sectionData[title];
             sections.push({title, markup});
-            this.titleEdits.push(title);
+            this.titleEdits.push();
           }
         }
         return sections;
