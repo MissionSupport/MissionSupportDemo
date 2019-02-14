@@ -41,6 +41,9 @@ export class SitesComponent implements OnInit, OnDestroy {
   siteObservable: Observable<Site>;
 
   groups = []; // Contains an array of group ids
+  // TODO populate with avalible orgs/teams for new trip creration
+  newTripOrgs;
+  newTripTeams;
 
   // canEdit = false; // This is used to see if a user can approve edits
   // TODO: Change to proper value based on edit privileges
