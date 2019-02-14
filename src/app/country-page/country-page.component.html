@@ -61,18 +61,24 @@
       <!--</div>-->
     <!--</div>-->
   <div [hidden]="!viewWiki" style="width: 100vw">
-    <div *ngFor="let info of sections | async; let i = index" style="margin-top: 20px; padding-right: 35px">
+    <div *ngFor="let info of sections | async; let i = index; let confirmTitle = false" style="margin-top: 20px; padding-right: 35px">
       <div [hidden]="!hideme[i]">
-        <p-editor type="text" [(ngModel)]="info.markup" [style]="{'height':'320px'}" ></p-editor>
+        <label>Edit Section Title</label>
+        <div class="ui-inputgroup" style="margin-bottom: 10px" >
+          <input type="text" pInputText [placeholder]="info.title" [(ngModel)]="titleEdits[i]">
+          <span class="ui-inputgroup-addon"><p-checkbox binary="true" label = "Confirm Title Edit"
+                                                        [(ngModel)]="confirmTitle"></p-checkbox></span>
+        </div>
+        <p-editor type="text" [(ngModel)]= "info.markup" [style]="{'height':'320px'}" ></p-editor>
         <div class="p-grid" style="text-align: center; padding-top: 5px">
           <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]" label="Cancel"></p-button>
-          <p-button class="p-col-6" (click)="submitEdit(info.title, info.markup);hideme[i] = !hideme[i]" label="Submit"></p-button>
+          <p-button class="p-col-6" (click)="submitEdit(info.title, info.markup, titleEdits[i], confirmTitle);hideme[i] = !hideme[i]" label="Submit"></p-button>
         </div>
       </div>
       <p-fieldset [toggleable]="true" [hidden]="hideme[i]">
         <p-header>
           {{info.title}}
-          <div [style.display]="!editMode ? 'none' : 'inline-block'">
+          <div [style.display]="!canEditWiki ? 'none' : 'inline-block'">
             <i class="pi pi-pencil" style="cursor: pointer; padding-left: 10px" (click)="hideme[i] = !hideme[i]"></i>
           </div>
         </p-header>
@@ -102,7 +108,7 @@
  <p-toolbar [style]="{'background': 'none', 'padding': '0', 'border': 'none', 'position': 'fixed', 'bottom': '0', 'left': '0', 'width': '100%', 'height': '50px'}">
     <button class="footer-button" pButton type="button"
       style="width: 50%; height: 100%; border: none; border-radius: 0"
-      (click)="viewWiki = true; viewSites = false; sharedService.addName.emit('New Section');">
+      (click)="viewWiki = true; viewSites = false; sharedService.addName.emit('New Section'); sharedService.canEdit.emit(canEditWiki);">
       <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
         <span>Wiki</span>
@@ -110,7 +116,7 @@
     </button>
     <button class="footer-button" pButton type="button"
       style="width: 50%; height: 100%; border: none; border-radius: 0"
-      (click)="viewWiki = false; viewSites = true; sharedService.addName.emit('New Site');">
+      (click)="viewWiki = false; viewSites = true; sharedService.addName.emit('New Site'); sharedService.canEdit.emit(canEditSites);">
       <i class="pi pi-sitemap" [ngStyle]="{'opacity': !viewSites ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewSites ? '0.5' : '1'}">
         <span>Sites</span>

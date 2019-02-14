@@ -11,6 +11,7 @@ import {Site} from '../interfaces/site';
 import {Trip} from '../interfaces/trip';
 import {flatMap, map} from 'rxjs/operators';
 import {Country} from '../interfaces/country';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-sites',
@@ -20,8 +21,8 @@ import {Country} from '../interfaces/country';
 
 export class SitesComponent implements OnInit, OnDestroy {
 
-
   siteId: string;
+  wikiId: string;
   viewWiki = true;
   viewChecklist = false;
   viewTrips = false;
@@ -43,12 +44,18 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   // canEdit = false; // This is used to see if a user can approve edits
   // TODO: Change to proper value based on edit privileges
-  canEditWiki: Observable<boolean>;  // this means the user can edit wiki
   showNewSectionPopup = false;
   newSectionText;
   newSectionName;
   newTripOrg;
   newTripTeam;
+
+  // ToDo edit based on permissions
+  canEditWiki: Observable<boolean>;  // this means the user can edit wiki
+  canEditChecklist: Observable<boolean>;
+  canEditTrip: Observable<boolean>;
+
+  titleEdits = [];
 
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
               public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router) {
@@ -68,7 +75,8 @@ export class SitesComponent implements OnInit, OnDestroy {
     }));
     this.siteObservable.subscribe((site: Site) => {
       sharedService.onPageNav.emit(site.siteName);
-      // Get wiki information
+      this.wikiId = site.current;
+        // Get wiki information
       this.sections = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${site.current}`).valueChanges()
         .pipe(map(data => {
           const array = [];
@@ -81,13 +89,16 @@ export class SitesComponent implements OnInit, OnDestroy {
           return array;
         }));
       // Let's do checklist
-      this.checkList = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/checklist/${site.currentCheckList}`)
+      this.checkList =
+        this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/checklist/${site.currentCheckList}`)
         .valueChanges().pipe(map(data => {
           const array = [];
+          this.titleEdits = [];
           for (const id in data) {
             if (data.hasOwnProperty(id)) {
               const markup = data[id];
               array.push({id, markup});
+              this.titleEdits.push(id);
             }
           }
           return array;
@@ -108,16 +119,17 @@ export class SitesComponent implements OnInit, OnDestroy {
       });
     });
 
-    let wikiSubscibe = null;
+    let wikiSubscribe = null;
     this.authInstance.auth.onAuthStateChanged(user => {
-      if (wikiSubscibe) {
-        wikiSubscibe.unsubscribe();
+      if (wikiSubscribe) {
+        wikiSubscribe.unsubscribe();
       }
-      this.canEditWiki = this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
+      this.canEditTrip = this.canEditChecklist = this.canEditWiki =
+        this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
         return pref.admin;
       }));
 
-      wikiSubscibe = this.canEditWiki.subscribe(can => {
+      wikiSubscribe = this.canEditWiki.subscribe(can => {
         sharedService.canEdit.emit(can);
       });
     });
@@ -140,11 +152,16 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.showNewSectionPopup = false;
   }
 
-  submitEdit(title, markup) {
-    // this.editText[i] is the data we with to push into firebase with the section header title
-    // to then revert the page to the view do "hidden[i] = !hidden[i];"
-    // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
+  submitEdit(title, markup, newTitle, confirm) {
     const jsonVariable = {};
+    if (confirm) {
+      jsonVariable[newTitle] = markup;
+      jsonVariable[title] = firebase.firestore.FieldValue.delete();
+    } else {
+      jsonVariable[title] = markup;
+    }
+    console.log(title, markup, newTitle, confirm);
+    this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${this.wikiId}`).update(jsonVariable);
   }
 
   submitNewTrip() {

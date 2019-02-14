@@ -31,20 +31,30 @@ export class DynamicFormQuestionComponent implements AfterViewInit {
       const drugField = $('#' + questionKey + 'rxterms')[0];
       const autocomp = drugField.autocomp;
       console.log(drugField);
-      var el = <HTMLInputElement>document.getElementById(questionKey + 'rxterms');
+      const el = <HTMLInputElement>document.getElementById(questionKey + 'rxterms');
       el.value = drugField.value;
       el.dispatchEvent(new Event('input'));
       const strengths =
         autocomp.getSelectedItemData()[0].data['STRENGTHS_AND_FORMS'];
       if (strengths) {
         $('#' + questionKey + 'drug_strengths')[0].autocomp.setListAndField(strengths, '');
+        const el2 = <HTMLInputElement>document.getElementById(questionKey + 'drug_strengths');
+        const drugStrengthField = $('#' + questionKey + 'drug_strengths')[0];
+        el2.value = drugStrengthField.value;
+        el2.dispatchEvent(new Event('input'));
       }
     });
+    // Def.Autocompleter.Event.observeListSelections(questionKey + 'drug_strengths', function() {
+    //     const el2 = <HTMLInputElement>document.getElementById(questionKey + 'drug_strengths');
+    //     const drugStrengthField = $('#' + questionKey + 'drug_strengths')[0];
+    //     el2.value = drugStrengthField.value;
+    //     el2.dispatchEvent(new Event('input'));
+    // });
   }
 
-  addField(questionKey) {
+  addField(questionKey, string) {
     console.log(this.form.get(questionKey));
-    const formm = this.form.get(questionKey) as FormArray;
+    const formm = this.form.get(questionKey).get(string) as FormArray;
     formm.push(this.createItem());
   }
 
