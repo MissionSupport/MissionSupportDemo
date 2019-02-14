@@ -51,6 +51,13 @@ export class SitesComponent implements OnInit, OnDestroy {
   newTripOrg;
   newTripTeam;
 
+  // ToDo edit based on permissions
+  canEditChecklist = true;
+  canEditTrip = false;
+
+  titleEdits = [];
+  titleEditsConfirm = [];
+
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
               public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router) {
     this.siteId = this.route.snapshot.paramMap.get('id');
@@ -79,6 +86,8 @@ export class SitesComponent implements OnInit, OnDestroy {
               const markup = data[title];
               array.push({title, markup});
               this.editText.push(markup);
+              this.titleEdits.push();
+              this.titleEditsConfirm.push();
             }
           }
           return array;
@@ -129,7 +138,12 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.showNewSectionPopup = false;
   }
 
-  submitEdit(title, i) {
+  submitEdit(title, i, titleEdit, confirmTitleEdit) {
+    if (confirmTitleEdit) {
+      // TODo implement:
+      // changeSectionHeader(titleEdit)
+      console.log(titleEdit);
+    }
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
     // TODO: Currently we are not having edits on the page. We will wait for later sprints to add

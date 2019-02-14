@@ -45,6 +45,14 @@ export class CountryPageComponent implements OnInit {
   newSiteName;
   isNewSiteHospital;
 
+  // ToDO change based on permissions
+  canEditSites = false;
+
+  titleEdit;
+  confirmTitleEdit;
+  titleEdits = [];
+  titleEditsConfirm = [];
+
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
     this.countryId = this.route.snapshot.paramMap.get('id');
@@ -77,6 +85,9 @@ export class CountryPageComponent implements OnInit {
           if (sectionData.hasOwnProperty(title)) {
             const markup = sectionData[title];
             sections.push({title, markup});
+            this.editText.push(markup);
+            this.titleEdits.push();
+            this.titleEditsConfirm.push();
           }
         }
         return sections;
@@ -97,13 +108,18 @@ export class CountryPageComponent implements OnInit {
   ngOnInit() {
   }
 
-  submitEdit(title, i) {
+  submitEdit(title, i, titleEdit, confirmTitleEdit) {
+    if (confirmTitleEdit) {
+      // TODo implement:
+      // changeSectionHeader(titleEdit)
+      console.log(titleEdit);
+    }
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
     // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
     const jsonVariable = {};
     jsonVariable[title] = this.editText[i];
-    //this.db.doc(`countries/${this.countryId}/wikiSections/${this.wikiId}/versions/${this.versionId}`).update(jsonVariable);
+    // this.db.doc(`countries/${this.countryId}/wikiSections/${this.wikiId}/versions/${this.versionId}`).update(jsonVariable);
     this.hideme[i] = !this.hideme[i];
   }
 

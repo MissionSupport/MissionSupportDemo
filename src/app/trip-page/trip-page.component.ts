@@ -38,6 +38,12 @@ export class TripPageComponent implements OnInit {
   team = 'Emory 12';
   date = '7.12.17';
 
+  // ToDo: Edit based on permissions
+  canEditAbout = true;
+
+  titleEdits = [];
+  titleEditsConfirm = [];
+
   constructor(private sharedService: SharedService, private preDef: PreDefined, public router: Router, private route: ActivatedRoute,
               private readonly db: AngularFirestore) {
     sharedService.hideToolbar.emit(false);
@@ -62,6 +68,8 @@ export class TripPageComponent implements OnInit {
             const markup = data[title];
             this.sections.push({title, markup});
             this.editText.push(markup);
+            this.titleEdits.push();
+            this.titleEditsConfirm.push();
           }
         }
       });
@@ -76,7 +84,12 @@ export class TripPageComponent implements OnInit {
   ngOnInit() {
   }
 
-  submitEdit(title, i) {
+  submitEdit(title, i, titleEdit, confirmTitleEdit) {
+    if (confirmTitleEdit) {
+      // TODo implement:
+      // changeSectionHeader(titleEdit)
+      console.log(titleEdit);
+    }
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
     // TODO: This implenentation

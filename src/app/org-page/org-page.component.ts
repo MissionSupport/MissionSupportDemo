@@ -50,6 +50,10 @@ export class OrgPageComponent implements OnInit {
   newTripSite;
   newTripTeam;
 
+  // ToDO change based on permissions
+  canEditTeams = true;
+  canEditTrips = false;
+
   members = [{value: ''}];
 
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,

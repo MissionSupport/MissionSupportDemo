@@ -8,7 +8,7 @@ export class QuestionBase<T> {
   gridSize: string;
 
   constructor(options: {
-    value?: T,
+    value?: any,
     key?: string,
     label?: string,
     required?: boolean,
