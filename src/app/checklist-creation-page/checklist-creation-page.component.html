@@ -172,22 +172,45 @@
 
 <div>
   <!--<div *ngFor = "let form of forms; let i = index"></div>-->
-  <h2>Hospital Form</h2>
-  <form [formGroup]="form" class="p-grid">
+  <div *ngFor="let form of forms; let i = index">
+    <h2>{{form.name}}</h2>
+    <form [formGroup]="form.form" class="p-grid">
 
-    <div *ngFor="let question of questions" [class] = "question.gridSize" class="form-row">
-      <app-question [question]="question" [form]="form"></app-question>
+      <div *ngFor="let question of form.questions" [class] = "question.gridSize" class="form-row">
+        <app-question [question]="question" [form]="form.form"></app-question>
+      </div>
+
+      <div class="form-row p-col-12">
+        <p-button (onClick)="onSubmit(form.form, form)" type="submit" [disabled]="!form.form.valid" label="Save"></p-button>
+      </div>
+    </form>
+
+    <div *ngIf="form.payLoad" class="form-row">
+      <strong>Saved the following values</strong><br>{{form.payLoad}}
     </div>
-
-    <div class="form-row p-col-12">
-      <p-button (onClick)="onSubmit()" type="submit" [disabled]="!form.valid" label="Save"></p-button>
-    </div>
-  </form>
-
-  <div *ngIf="payLoad" class="form-row">
-    <strong>Saved the following values</strong><br>{{payLoad}}
   </div>
 </div>
+
+<!--<div>-->
+  <!--&lt;!&ndash;<div *ngFor = "let form of forms; let i = index"></div>&ndash;&gt;-->
+  <!--<div *ngFor="let form of forms; let i = index">-->
+    <!--<h2>Hospital Form</h2>-->
+    <!--<form [formGroup]="form" class="p-grid">-->
+
+      <!--<div *ngFor="let question of questions" [class] = "question.gridSize" class="form-row">-->
+        <!--<app-question [question]="question" [form]="form"></app-question>-->
+      <!--</div>-->
+
+      <!--<div class="form-row p-col-12">-->
+        <!--<p-button (onClick)="onSubmit()" type="submit" [disabled]="!form.valid" label="Save"></p-button>-->
+      <!--</div>-->
+    <!--</form>-->
+
+    <!--<div *ngIf="payLoad" class="form-row">-->
+      <!--<strong>Saved the following values</strong><br>{{payLoad}}-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
 
 
 

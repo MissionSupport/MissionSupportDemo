@@ -130,6 +130,7 @@ export class QuestionService {
   // TODO: get from a remote source of question metadata
   // TODO: make asynchronous
   getQuestions(questionData) {
+    this.questions = [];
     this.parseQuestionJson(questionData);
 
     // let questions: QuestionBase<any>[] = [
