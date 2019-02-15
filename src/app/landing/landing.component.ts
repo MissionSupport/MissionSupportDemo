@@ -1,15 +1,14 @@
-import {Component, OnInit, AfterContentInit, OnDestroy, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, AfterContentInit, OnDestroy} from '@angular/core';
 import * as d3 from 'd3';
-import {feature} from 'topojson/node_modules/topojson-client';
+import {feature} from 'topojson';
+import {FeatureCollection} from 'geojson';
+// import {feature} from 'topojson/node_modules/topojson-client';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Router} from '@angular/router';
-import {Site} from '../interfaces/site';
 import {SharedService} from '../globals';
 import {Country} from '../interfaces/country';
-import {flatMap, map} from 'rxjs/operators';
-import {Organization} from '../interfaces/organization';
-import {Team} from '../interfaces/team';
-import {Trip} from '../interfaces/trip';
+import { drag } from 'd3-drag';
+import { Topology } from 'topojson-specification';
 
 @Component({
   selector: 'app-landing',
@@ -19,6 +18,8 @@ import {Trip} from '../interfaces/trip';
 export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   width; // = window.innerWidth;
   height; // = window.innerHeight;
+  minx = 0;
+  miny = 0;
   centered;
   country;
   projection; // = d3.geoMercator().translate([this.width / 2.2, this.height / 1.5]);
@@ -32,7 +33,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   selectedCountry: Country;
   countryCollection: AngularFirestoreCollection<Country>;
 
-  constructor(private readonly db: AngularFirestore, public router: Router, private sharedService: SharedService) {
+  constructor(db: AngularFirestore, public router: Router, sharedService: SharedService) {
     this.countryCollection = db.collection<Country>('countries');
     const countries = this.countryCollection.valueChanges();
     countries.subscribe( item => {
@@ -41,6 +42,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     sharedService.hideToolbar.emit(false);
     sharedService.canEdit.emit(false);
     sharedService.onPageNav.emit('Country Selection');
+
   }
   ngOnInit() {
   }
@@ -53,65 +55,51 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     this.height = document.getElementById('svgContainer').clientHeight;
 
     // this.projection = d3.geoMercator().translate([this.width / 2.2, this.height / 1.5]);
-    this.svg = d3.select('#svgContainer').append('svg')
-      .attr('width', this.width)
-      .attr('height', this.height)
-      .attr('class', 'map');
-    // this.g = this.svg.append('g');
-    // this.path = d3.geoPath().projection(this.projection);
-    // this.path = d3.geoPath().projection(this.projection);
-    // d3.select('p').style('color', 'red');
+    this.svg = d3.select('#svgContainer')
+      .append('svg')
+      .attr('preserveAspectRatio', 'xMidYMid slice')
+      .attr('viewBox', `${this.minx} ${this.miny} ${this.width} ${this.height}`)
+      .attr('class', 'map')
+      .style('display', 'inline-block')
+      .style('position', 'absolute')
+      .style('top', '0')
+      .style('left', '0')
+      .style('height', '100%')
+      .style('width', '100%')
+      .call(drag()
+        .on('start', () => {
+          d3.select('.map').style('cursor', 'grabbing');
+        })
+        .on('drag', () => {
+          this.minx += d3.event.dx;
+          this.miny += d3.event.dy;
+          d3.select('.map').attr('viewBox', `${this.minx} ${this.miny} ${this.width} ${this.height}`);
+        })
+        .on('end', () => {
+          d3.select('.map').style('cursor', 'auto');
+        }));
 
     d3.json('assets/countries.topo.json')
-      .then((topology) => {
-        // Code from your callback goes here...
-          console.log(topology);
-
-          // convert our topojson to geojson
-          const states = feature(topology, topology.objects.countriess);
-
+      .then((topology: Topology) => {
           // projection fn so we can fit geodata within svg's area
-          const projection = d3.geoMercator().fitSize([this.width, this.height], states);
+          const projection = d3.geoMercator().scale(200).translate([this.width / 2, this.height / 1.2]);
 
           // use projection fn with geoPath fn
           const path = d3.geoPath().projection(projection);
 
-          console.log('hi');
           this.svg.append('g')
             .attr('class', 'states')
             .selectAll('path')
-            .data(feature(topology, topology.objects.countriess).features)
+            .data((feature(topology, topology.objects.countriess) as FeatureCollection).features)
             .enter().append('path')
             .attr('d', path)
-            .attr('id', (e) => e.properties.SOV_A3)
+            .style('stroke', 'white')
+            .style('stroke-width', '1px')
+            .attr('id', (e) => e.properties.GU_A3)
             .on('click', this.region_clicked);
-
       });
-
-    // d3.json('assets/countries.topo.json')
-    //   .then((topology) => {
-    //     // Code from your callback goes here...
-    //     console.log('hello');
-    //     this.g.append('g')
-    //       .attr('id', 'countries')
-    //       .selectAll('path')
-    //       .data(feature(topology, topology.objects.countries).features)
-    //       .enter()
-    //       .append('path')
-    //       .attr('id', function (d) {
-    //         return d.id;
-    //       })
-    //       // firestore - this.get country determines color and when selecting what country to queary yo
-    //       // .attr('d', i => {
-    //       //   // this.projection = this.projection = d3.geoMercator().fitSize([this.width, this.height], topology);
-    //       //   // this.path =  d3.geoPath().projection(this.projection);
-    //       //   // console.log(this.path);
-    //       //   return this.path;
-    //       // })
-    //       .attr('d', this.path)
-    //       .on('click', this.region_clicked);
-    //   });
   }
+
   region_clicked(e) {
     console.log(e.properties.FORMAL_EN);
     d3.select('.country_highlighted').style('fill', 'black');
