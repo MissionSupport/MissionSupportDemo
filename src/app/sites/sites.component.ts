@@ -171,5 +171,29 @@ export class SitesComponent implements OnInit, OnDestroy {
     console.log(this.countryId, this.siteId, this.newTripOrg, this.newTripTeam);
     this.showNewSectionPopup = false;
   }
+
+  toggleWikiTab() {
+    this.viewWiki = true;
+    this.viewChecklist = false;
+    this.viewTrips = false;
+    this.sharedService.addName.emit('New Section');
+    this.sharedService.canEdit.emit(this.canEditWiki);
+  }
+
+  toggleChecklistTab() {
+    this.viewWiki = false;
+    this.viewChecklist = true;
+    this.viewTrips = false;
+    this.sharedService.addName.emit('New List');
+    this.sharedService.canEdit.emit(this.canEditChecklist);
+  }
+
+  toggleTripsTab() {
+    this.viewWiki = false;
+    this.viewChecklist = false;
+    this.viewTrips = true;
+    this.sharedService.addName.emit('New Trip');
+    this.sharedService.canEdit.emit(this.canEditTrip);
+  }
 }
 

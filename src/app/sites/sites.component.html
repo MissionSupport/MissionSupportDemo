@@ -101,8 +101,7 @@
   <button class="footer-button" pButton type="button"
     style="height: 100%; border: none; border-radius: 0"
     [ngStyle]="{'width': 100/3 + '%'}"
-    (click)="viewWiki = true; viewChecklist = false; viewTrips = false; sharedService.addName.emit('New Section');
-      sharedService.canEdit.emit(editMode);">
+    (click)="toggleWikiTab()">
     <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
     <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
       <span>Wiki</span>
@@ -111,8 +110,7 @@
   <button class="footer-button" pButton type="button"
     style="height: 100%; border: none; border-radius: 0"
     [ngStyle]="{'width': 100/3 + '%'}"
-    (click)="viewWiki = false; viewChecklist = true; viewTrips = false; sharedService.addName.emit('New List');
-      sharedService.canEdit.emit(canEditChecklist);">
+    (click)="toggleChecklistTab()">
     <i class="pi pi-list" [ngStyle]="{'opacity': !viewChecklist ? '0.5' : '1'}"></i>
     <div [ngStyle]="{'opacity': !viewChecklist ? '0.5' : '1'}">
       <span>Checklist</span>
@@ -121,8 +119,7 @@
   <button class="footer-button" pButton type="button"
     style="height: 100%; border: none; border-radius: 0"
     [ngStyle]="{'width': 100/3 + '%'}"
-    (click)="viewWiki = false; viewChecklist = false; viewTrips = true; sharedService.addName.emit('New Trip');
-      sharedService.canEdit.emit(canEditTrip);">
+    (click)="toggleTripsTab()">
     <i class="pi pi-briefcase" [ngStyle]="{'opacity': !viewTrips ? '0.5' : '1'}"></i>
     <div [ngStyle]="{'opacity': !viewTrips ? '0.5' : '1'}">
       <span>Trips</span>
