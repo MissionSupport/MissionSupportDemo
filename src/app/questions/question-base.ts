@@ -8,7 +8,7 @@ export class QuestionBase<T> {
   gridSize: string;
 
   constructor(options: {
-    value?: T,
+    value?: any,
     key?: string,
     label?: string,
     required?: boolean,
@@ -16,7 +16,7 @@ export class QuestionBase<T> {
     controlType?: string,
     gridSize?: string
   } = {}) {
-    this.value = options.value;
+    this.value = options.value || '';
     this.key = options.key || '';
     this.label = options.label || '';
     this.required = !!options.required;

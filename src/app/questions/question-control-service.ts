@@ -11,13 +11,22 @@ export class QuestionControlService {
     let group: any = {};
 
     questions.forEach(question => {
-      if (question.controlType !== 'medmulttextbox') {
-        group[question.key] = question.required ? new FormControl(question.value || '', Validators.required)
-          : new FormControl(question.value || '');
+      if (question.controlType !== 'medmulttextbox' && question.controlType !== 'medtextbox') {
+        group[question.key] = this.formBuilder.group({
+          question: question.label,
+          value: question.value
+        });
+      } else if ( question.controlType === 'medmulttextbox') {
+        group[question.key] = this.formBuilder.group({
+          question: question.label,
+          value: this.formBuilder.array([])
+        });
       } else {
-        // group[question.key] = new FormArray([]);
-        // group[question.key] = new FormControl(this.formBuilder.array([]));
-        group[question.key] = this.formBuilder.array([]);
+        group[question.key] = this.formBuilder.group({
+          question: question.label,
+          value: question.value,
+          strength: ''
+        });
       }
     });
     return new FormGroup(group);

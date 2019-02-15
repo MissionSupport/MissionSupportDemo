@@ -1,37 +1,34 @@
 <div [formGroup]="form">
 
 
-  <div class= "p-col-12" [ngSwitch]="question.controlType">
-    <!--[class] = "question.gridSize"-->
-    <label class="p-col-12" [attr.for]="question.key">{{question.label}}</label>
+  <div class= "p-col-12" [ngSwitch]="question.controlType" [formGroupName]="question.key" >
+    <label class="p-col-12" [attr.for]="question.key" >{{question.label}}</label>
+
     <div class="p-col-12" *ngSwitchCase="'radio'" [id]="question.key">
-      <p-radioButton [formControlName]="question.key" *ngFor="let opt of question.options" [name]="question.key" [value]="opt.key"
-                      [label]="opt.value"></p-radioButton>
-          <!--<input  [formControlName]="question.key" *ngFor="let opt of question.options" [name]="question.key" [value]="opt.value"-->
-          <!--[id]="question.key" [type]="question.type">-->
+      <div *ngFor="let opt of question.options">
+        <p-radioButton [formControlName]="'value'"  [name]="question.key" [value]="opt.key"
+                       [label]="opt.value"></p-radioButton>
+      </div>
+
     </div>
 
 
-    <input class="p-col-12"  pInputText *ngSwitchCase="'textbox'" [formControlName]="question.key"
-           [id]="question.key" [type]="question.type" [pKeyFilter]="question.keyFilter">
+    <input class="p-col-12"  pInputText *ngSwitchCase="'textbox'" [formControlName]="'value'"
+           [id]="question.key" [type]="question.type" [value]= "question.value" [pKeyFilter]="question.keyFilter">
 
 
 
     <div class="p-col-12" *ngSwitchCase="'dropdown'" [id]="question.key">
-      <p-dropdown [options]="question.options" [optionLabel]="'value'"  [formControlName]="question.key" [name]="question.key"></p-dropdown>
+      <p-dropdown [options]="question.options" [optionLabel]="'value'"  [formControlName]="'value'" [name]="question.key" placeholder="Select from Dropdown"></p-dropdown>
     </div>
-          <!--<select [id]="question.key" *ngSwitchCase="'dropdown'" [formControlName]="question.key">-->
-          <!--<option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>-->
-          <!--</select>-->
 
     <div class="p-col-12" *ngSwitchCase="'medtextbox'" [id]="question.key">
-      <input pInputText (focus)="searchDrugs(question.key)" type="text" [id]="question.key + 'rxterms'" placeholder="Drug name" [formControlName]="question.key">
-      <input pInputText type="text" [id]="question.key + 'drug_strengths'" placeholder="Strength list" [formControlName]="question.key">
+      <input pInputText (focus)="searchDrugs(question.key)" [value]= "question.value" type="text" [id]="question.key + 'rxterms'" placeholder="Drug name" [formControlName]="'value'">
+      <input pInputText type="text" [id]="question.key + 'drug_strengths'" [value]= "question.value" placeholder="Strength list" [formControlName]="'strength'">
     </div>
-    <!--<input pInputText *ngSwitchCase="'medtextbox'" [formControlName]="question.key"-->
-           <!--[id]="question.key" [type]="question.type">-->
+
     <div class="p-col-12" *ngSwitchCase="'freeResponse'" [id]="question.key">
-      <p-editor [(ngModel)]="text" [style]="{'height' : question.height + 'px'}" [formControlName]="question.key" [id]="question.key">
+      <p-editor [style]="{'height' : question.height + 'px'}" [formControlName]="'value'" [id]="question.key">
         <p-header>
         <span class="ql-formats">
             <button class="ql-bold" aria-label="Bold"></button>
@@ -42,19 +39,16 @@
       </p-editor>
     </div>
 
-    <div *ngSwitchCase="'medmulttextbox'" [formArrayName]="question.key">
-      <div
-           *ngFor="let item of form.get(question.key).controls; let i = index;">
-        <div [formGroupName]="i">
+    <div *ngSwitchCase="'medmulttextbox'" [formArrayName]="'value'">
+      <div *ngFor="let item of form.get(question.key).get('value').controls; let i = index;">
+        <div [formGroupName]="i" style="margin-top: 10px">
           <input pInputText (focus)="searchDrugs(question.key + i)" type="text" [id]="question.key + i + 'rxterms'" placeholder="Drug name" formControlName="drugName">
           <input pInputText type="text" [id]="question.key + i +'drug_strengths'" placeholder="Strength list" formControlName="strength">
         </div>
 
-        <!--Chosen name: {{ form.controls.items.controls[i].controls.name.value }}-->
       </div>
-      <p-button (onClick)="addField(question.key)" label="Add"></p-button>
+      <p-button (onClick)="addField(question.key, 'value')" label="Add" style="margin-top: 10px"></p-button>
     </div>
-
 
   </div>
 

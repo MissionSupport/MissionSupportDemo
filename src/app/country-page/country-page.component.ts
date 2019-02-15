@@ -5,6 +5,11 @@ import {Site} from '../interfaces/site';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {PreDefined} from '../globals';
 import {Country} from '../interfaces/country';
+import {flatMap, map} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {AngularFireAuth} from '@angular/fire/auth';
+import {UserPreferences} from '../interfaces/user-preferences';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-country-page',
@@ -22,35 +27,34 @@ export class CountryPageComponent implements OnInit {
   viewSites = false;
   countryId: string;
   countryName;
-  countryCollection;
-  editTasks;
-  sections = [];
-  editText = [];
+  sections: Observable<any[]>;
   hideme = [];
-  versionId;
-  wikiId;
+  wikiId: string;
   mainHeight;
   sites: Site[];
   siteCollection: AngularFirestoreCollection<Site>;
   selectedSite: Site;
   countryData: Country;
-  canEdit = false;
   // TODO: Change to proper value based on edit privileges
-  editMode = true;  // this means the user can edit
   showNewSectionPopup = false;
   newSectionText;
   newSectionName;
   newSiteName;
   isNewSiteHospital;
 
+  // ToDO change based on permissions
+  canEditWiki: Observable<boolean>; // Editing wiki
+  canEditSites: Observable<boolean>; // editing site
+
+  titleEdits = [];
+
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
-               private preDef: PreDefined, private route: ActivatedRoute) {
+               private preDef: PreDefined, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
     this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;
     sharedService.hideToolbar.emit(false);
     sharedService.addName.emit('New Section');
     // ToDo : edit based on rights
-    sharedService.canEdit.emit(true);
     sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
@@ -65,76 +69,53 @@ export class CountryPageComponent implements OnInit {
       this.sites = item;
     });
 
-    this.db.doc(`countries/${this.countryId}`).valueChanges().subscribe((data: Country) => {
+    this.sections = this.db.doc(`countries/${this.countryId}`).valueChanges().pipe(flatMap((data: Country) => {
       this.countryName = data.countryName;
       this.countryData = data;
+      this.wikiId = data.current; // Wiki id.
       sharedService.onPageNav.emit(this.countryName);
-      this.db.doc(`countries/${this.countryId}/wiki/${this.countryData.current}`).valueChanges().subscribe( sectionData => {
-        this.sections = [];
-        this.editTasks = [];
+      return this.db.doc(`countries/${this.countryId}/wiki/${this.countryData.current}`).valueChanges().pipe( map(sectionData => {
+        const sections = [];
+        this.titleEdits = [];
         for (const title in sectionData) {
           if (sectionData.hasOwnProperty(title)) {
             const markup = sectionData[title];
-            this.sections.push({title, markup});
-            this.editText.push(markup);
+            sections.push({title, markup});
+            this.titleEdits.push();
           }
         }
+        return sections;
+      }));
+    }));
+
+    this.authInstance.auth.onAuthStateChanged(user => {
+      console.log(user);
+      this.canEditSites = this.canEditWiki =
+        this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
+        return pref.admin;
+      }));
+      this.canEditWiki.subscribe(data => {
+        sharedService.canEdit.emit(data);
       });
     });
-    // // TODO: Now we are going to get the latest version of markdown that is approved. IF WE DO THIS
-    // //
-    // //
-    // this.countryCollection = this.db.collection<Country>('Countries/' + this.id + '/versions', ref =>
-    //   ref.where('current', '==', true).limit(1));
-    // // TODO: IF using the same versioning scheme -> this is how we sould get the catagories?
-    // //
-    // //
-    // this.countryCollection.snapshotChanges().subscribe(item => {
-    //   item.map(a => {
-    //     const data = a.payload.doc.id;
-    //     this.updateVersionId(data);
-    //     const sections = this.db.collection('Sites/' + this.id + '/versions/' + this.versionId + '/wikiSections');
-    //     sections.snapshotChanges().subscribe(section => {
-    //       let sectionData = null;
-    //       section.map(args => {
-    //         this.wikiId = args.payload.doc.id;
-    //         sectionData = args.payload.doc.data();
-    //       });
-    //       this.sections = [];
-    //       this.editText = [];
-    //       for (const title in sectionData) {
-    //         if (sectionData.hasOwnProperty(title)) {
-    //           const markup = sectionData[title];
-    //           this.sections.push({title, markup});
-    //           this.editText.push(markup);
-    //         }
-    //       }
-    //     });
-    //   });
-    // });
-    // // TODO: get the countries sites
-    // this.siteCollection = db.collection<Site>('Country/Sites');
-    // this.sites = this.siteCollection.valueChanges();
-    // this.sites.subscribe( item => {
-    //   this.sites = item as any;
-    // });
   }
 
   ngOnInit() {
   }
 
-  updateVersionId(data) {
-    this.versionId = data;
-  }
-
-  submitEdit(title, i) {
+  submitEdit(title, markup, newTitle, confirm) {
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
     // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
     const jsonVariable = {};
-    jsonVariable[title] = this.editText[i];
-    this.db.doc(`countries/${this.countryId}/wikiSections/${this.wikiId}/versions/${this.versionId}`).update(jsonVariable);
-    this.hideme[i] = !this.hideme[i];
+    if (confirm) {
+      jsonVariable[newTitle] = markup;
+      jsonVariable[title] = firebase.firestore.FieldValue.delete();
+    } else {
+      jsonVariable[title] = markup;
+    }
+    this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`).update(jsonVariable);
+    console.log(title, markup, newTitle, confirm);
   }
 
   siteClick(): void {
@@ -145,12 +126,46 @@ export class CountryPageComponent implements OnInit {
 
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
-    // TODO: if(add works )
     this.showNewSectionPopup = false;
+    // Now save to the database
+    const jsonVariable = {};
+    jsonVariable[this.newSectionName] = this.newSectionText;
+    this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`).update(jsonVariable).then(() => {
+      // Success
+      console.log('Successfully added new section');
+    });
   }
 
   submitNewSite() {
     console.log(this.countryId, this.newSiteName, this.isNewSiteHospital);
     this.showNewSectionPopup = false;
+    // Now save to the database
+    const siteId = this.db.createId();
+    const wikiId = this.db.createId();
+    const checklistId = this.db.createId();
+    const site: Site = {
+      current: wikiId,
+      countryID: this.countryId,
+      currentCheckList: checklistId,
+      isHospital: this.isNewSiteHospital,
+      id: siteId,
+      siteName: this.newSiteName,
+      tripIds: []
+    };
+    this.db.doc(`countries/${this.countryId}/sites/${siteId}`).set(site).then(() => {
+      console.log('Successfully created site, generating wiki and checklist');
+      const wikiData = {};
+      for (const x of this.preDef.wikiSite) {
+        wikiData[x.title] = x.markup;
+      }
+      this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(wikiData);
+      /** TODO get checklist predefined and add it.
+      const checklistData = {};
+      for (const x of this.preDef.) {
+        wikiData[x.title] = x.markup;
+      }
+      this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(checklistData);
+       */
+    });
   }
 }

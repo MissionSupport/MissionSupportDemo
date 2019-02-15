@@ -22,16 +22,13 @@ export class DynamicFormQuestionComponent implements AfterViewInit {
 
   }
   searchDrugs(questionKey) {
-    // console.log(Def.Autocompleter);
     new Def.Autocompleter.Prefetch(questionKey + 'drug_strengths', []);
     new Def.Autocompleter.Search(questionKey + 'rxterms',
       'https://clinicaltables.nlm.nih.gov/api/rxterms/v3/search?ef=STRENGTHS_AND_FORMS');
-    // console.log($('#' + questionKey + 'rxterms')[0]);
     Def.Autocompleter.Event.observeListSelections(questionKey + 'rxterms', function() {
       const drugField = $('#' + questionKey + 'rxterms')[0];
       const autocomp = drugField.autocomp;
-      console.log(drugField);
-      var el = <HTMLInputElement>document.getElementById(questionKey + 'rxterms');
+      const el = <HTMLInputElement>document.getElementById(questionKey + 'rxterms');
       el.value = drugField.value;
       el.dispatchEvent(new Event('input'));
       const strengths =
@@ -40,11 +37,22 @@ export class DynamicFormQuestionComponent implements AfterViewInit {
         $('#' + questionKey + 'drug_strengths')[0].autocomp.setListAndField(strengths, '');
       }
     });
+    Def.Autocompleter.Event.observeListSelections(questionKey + 'drug_strengths', function() {
+      const el2 = <HTMLInputElement>document.getElementById(questionKey + 'drug_strengths');
+      const drugStrengthField = $('#' + questionKey + 'drug_strengths')[0];
+      el2.value = drugStrengthField.value;
+      el2.dispatchEvent(new Event('input'));
+    });
+    // Def.Autocompleter.Event.observeListSelections(questionKey + 'drug_strengths', function() {
+    //     const el2 = <HTMLInputElement>document.getElementById(questionKey + 'drug_strengths');
+    //     const drugStrengthField = $('#' + questionKey + 'drug_strengths')[0];
+    //     el2.value = drugStrengthField.value;
+    //     el2.dispatchEvent(new Event('input'));
+    // });
   }
 
-  addField(questionKey) {
-    console.log(this.form.get(questionKey));
-    const formm = this.form.get(questionKey) as FormArray;
+  addField(questionKey, string) {
+    const formm = this.form.get(questionKey).get(string) as FormArray;
     formm.push(this.createItem());
   }
 

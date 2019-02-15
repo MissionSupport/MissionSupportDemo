@@ -17,11 +17,17 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     console.log('User authenticated maybe ', this.authInstance.auth.currentUser);
     this.time = localStorage.getItem('login_time_verify') != null ? +localStorage.getItem('login_time_verify') : 0;
+    this.sharedService.hideToolbar.emit(true);
+    this.sharedService.canEdit.emit(false);
+    // auto log in user
+    this.authInstance.auth.onAuthStateChanged(user => {
+      if (user != null) {
+        this.router.navigate(['landing']);
+      }
+    });
   }
   constructor(public router: Router, public authInstance: AngularFireAuth,
               private messageService: MessageService, private sharedService: SharedService) {
-    sharedService.hideToolbar.emit(true);
-    sharedService.canEdit.emit(false);
   }
 
   loginClick() {

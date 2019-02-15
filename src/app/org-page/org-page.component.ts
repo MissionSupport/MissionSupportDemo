@@ -25,12 +25,10 @@ export class OrgPageComponent implements OnInit {
   viewTeams = false;
   viewTrips = false;
 
-  sections = [];
-  editText = [];
+  sections: Observable<any[]>;
   editHeaderText: string; // Used for setting a field when submitting an edit
   hideme = [];
   footerHeight = 45;
-  canEdit = false;
   tripIds: Observable<string>[];
   tripsObservable: Observable<Trip>[];
   trips: Trip[] = [];
@@ -41,7 +39,6 @@ export class OrgPageComponent implements OnInit {
   orgObservable: Observable<Organization>;
 
   // TODO: Change to proper value based on edit privileges
-  editMode = true;  // this means the user can edit
   showNewSectionPopup = false;
   newSectionText;
   newSectionName;
@@ -49,6 +46,11 @@ export class OrgPageComponent implements OnInit {
   newTripCountry;
   newTripSite;
   newTripTeam;
+
+  // ToDO change based on permissions
+  canEditWiki = false;  // this means the user can edit
+  canEditTeams = false;
+  canEditTrips = false;
 
   members = [{value: ''}];
 
@@ -60,9 +62,6 @@ export class OrgPageComponent implements OnInit {
       this.ngOnInit();
     });
     */
-    // ToDo : edit based on rights
-    sharedService.canEdit.emit(true);
-    sharedService.addName.emit('New Section');
     sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
@@ -103,6 +102,17 @@ export class OrgPageComponent implements OnInit {
       this.tripIds.map(data => {
         data.subscribe();
       });
+      // Get wiki data
+      this.sections = this.db.doc(`organizations/${this.orgId}/wiki/${org.currentWiki}`).valueChanges().pipe(map(data => {
+        const sections = [];
+        for (const title in data) {
+          if (data.hasOwnProperty(title)) {
+            const markup = data[title];
+            sections.push({title, markup});
+          }
+        }
+        return sections;
+      }));
       return org;
     }));
 
@@ -112,14 +122,19 @@ export class OrgPageComponent implements OnInit {
       this.sharedService.onPageNav.emit(this.orgName);
       // Check if the user can edit
       this.authInstance.auth.onAuthStateChanged(user => {
-        this.canEdit = org.admins.includes(user.uid);
+        this.canEditTrips = this.canEditTeams = this.canEditWiki = org.admins.includes(user.uid);
+        if (this.viewWiki) {
+          this.sharedService.addName.emit('New Section')
+          this.sharedService.canEdit.emit(this.canEditWiki);
+        } else if (this.viewTeams) {
+          this.sharedService.addName.emit('New Team')
+          this.sharedService.canEdit.emit(this.canEditTeams);
+        } else {
+          this.sharedService.addName.emit('New Trip');
+          this.sharedService.canEdit.emit(this.canEditTrips);
+        }
       });
     });
-  }
-
-  test() {
-    console.log(this.trips);
-    this.trips.push({id: 'test', 'current': 'fdsf', orgId: 'fsdfsd', tripName: 'fsdfsdf'});
   }
 
   tripClick(): void {
@@ -131,18 +146,9 @@ export class OrgPageComponent implements OnInit {
   /**
    * Used for updating an already existing wiki entry.
    */
-  submitWikiEdit(title, index): void {
+  submitWikiEdit(title, markup): void {
     const json = {};
-    json[title] = this.editText[index];
-    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
-  }
-
-  /**
-   * Used for generating a new wiki entry
-   */
-  submitNewWikiEdit(title, text): void {
-    const json = {};
-    json[title] = text;
+    json[title] = markup
     this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
   }
 
@@ -158,8 +164,10 @@ export class OrgPageComponent implements OnInit {
 
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
-    // TODO: if(add works )
-    this.showNewSectionPopup = false;
+    // add to db
+    const json = {};
+    json[this.newSectionName] = this.newSectionText;
+    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
   }
 
   addAnotherMember() {
