@@ -1,6 +1,6 @@
 export interface Group {
-  admins: [];
+  admins: any[];
   id: string;
-  members: [];
+  members: any[];
   name: string;
 }

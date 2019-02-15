@@ -9,6 +9,6 @@ export class TextboxQuestion extends QuestionBase<string> {
   constructor(options: {} = {}) {
     super(options);
     this.type = options['type'] || '';
-    this.keyFilter = options['keyFilter'] || KeyFilterRegex.noRegex;
+    this.keyFilter =  KeyFilterRegex[options['keyFilter']] || KeyFilterRegex.noRegex;
   }
 }

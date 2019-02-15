@@ -27,10 +27,8 @@
   <div style="width: 300px;" [hidden]="!viewTrips">
     <p style="margin-top: 10px">Org hosting Trip</p>
     <p-dropdown [options]="newTripOrgs" [(ngModel)]="newTripOrg" optionLabel="name" placeholder="Select a Org"></p-dropdown>
-    <!--<input type="text" pInputText [(ngModel)]="newTripOrg"/>-->
     <p style="margin-top: 10px">Team on Trip</p>
     <p-dropdown [options]="newTripTeams" [(ngModel)]="newTripTeam" optionLabel="name" placeholder="Select a Team"></p-dropdown>
-    <!--<input type="text" pInputText [(ngModel)]="newTripTeam"/>-->
     <div class="p-grid" style="text-align: center; padding-top: 10px">
       <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
       <p-button class="p-col-6" (onClick)="submitNewTrip()" label ="Submit"></p-button>
