@@ -1,18 +1,19 @@
 import {AfterContentInit, AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {SharedService} from '../globals';
+import {PreDefined, SharedService} from '../globals';
 
 import 'autocomplete-lhc';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {QuestionControlService} from '../questions/question-control-service';
 import {QuestionBase} from '../questions/question-base';
 import {QuestionService} from '../questions/question.service';
+import {FormObject} from '../interfaces/formObject';
 declare var $: any;
 declare var Def: any;
 @Component({
   selector: 'app-checklist-creation-page',
   templateUrl: './checklist-creation-page.component.html',
   styleUrls: ['./checklist-creation-page.component.css'],
-  providers: [QuestionService, QuestionControlService]
+  providers: [QuestionService, QuestionControlService, PreDefined]
 })
 export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
 
@@ -23,10 +24,11 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
   hasEditRights = true;
   myForm: FormGroup;
   questions: QuestionBase<any>[] = [];
+  forms: FormObject[] = [];
 
   constructor(private sharedService: SharedService, // private fb: FormBuilder,
-              private qcs: QuestionControlService, private service: QuestionService ) {
-    this.questions = service.getQuestions();
+              private qcs: QuestionControlService, private service: QuestionService, private preDef: PreDefined ) {
+    this.questions = service.getQuestions(this.preDef.questionExampleJson);
 
     sharedService.hideToolbar.emit(false);
     sharedService.canEdit.emit(false);

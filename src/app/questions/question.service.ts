@@ -12,125 +12,125 @@ import {MedicineMultipleTextboxQuestion} from './question-medicine-multiple-text
 @Injectable()
 export class QuestionService {
 
-  questionExampleJson = [
-    {
-      key: 'textBox1',
-      label: 'Hospital Name',
-      controlType: 'textbox',
-      gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
-    },
-    {
-      key: 'textBox2',
-      label: 'Name of Host',
-      controlType: 'textbox',
-      gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
-    },
-    {
-      key: 'textBox3',
-      label: 'Position at Hospital',
-      controlType: 'textbox',
-      gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
-    },
-    {
-      key: 'textBox4',
-      label: 'Host Email Address',
-      controlType: 'textbox',
-      gridSize: 'p-col-6',
-      keyFilter: 'email'
-    },
-    {
-      key: 'textBox5',
-      label: 'Host Phone Number',
-      controlType: 'textbox',
-      gridSize: 'p-col-6'
-    },
-    {
-      key: 'textBox6',
-      label: 'Number of Beds (Total Hospital)',
-      controlType: 'textbox',
-      gridSize: 'p-col-4',
-      keyFilter: 'pnum'
-    },
-    {
-      key: 'textBox7',
-      label: 'Number of Med/Surg Beds',
-      controlType: 'textbox',
-      gridSize: 'p-col-4',
-      keyFilter: 'pnum'
-    },
-    {
-      key: 'textBox8',
-      label: 'Number of Operating Rooms',
-      controlType: 'textbox',
-      gridSize: 'p-col-4',
-      keyFilter: 'pnum'
-    },
-    {
-      key: 'textBox9',
-      label: 'Number of Clinic Rooms (Available for surgery)',
-      controlType: 'textbox',
-      gridSize: 'p-col-4',
-      keyFilter: 'pnum'
-    },
-    {
-      key: 'radio1',
-      label: 'PCAU?',
-      controlType: 'radio',
-      gridSize: 'p-col-4',
-      options: [
-        {key: '1', value: 'Yes'},
-        {key: '0', value: 'No'}
-      ]
-    },
-    {
-      key: 'radio2',
-      label: 'Pre-op?',
-      controlType: 'radio',
-      gridSize: 'p-col-4',
-      options: [
-        {key: '1', value: 'Yes'},
-        {key: '0', value: 'No'}
-      ]
-    },
-    {
-      key: 'radio3',
-      label: 'What is your primary source of electricity',
-      controlType: 'radio',
-      gridSize: 'p-col-4',
-      options: [
-        {key: 'City Grid', value: 'City Grid'},
-        {key: 'Generator', value: 'Generator'}
-      ]
-    },
-    {
-      key: 'radio4',
-      label: 'Power outlets located on wards?',
-      controlType: 'radio',
-      gridSize: 'p-col-4',
-      options: [
-        {key: '1', value: 'Yes'},
-        {key: '0', value: 'No'}
-      ]
-    },
-    {
-      key: 'editor1',
-      label: 'What is your back-up power supply in case of power outage?',
-      controlType: 'freeResponse',
-      gridSize: 'p-col-12',
-      height: '150'
-    },
-
-
-  ];
+  // questionExampleJson = [
+  //   {
+  //     key: 'textBox1',
+  //     label: 'Hospital Name',
+  //     controlType: 'textbox',
+  //     gridSize: 'p-col-12',
+  //     keyFilter: 'noSpecial'
+  //   },
+  //   {
+  //     key: 'textBox2',
+  //     label: 'Name of Host',
+  //     controlType: 'textbox',
+  //     gridSize: 'p-col-6',
+  //     keyFilter: 'noSpecial'
+  //   },
+  //   {
+  //     key: 'textBox3',
+  //     label: 'Position at Hospital',
+  //     controlType: 'textbox',
+  //     gridSize: 'p-col-6',
+  //     keyFilter: 'noSpecial'
+  //   },
+  //   {
+  //     key: 'textBox4',
+  //     label: 'Host Email Address',
+  //     controlType: 'textbox',
+  //     gridSize: 'p-col-6',
+  //     keyFilter: 'email'
+  //   },
+  //   {
+  //     key: 'textBox5',
+  //     label: 'Host Phone Number',
+  //     controlType: 'textbox',
+  //     gridSize: 'p-col-6'
+  //   },
+  //   {
+  //     key: 'textBox6',
+  //     label: 'Number of Beds (Total Hospital)',
+  //     controlType: 'textbox',
+  //     gridSize: 'p-col-4',
+  //     keyFilter: 'pnum'
+  //   },
+  //   {
+  //     key: 'textBox7',
+  //     label: 'Number of Med/Surg Beds',
+  //     controlType: 'textbox',
+  //     gridSize: 'p-col-4',
+  //     keyFilter: 'pnum'
+  //   },
+  //   {
+  //     key: 'textBox8',
+  //     label: 'Number of Operating Rooms',
+  //     controlType: 'textbox',
+  //     gridSize: 'p-col-4',
+  //     keyFilter: 'pnum'
+  //   },
+  //   {
+  //     key: 'textBox9',
+  //     label: 'Number of Clinic Rooms (Available for surgery)',
+  //     controlType: 'textbox',
+  //     gridSize: 'p-col-4',
+  //     keyFilter: 'pnum'
+  //   },
+  //   {
+  //     key: 'radio1',
+  //     label: 'PCAU?',
+  //     controlType: 'radio',
+  //     gridSize: 'p-col-4',
+  //     options: [
+  //       {key: '1', value: 'Yes'},
+  //       {key: '0', value: 'No'}
+  //     ]
+  //   },
+  //   {
+  //     key: 'radio2',
+  //     label: 'Pre-op?',
+  //     controlType: 'radio',
+  //     gridSize: 'p-col-4',
+  //     options: [
+  //       {key: '1', value: 'Yes'},
+  //       {key: '0', value: 'No'}
+  //     ]
+  //   },
+  //   {
+  //     key: 'radio3',
+  //     label: 'What is your primary source of electricity',
+  //     controlType: 'radio',
+  //     gridSize: 'p-col-4',
+  //     options: [
+  //       {key: 'City Grid', value: 'City Grid'},
+  //       {key: 'Generator', value: 'Generator'}
+  //     ]
+  //   },
+  //   {
+  //     key: 'radio4',
+  //     label: 'Power outlets located on wards?',
+  //     controlType: 'radio',
+  //     gridSize: 'p-col-4',
+  //     options: [
+  //       {key: '1', value: 'Yes'},
+  //       {key: '0', value: 'No'}
+  //     ]
+  //   },
+  //   {
+  //     key: 'editor1',
+  //     label: 'What is your back-up power supply in case of power outage?',
+  //     controlType: 'freeResponse',
+  //     gridSize: 'p-col-12',
+  //     height: '150'
+  //   },
+  //
+  //
+  // ];
 
   questions: QuestionBase<any>[] = [];
   // TODO: get from a remote source of question metadata
   // TODO: make asynchronous
-  getQuestions() {
-    this.parseQuestionJson(this.questionExampleJson);
+  getQuestions(questionData) {
+    this.parseQuestionJson(questionData);
 
     // let questions: QuestionBase<any>[] = [
 
