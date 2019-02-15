@@ -26,10 +26,16 @@
   </div>
   <div style="width: 300px;" [hidden]="!viewTrips">
     <p style="margin-top: 10px">Org hosting Trip</p>
-    <p-dropdown [options]="newTripOrgs" [(ngModel)]="newTripOrg" optionLabel="name" placeholder="Select a Org"></p-dropdown>
+    <p-dropdown [options]="userOrgMap" [(ngModel)]="newTripOrg" optionLabel="name"
+                placeholder="Select a Org" (onClick)="newTripOrg != null ? loadTrips(): null;
+                 newTripTeam = null; newTripName = null;"></p-dropdown>
     <!--<input type="text" pInputText [(ngModel)]="newTripOrg"/>-->
     <p style="margin-top: 10px">Team on Trip</p>
-    <p-dropdown [options]="newTripTeams" [(ngModel)]="newTripTeam" optionLabel="name" placeholder="Select a Team"></p-dropdown>
+    <p-dropdown [options]="userTeamsMap" [disabled]="newTripOrg == null"  [(ngModel)]="newTripTeam" optionLabel="name"
+                placeholder="Select a Team"></p-dropdown>
+    <p style="margin-top: 10px">Trip Name</p>
+    <input type="text" pInputText [(ngModel)]="newTripName" [disabled]="newTripTeam == null"
+           placeholder="Trip Name"/>
     <!--<input type="text" pInputText [(ngModel)]="newTripTeam"/>-->
     <div class="p-grid" style="text-align: center; padding-top: 10px">
       <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
@@ -102,7 +108,7 @@
     style="height: 100%; border: none; border-radius: 0"
     [ngStyle]="{'width': 100/3 + '%'}"
     (click)="viewWiki = true; viewChecklist = false; viewTrips = false; sharedService.addName.emit('New Section');
-      sharedService.canEdit.emit(editMode);">
+      sharedService.canEdit.emit(canEditWiki);">
     <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
     <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
       <span>Wiki</span>
