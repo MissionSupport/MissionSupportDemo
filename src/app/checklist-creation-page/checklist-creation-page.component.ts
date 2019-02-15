@@ -1,18 +1,20 @@
 import {AfterContentInit, AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {SharedService} from '../globals';
+import {PreDefined, SharedService} from '../globals';
 
 import 'autocomplete-lhc';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {QuestionControlService} from '../questions/question-control-service';
 import {QuestionBase} from '../questions/question-base';
 import {QuestionService} from '../questions/question.service';
+import {FormObject} from '../questions/formObject';
+import {forEach} from '@angular/router/src/utils/collection';
 declare var $: any;
 declare var Def: any;
 @Component({
   selector: 'app-checklist-creation-page',
   templateUrl: './checklist-creation-page.component.html',
   styleUrls: ['./checklist-creation-page.component.css'],
-  providers: [QuestionService, QuestionControlService]
+  providers: [QuestionService, QuestionControlService, PreDefined]
 })
 export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
 
@@ -23,10 +25,24 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
   hasEditRights = true;
   myForm: FormGroup;
   questions: QuestionBase<any>[] = [];
+  forms: FormObject[] = [
+    new FormObject({
+      name: 'Hospital',
+      questionData: this.preDef.questionExampleJson
+    }),
+    new FormObject({
+      name: 'Temp',
+      questionData: this.preDef.questionExampleJson
+    }),
+  ];
 
   constructor(private sharedService: SharedService, // private fb: FormBuilder,
-              private qcs: QuestionControlService, private service: QuestionService ) {
-    this.questions = service.getQuestions();
+              private qcs: QuestionControlService, private service: QuestionService, private preDef: PreDefined ) {
+    // this.forms.push(new FormObject());
+    this.forms.forEach(function(form) {
+      form.questions = service.getQuestions(form.questionData);
+    });
+    // this.questions = service.getQuestions(this.preDef.questionExampleJson);
 
     sharedService.hideToolbar.emit(false);
     sharedService.canEdit.emit(false);
@@ -34,7 +50,10 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.form = this.qcs.toFormGroup(this.questions);
+    // this.form = this.qcs.toFormGroup(this.questions);
+    this.forms.forEach((form) => {
+      form.form = this.qcs.toFormGroup(form.questions);
+    });
   }
 
   ngAfterViewInit() {
@@ -53,10 +72,10 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
     // });
   }
 
-  onSubmit() {
-    console.log(this.form);
-    this.payLoad = JSON.stringify(this.form.value);
-    console.log(this.payLoad);
+  onSubmit(form, formObject) {
+    console.log(form);
+    formObject.payLoad = JSON.stringify(form.value);
+    console.log(formObject.payLoad);
   }
 
 }

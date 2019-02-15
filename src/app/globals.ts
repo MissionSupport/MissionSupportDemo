@@ -97,73 +97,155 @@ export class PreDefined {
 
   wikiTrip = [
     {
-      title: 'Trip Experiences',
-      markup: 'Is there a place to get drugs nearby? How accessible are the drugs? If you do not bring everything you need,' +
-        ' or run out, what is the process for getting more?'
+      title: 'Purpose',
+      markup: 'What was the purpose of the trip? Was it Successful?'
     },
     {
-      title: 'Assistance',
-      markup: 'What level of assistance can you expect form local staff? What types of training will the staff have?'
+      title: 'Type of Care',
+      markup: 'What type of care were you providing? Why did you choose to do that type? Is that type of care available,' +
+        ' or were you providing access to normally unavailable services?'
     },
     {
-      title: 'Conditions',
-      markup: 'Is the water drinkable? Can it be used for medical purposes? Do they have constant electricity?' +
-        ' If not, do they have backup generators?'
+      title: 'Preparation',
+      markup: 'How many people did you bring? Did you follow thge site checklist? Where did you stay?'
     },
     {
-      title: 'Technology',
-      markup: 'What level of technology do they have, and what is the condition of the Technology. ' +
-        'Do they Have a dedicated maintenance team? Is there a Lab/OR/Imaging/Etc. What are the hours? How is this technology managed?'
+      title: 'Unique Challenges',
+      markup: 'What unique challenges did you run into? Could future groups encounter the same issue? If so, how would you' +
+        ' recommend future groups approach this problem?'
     },
     {
-      title: 'Security',
-      markup: 'How secure is the site? Is there on staff security at all hours? Should staff avoid leaving alone?'
-    },
-    {
-      title: 'Living_and_Transportation',
-      markup: 'What is nearby accommodation? Should staff live near the site, ' +
-        'or somewhere else? How should staff commute the site, walk, transit, or cars?'
-    },
-    {
-      title: 'Patient_Traffic',
-      markup: 'Give a breakdown of the types of operations performed on a day to day basis. ' +
-        'What is this site equipped to handle? What do they struggle with?'
+      title: 'Contact',
+      markup: 'Please leave a contact person who can answer follow up questions about the trip'
     }
   ];
 
   wikiOrg = [
     {
-      title: 'ORG_Categories?',
-      markup: 'Is there a place to get drugs nearby? How accessible are the drugs? If you do not bring everything you need,' +
-        ' or run out, what is the process for getting more?'
+      title: 'About Us',
+      markup: 'General information about the organization: size, location, funding, purpose, etc. '
     },
     {
-      title: 'Assistance',
-      markup: 'What level of assistance can you expect form local staff? What types of training will the staff have?'
+      title: 'Types of Care Provided',
+      markup: 'Do you specialize in specific services? If so, what?'
     },
     {
-      title: 'Conditions',
-      markup: 'Is the water drinkable? Can it be used for medical purposes? Do they have constant electricity?' +
-        ' If not, do they have backup generators?'
-    },
-    {
-      title: 'Technology',
-      markup: 'What level of technology do they have, and what is the condition of the Technology. ' +
-        'Do they Have a dedicated maintenance team? Is there a Lab/OR/Imaging/Etc. What are the hours? How is this technology managed?'
-    },
-    {
-      title: 'Security',
-      markup: 'How secure is the site? Is there on staff security at all hours? Should staff avoid leaving alone?'
-    },
-    {
-      title: 'Living_and_Transportation',
-      markup: 'What is nearby accommodation? Should staff live near the site, ' +
-        'or somewhere else? How should staff commute the site, walk, transit, or cars?'
-    },
-    {
-      title: 'Patient_Traffic',
-      markup: 'Give a breakdown of the types of operations performed on a day to day basis. ' +
-        'What is this site equipped to handle? What do they struggle with?'
+      title: 'Contact Info',
+      markup: 'Contact information'
     }
+  ];
+
+  questionExampleJson = [
+    {
+      key: 'textBox1',
+      label: 'Hospital Name',
+      controlType: 'textbox',
+      gridSize: 'p-col-12',
+      keyFilter: 'noSpecial'
+    },
+    {
+      key: 'textBox2',
+      label: 'Name of Host',
+      controlType: 'textbox',
+      gridSize: 'p-col-6',
+      keyFilter: 'noSpecial'
+    },
+    {
+      key: 'textBox3',
+      label: 'Position at Hospital',
+      controlType: 'textbox',
+      gridSize: 'p-col-6',
+      keyFilter: 'noSpecial'
+    },
+    {
+      key: 'textBox4',
+      label: 'Host Email Address',
+      controlType: 'textbox',
+      gridSize: 'p-col-6',
+      keyFilter: 'email'
+    },
+    {
+      key: 'textBox5',
+      label: 'Host Phone Number',
+      controlType: 'textbox',
+      gridSize: 'p-col-6'
+    },
+    {
+      key: 'textBox6',
+      label: 'Number of Beds (Total Hospital)',
+      controlType: 'textbox',
+      gridSize: 'p-col-4',
+      keyFilter: 'pnum'
+    },
+    {
+      key: 'textBox7',
+      label: 'Number of Med/Surg Beds',
+      controlType: 'textbox',
+      gridSize: 'p-col-4',
+      keyFilter: 'pnum'
+    },
+    {
+      key: 'textBox8',
+      label: 'Number of Operating Rooms',
+      controlType: 'textbox',
+      gridSize: 'p-col-4',
+      keyFilter: 'pnum'
+    },
+    {
+      key: 'textBox9',
+      label: 'Number of Clinic Rooms (Available for surgery)',
+      controlType: 'textbox',
+      gridSize: 'p-col-4',
+      keyFilter: 'pnum'
+    },
+    {
+      key: 'radio1',
+      label: 'PCAU?',
+      controlType: 'radio',
+      gridSize: 'p-col-4',
+      options: [
+        {key: '1', value: 'Yes'},
+        {key: '0', value: 'No'}
+      ]
+    },
+    {
+      key: 'radio2',
+      label: 'Pre-op?',
+      controlType: 'radio',
+      gridSize: 'p-col-4',
+      options: [
+        {key: '1', value: 'Yes'},
+        {key: '0', value: 'No'}
+      ]
+    },
+    {
+      key: 'radio3',
+      label: 'What is your primary source of electricity',
+      controlType: 'radio',
+      gridSize: 'p-col-4',
+      options: [
+        {key: 'City Grid', value: 'City Grid'},
+        {key: 'Generator', value: 'Generator'}
+      ]
+    },
+    {
+      key: 'radio4',
+      label: 'Power outlets located on wards?',
+      controlType: 'radio',
+      gridSize: 'p-col-4',
+      options: [
+        {key: '1', value: 'Yes'},
+        {key: '0', value: 'No'}
+      ]
+    },
+    {
+      key: 'editor1',
+      label: 'What is your back-up power supply in case of power outage?',
+      controlType: 'freeResponse',
+      gridSize: 'p-col-12',
+      height: '150'
+    },
+
+
   ];
 }

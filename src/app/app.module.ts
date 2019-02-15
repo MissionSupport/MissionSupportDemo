@@ -57,6 +57,7 @@ import { PasswordModule } from 'primeng/password';
 import { SiteSearchComponent } from './site-search/site-search.component';
 import {DialogModule} from 'primeng/dialog';
 import {AutoCompleteModule} from 'primeng/primeng';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -121,6 +122,7 @@ import {AutoCompleteModule} from 'primeng/primeng';
     PasswordModule,
     DialogModule,
     AutoCompleteModule,
+    HttpClientModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
