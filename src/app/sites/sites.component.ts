@@ -113,7 +113,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       questionData: this.preDef.caseVolumeandStafJson
     },
     {
-      name: 'Case Volume and Staff',
+      name: 'Personnel',
       questionData: this.preDef.personnelJson
     },
     {
