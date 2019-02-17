@@ -7,11 +7,12 @@ import {Observable} from 'rxjs';
 })
 export class LoginGuardService implements CanActivate {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     if (localStorage.getItem('user')) {
       console.log(state.url);
+      this.router.navigate(['/landing']);
       return false;
     }
     return true;
