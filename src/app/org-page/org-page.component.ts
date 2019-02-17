@@ -9,6 +9,8 @@ import {Observable, Subscribable, Subscription} from 'rxjs';
 import {exhaustMap, flatMap, map} from 'rxjs/operators';
 import {AngularFireAuth} from '@angular/fire/auth';
 import * as firebase from 'firebase';
+import {MessageService} from 'primeng/api';
+import {async} from 'q';
 
 @Component({
   selector: 'app-group-page',
@@ -55,7 +57,8 @@ export class OrgPageComponent implements OnInit {
   members = [{value: ''}];
 
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,
-              private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
+              private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth,
+              private messageService: MessageService) {
     /*
     this.route.params.subscribe((params) => {
       this.orgId = params['id'];
@@ -80,7 +83,7 @@ export class OrgPageComponent implements OnInit {
         return x;
       });
       this.tripIds = this.teams.map(team => {
-        return team.pipe(flatMap(t => {
+        return team.pipe(flatMap((t: Team) => {
           return t.trips;
         }));
       });
@@ -120,6 +123,7 @@ export class OrgPageComponent implements OnInit {
       this.orgName = org.name;
       this.currentWikiId = org.currentWiki;
       this.sharedService.onPageNav.emit(this.orgName);
+      this.teamIds = org.teamIds;
       // Check if the user can edit
       this.authInstance.auth.onAuthStateChanged(user => {
         this.canEditTrips = this.canEditTeams = this.canEditWiki = org.admins.includes(user.uid);
@@ -164,10 +168,55 @@ export class OrgPageComponent implements OnInit {
     this.members.push({value: ''});
   }
 
-  submitNewTeam() {
+  async submitNewTeam() {
     console.log(this.orgName, this.newTeamName, this.members);
-    this.showNewSectionPopup = false;
     // Look up emails to uid to see if exists.
+    const failed = [];
+    const proms = [];
+    console.log(this.members);
+    for (const member of this.members) {
+      if (member.value === '') {
+        continue;
+      }
+      proms.push(this.db.doc(`emails/${member.value}`).get().toPromise().then(data => {
+        if (!data.exists) {
+          // Display error to user that the email does not exist
+          failed.push(member.value);
+        }
+      }));
+    }
+    await Promise.all(proms);
+    // Find if there are any non existent emails
+    if (failed.length === 0) {
+      this.showNewSectionPopup = false;
+      // Let's go ahead and create the team
+      const teamId = this.db.createId();
+      const members = this.members.map(m => m.value);
+      const team: Team = {
+        admins: members,
+        id: teamId,
+        name: this.newTeamName,
+        org: this.orgId,
+        trips: []
+      };
+      this.db.firestore.batch().set(this.db.doc(`teams/${teamId}`).ref, team)
+        .update(this.db.doc(`organizations/${this.orgId}`).ref, {teamIds: [...this.teamIds, teamId]})
+        .commit()
+        .then(() => {
+        console.log('Success!');
+        this.newTeamName = '';
+        this.members = [{value: ''}];
+      }).catch( error => {
+        console.log('Failure!');
+        console.log(error);
+      });
+    } else {
+      const errors = [];
+      for (const email of failed) {
+        errors.push({severity: 'info', summary: 'Member Failure', detail: `The email ${email} does not exist`});
+      }
+      this.messageService.addAll(errors);
+    }
   }
 
   submitNewTrip() {

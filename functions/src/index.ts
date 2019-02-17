@@ -7,12 +7,20 @@ exports.createUserPreferences = functions.auth.user().onCreate(user => {
   const userId = user.uid;
   console.log(user);
   console.log('Creating user_preferences for', userId);
-  return admin.firestore().collection('user_preferences').doc(userId).set({
+  const batch = admin.firestore().batch();
+  const pref = admin.firestore().doc(`user_preferences/${userId}`)
+  batch.create(pref, {
     admin: false,
     id: userId,
     orgs: [],
     teams: []
   });
+  console.log('Create email mapping to uid for user');
+  const email = admin.firestore().doc(`emails/${user.email}`);
+  batch.create(email, {id: userId});
+  return batch.commit().then(() => {
+    console.log('Success!');
+  })
 });
 
 // Used after creating an org adding the reference to the user
