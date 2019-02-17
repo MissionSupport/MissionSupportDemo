@@ -119,15 +119,21 @@ const routes: Routes = [
     canActivate: [AuthguardService],
     component: OrgPageComponent,
   },
-  {
-    path: 'list',
-    canActivate: [AuthguardService],
-    component: ChecklistCreationPageComponent,
-  },
+  // {
+  //   path: 'list',
+  //   canActivate: [AuthguardService],
+  //   component: ChecklistCreationPageComponent,
+  // },
   {
     path: 'search-sites',
     component: SiteSearchComponent,
-  }
+  },
+  {
+    path: 'country/:countryId/site/:id/list',
+    canActivate: [AuthguardService],
+    component: ChecklistCreationPageComponent,
+
+  },
 ];
 
 @NgModule({

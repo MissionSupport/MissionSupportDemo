@@ -16,11 +16,19 @@ import {Organization} from '../interfaces/organization';
 import {Team} from '../interfaces/team';
 import {User} from 'firebase';
 import {createUrlResolverWithoutPackagePrefix} from '@angular/compiler';
+import {FormObject} from '../questions/formObject';
+import {forEach} from '@angular/router/src/utils/collection';
+import {SelectedInjectable} from '../questions/selectedInjectable';
+
+export interface Question {
+  question;
+  value;
+}
 
 @Component({
   selector: 'app-sites',
   templateUrl: './sites.component.html',
-  providers: [PreDefined],
+  providers: [],
   styleUrls: ['./sites.component.css']
 })
 
@@ -67,12 +75,77 @@ export class SitesComponent implements OnInit, OnDestroy {
   canEditWiki: Observable<boolean>;  // this means the user can edit wiki
   canEditChecklist: Observable<boolean>;
   canEditTrip: Observable<boolean>;
+  testAnswers;
 
   titleEdits = [];
 
+  genericChecklists = [
+    {
+      name: 'Hospital',
+      questionData: this.preDef.hospitalJson
+    },
+    {
+      name: 'Hospital Infrastructure',
+      questionData: this.preDef.hospitalInfrastructureJson
+    },
+    {
+      name: 'Pharmacy/Lab',
+      questionData: this.preDef.pharmacyLabJson
+    },
+    {
+      name: 'Operating Room',
+      questionData: this.preDef.operatingRoomJson
+    },
+    {
+      name: 'Wards',
+      questionData: this.preDef.wardJson
+    },
+    {
+      name: 'Supplies',
+      questionData: this.preDef.suppliesEquipmentJson
+    },
+    {
+      name: 'Ambulance',
+      questionData: this.preDef.ambulanceJson
+    },
+    {
+      name: 'Case Volume and Staff',
+      questionData: this.preDef.caseVolumeandStafJson
+    },
+    {
+      name: 'Case Volume and Staff',
+      questionData: this.preDef.personnelJson
+    },
+    {
+      name: 'Education/QI',
+      questionData: this.preDef.educationQIJson
+    },
+    {
+      name: 'Logistics',
+      questionData: this.preDef.logisticsJson
+    },
+    {
+      name: 'Accommodations',
+      questionData: this.preDef.accommodationsJson
+    }
+  ];
+  selectedLists = [];
+  listsPresent = [];
+
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
               public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router,
-              private preDef: PreDefined) {
+              private preDef: PreDefined, private selected: SelectedInjectable) {
+    this.preDef.testInput.forEach(checklist => {
+      this.genericChecklists.forEach( generic => {
+        if (checklist.name === generic.name) {
+          this.listsPresent = [... this.listsPresent, generic];
+          this.genericChecklists = this.genericChecklists.filter(obj => obj !== generic);
+        }
+      });
+    });
+    this.testAnswers = preDef.testInput;
+
+
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
     sharedService.hideToolbar.emit(false);
@@ -257,7 +330,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     }
     this.db.doc(`trips/${id}`).set(trip).then(() => {
       this.db.doc(`trips/${id}/wiki/${currentWiki}`).set(wiki);
-    })
+    });
     this.showNewSectionPopup = false;
   }
 
@@ -283,6 +356,28 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.viewTrips = true;
     this.sharedService.addName.emit('New Trip');
     this.sharedService.canEdit.emit(this.canEditTrip);
+  }
+
+  submitNewList() {
+    // console.log(this.selectedLists);
+
+      // console.log(this.selectedSite);
+    this.selected.selected = this.selectedLists;
+    // console.log(this.selected.selected);
+    this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
+    // this.router.navigate(['/temp']);
+    this.showNewSectionPopup = false;
+  }
+
+  jsonParse(list) {
+    const data = JSON.parse(list);
+    const _data = Object.keys(data).map((key) => {
+      return {
+        value: data[key].value,
+        question: data[key].question
+      };
+      }, data);
+    return _data;
   }
 }
 

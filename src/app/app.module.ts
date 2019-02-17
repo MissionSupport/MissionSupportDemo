@@ -58,6 +58,10 @@ import { SiteSearchComponent } from './site-search/site-search.component';
 import {DialogModule} from 'primeng/dialog';
 import {AutoCompleteModule} from 'primeng/primeng';
 import {HttpClientModule} from '@angular/common/http';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {TableModule} from 'primeng/table';
+import {SelectedInjectable} from './questions/selectedInjectable';
+import {PreDefined} from './globals';
 
 @NgModule({
   declarations: [
@@ -123,12 +127,14 @@ import {HttpClientModule} from '@angular/common/http';
     DialogModule,
     AutoCompleteModule,
     HttpClientModule,
+    MultiSelectModule,
+    TableModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     MarkdownModule.forRoot()
   ],
-  providers: [MessageService],
+  providers: [MessageService, SelectedInjectable, PreDefined],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
