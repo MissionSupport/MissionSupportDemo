@@ -17,11 +17,13 @@ import {TripPageComponent} from './trip-page/trip-page.component';
 import {OrgPageComponent} from './org-page/org-page.component';
 import {ChecklistCreationPageComponent} from './checklist-creation-page/checklist-creation-page.component';
 import {SiteSearchComponent} from './site-search/site-search.component';
+import {LoginGuardService} from './service/login-guard.service';
 
 
 const routes: Routes = [
   {
     path: '',
+    canActivate: [LoginGuardService],
     component: LoginComponent
   },
   {

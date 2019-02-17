@@ -27,7 +27,8 @@
     <form #formRef="ngForm">
       <div *ngFor="let member of members; let i = index" class="col-sm-3">
         <div class="form-group">
-          <input pInputText type="text" [(ngModel)]="members[i].value" name="name{{i}}" class="form-control" #name="ngModel" required />
+          <input pInputText type="text" [(ngModel)]="member.value" name="name{{i}}" class="form-control"
+                 placeholder="email" #name="ngModel" required />
         </div>
         <br />
       </div>

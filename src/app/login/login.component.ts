@@ -20,11 +20,13 @@ export class LoginComponent implements OnInit {
     this.sharedService.hideToolbar.emit(true);
     this.sharedService.canEdit.emit(false);
     // auto log in user
-    // this.authInstance.auth.onAuthStateChanged(user => {
-    //   if (user != null) {
-    //     this.router.navigate(['landing']);
-    //   }
-    // });
+    /*
+    this.authInstance.auth.onAuthStateChanged(user => {
+      if (user != null) {
+        this.router.navigate(['landing']);
+      }
+    });
+    */
   }
   constructor(public router: Router, public authInstance: AngularFireAuth,
               private messageService: MessageService, private sharedService: SharedService) {

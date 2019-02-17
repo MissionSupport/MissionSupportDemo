@@ -33,8 +33,8 @@ export class ToolbarComponent implements OnInit {
     this.navHelper(this.router.parseUrl(this.router.url).root.children.primary.segments);
   }
   navHelper(urlSegs) {
-    var url = '';
-    for (var i = 0; i < urlSegs.length - 1; i++) {
+    let url = '';
+    for (let i = 0; i < urlSegs.length - 1; i++) {
       url = url + '/' + urlSegs[i].toString();
     }
     if (url === '') {

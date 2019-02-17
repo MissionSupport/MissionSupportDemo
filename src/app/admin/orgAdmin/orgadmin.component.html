@@ -8,7 +8,7 @@
   </span>
   <div class="p-grid p-col-align-stretch p-justify-between">
     <a (click)="showMainOrgMethod()" ><p class="p-col p-col-2">Cancel</p></a>
-    <p-button class="p-col p-col-3 p-col-align-center" label="Submit" (onClick)="createOrg()"></p-button>
+    <p-button class="p-col p-col-3 p-col-align-center" label="Submit" (onClick)="createOrg(); showMainOrgMethod();"></p-button>
   </div>
 </div>
 <div [hidden]="!showMainMenu" *ngFor="let info of orgList | async;" style="margin-top: 20px; padding-right: 35px">

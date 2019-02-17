@@ -73,8 +73,14 @@ export class OrgadminComponent implements OnInit {
     };
     this.db.doc(`organizations/${id}`).set(org).then(() => {
       // Pregenerate organization wiki
-      this.db.doc(`organizations/${id}/wiki/${wikiId}`).set(this.preDef.wikiCountry);
+      const array = {};
+      for (const w of this.preDef.wikiOrg) {
+        array[w.title] = w.markup;
+      }
+      this.db.doc(`organizations/${id}/wiki/${wikiId}`).set(array);
     });
+    this.allowOrgCreation = false;
+    //TODO wiki generation wont work as user_preferences gets added later
   }
 
 }
