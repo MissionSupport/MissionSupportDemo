@@ -124,10 +124,10 @@ export class OrgPageComponent implements OnInit {
       this.authInstance.auth.onAuthStateChanged(user => {
         this.canEditTrips = this.canEditTeams = this.canEditWiki = org.admins.includes(user.uid);
         if (this.viewWiki) {
-          this.sharedService.addName.emit('New Section')
+          this.sharedService.addName.emit('New Section');
           this.sharedService.canEdit.emit(this.canEditWiki);
         } else if (this.viewTeams) {
-          this.sharedService.addName.emit('New Team')
+          this.sharedService.addName.emit('New Team');
           this.sharedService.canEdit.emit(this.canEditTeams);
         } else {
           this.sharedService.addName.emit('New Trip');
@@ -148,17 +148,7 @@ export class OrgPageComponent implements OnInit {
    */
   submitWikiEdit(title, markup): void {
     const json = {};
-    json[title] = markup
-    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
-  }
-
-  /**
-   * Used for updating the title of an entry.
-   */
-  updateWikiTitle(oldTitle, newTitle, index): void {
-    const json = {};
-    json[oldTitle] = firebase.firestore.FieldValue.delete();
-    json[newTitle] = this.sections[index];
+    json[title] = markup;
     this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
   }
 
@@ -177,6 +167,7 @@ export class OrgPageComponent implements OnInit {
   submitNewTeam() {
     console.log(this.orgName, this.newTeamName, this.members);
     this.showNewSectionPopup = false;
+    // Look up emails to uid to see if exists.
   }
 
   submitNewTrip() {

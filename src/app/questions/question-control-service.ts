@@ -8,7 +8,7 @@ export class QuestionControlService {
   constructor(private formBuilder: FormBuilder) { }
 
   toFormGroup(questions: QuestionBase<any>[] ) {
-    let group: any = {};
+    const group: any = {};
 
     questions.forEach(question => {
       if (question.controlType !== 'medmulttextbox' && question.controlType !== 'medtextbox') {

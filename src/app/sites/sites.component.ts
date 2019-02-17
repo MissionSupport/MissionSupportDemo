@@ -64,9 +64,9 @@ export class SitesComponent implements OnInit, OnDestroy {
   newTripName: string;
 
   // ToDo edit based on permissions
-  canEditWiki: Observable<boolean>;  // this means the user can edit wiki
-  canEditChecklist: Observable<boolean>;
-  canEditTrip: Observable<boolean>;
+  canEditWiki: boolean;  // this means the user can edit wiki
+  canEditChecklist: boolean;
+  canEditTrip: boolean;
 
   titleEdits = [];
 
@@ -138,20 +138,10 @@ export class SitesComponent implements OnInit, OnDestroy {
       if (wikiSubscribe) {
         wikiSubscribe.unsubscribe();
       }
-      this.canEditTrip = this.canEditChecklist = this.canEditWiki =
-        this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
-        return pref.admin;
-      }));
-
-      /*
-      this.userOrgs = this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
-        return pref.orgs.map(org => {
-          return this.db.doc(`organizations/${org}`).valueChanges().pipe(map((o: Organization) => {
-            return o;
-          }));
-        });
-      }));
-      */
+      wikiSubscribe = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
+        this.canEditTrip = this.canEditChecklist = this.canEditWiki = pref.admin;
+        sharedService.canEdit.emit(pref.admin);
+      });
 
       this.getOrganizations(user).then((orgs: Observable<Organization>[]) => {
         this.userOrgMap = [];
@@ -161,10 +151,6 @@ export class SitesComponent implements OnInit, OnDestroy {
             this.userOrgMap = [...this.userOrgMap, o];
           });
         });
-      });
-
-      wikiSubscribe = this.canEditWiki.subscribe(can => {
-        sharedService.canEdit.emit(can);
       });
     });
   }
@@ -257,7 +243,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     }
     this.db.doc(`trips/${id}`).set(trip).then(() => {
       this.db.doc(`trips/${id}/wiki/${currentWiki}`).set(wiki);
-    })
+    });
     this.showNewSectionPopup = false;
   }
 

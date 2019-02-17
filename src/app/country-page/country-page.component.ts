@@ -5,7 +5,7 @@ import {Site} from '../interfaces/site';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {PreDefined} from '../globals';
 import {Country} from '../interfaces/country';
-import {flatMap, map} from 'rxjs/operators';
+import {flatMap, map, take} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
@@ -43,8 +43,8 @@ export class CountryPageComponent implements OnInit {
   isNewSiteHospital;
 
   // ToDO change based on permissions
-  canEditWiki: Observable<boolean>; // Editing wiki
-  canEditSites: Observable<boolean>; // editing site
+  canEditWiki: boolean; // Editing wiki
+  canEditSites: boolean; // editing site
 
   titleEdits = [];
 
@@ -88,14 +88,15 @@ export class CountryPageComponent implements OnInit {
       }));
     }));
 
+    let subUserPref = null;
     this.authInstance.auth.onAuthStateChanged(user => {
       console.log(user);
-      this.canEditSites = this.canEditWiki =
-        this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
-        return pref.admin;
-      }));
-      this.canEditWiki.subscribe(data => {
-        sharedService.canEdit.emit(data);
+      if (subUserPref) {
+        subUserPref.unsubscribe();
+      }
+      subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
+        this.canEditSites = this.canEditWiki = pref.admin;
+        sharedService.canEdit.emit(pref.admin);
       });
     });
   }
@@ -137,7 +138,6 @@ export class CountryPageComponent implements OnInit {
   }
 
   submitNewSite() {
-    console.log(this.countryId, this.newSiteName, this.isNewSiteHospital);
     this.showNewSectionPopup = false;
     // Now save to the database
     const siteId = this.db.createId();
@@ -159,13 +159,9 @@ export class CountryPageComponent implements OnInit {
         wikiData[x.title] = x.markup;
       }
       this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(wikiData);
-      /** TODO get checklist predefined and add it.
-      const checklistData = {};
-      for (const x of this.preDef.) {
-        wikiData[x.title] = x.markup;
-      }
-      this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(checklistData);
-       */
     });
+    // Go ahead and clear the section variables
+    this.isNewSiteHospital = null;
+    this.newSiteName = null;
   }
 }

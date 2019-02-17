@@ -73,16 +73,6 @@ export class RegisterComponent implements OnInit {
             }).catch(failure => {
               console.log('Document failed with ID: ', failure);
             });
-            this.db.collection(`user_preferences`).doc(userId).set({
-              id: userId,
-              admin: false,
-              sites: [],
-              orgs: []
-            }).then( () => {
-              console.log('Preferences created with ID: ', userId);
-            }). catch( failure => {
-              console.log('Preferences failed with ID: ', failure);
-            });
             this.router.navigate(['']);
           })
             .catch(err => {
