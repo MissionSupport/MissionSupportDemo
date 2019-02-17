@@ -48,7 +48,7 @@ export class CountryPageComponent implements OnInit {
 
   titleEdits = [];
 
-  constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
+  constructor(public sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
     this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;

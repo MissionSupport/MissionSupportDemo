@@ -61,7 +61,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {TableModule} from 'primeng/table';
 import {SelectedInjectable} from './questions/selectedInjectable';
-import {PreDefined} from './globals';
+import {PreDefined, SharedService} from './globals';
 
 @NgModule({
   declarations: [

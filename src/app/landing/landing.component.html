@@ -1,6 +1,7 @@
 <!--<app-toolbar style="width: 100%" header="Region Selection"></app-toolbar>-->
 <div style="height: 100%; width: 100%; position: absolute; display: flex; flex-direction: column">
   <div id="svgContainer" style="display: inline-block; position: relative; width: 100%; vertical-align: top; overflow: hidden; height: 60%"></div>
+  <app-site-search></app-site-search>
   <span id="listContainer" style="height: 40%; width: 100%; position: relative">
     <p-listbox [options]="countries" [style] = "{'width':'100%'}" [(ngModel)]="selectedCountry" optionLabel="countryName" (click)="countryClick()"></p-listbox>
   </span>

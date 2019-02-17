@@ -54,7 +54,7 @@ export class OrgPageComponent implements OnInit {
 
   members = [{value: ''}];
 
-  constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,
+  constructor(public sharedService: SharedService, public router: Router, private preDef: PreDefined,
               private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
     /*
     this.route.params.subscribe((params) => {

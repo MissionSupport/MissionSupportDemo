@@ -44,7 +44,7 @@ export class TripPageComponent implements OnInit {
   titleEdits = [];
   titleEditsConfirm = [];
 
-  constructor(private sharedService: SharedService, private preDef: PreDefined, public router: Router, private route: ActivatedRoute,
+  constructor(public sharedService: SharedService, private preDef: PreDefined, public router: Router, private route: ActivatedRoute,
               private readonly db: AngularFirestore) {
     sharedService.hideToolbar.emit(false);
     this.footerHeight = 45;
