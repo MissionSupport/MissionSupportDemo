@@ -34,13 +34,13 @@ export class SiteSearchComponent implements OnInit {
       countries.forEach( (country: Country) => {
         this.country = country;
         this.countries = [...this.countries, country];
-        console.log(country);
+        // console.log(country);
         this.sitesObservable = db.collection<Site>(`countries/${country.id}/sites`).valueChanges();
         this.sitesObservable.subscribe( (sites: Site[]) => {
           sites.forEach( (site: Site) => {
             this.site = site;
             this.sites = [...this.sites, site];
-            console.log(site);
+            // console.log(site);
           });
         });
       });

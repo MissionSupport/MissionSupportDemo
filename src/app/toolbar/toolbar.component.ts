@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, OnChanges} from '@angular/core';
 import {Location} from '@angular/common';
 import {Router, ActivatedRoute} from '@angular/router';
 import { SidebarService } from '../service/sidebar.service';
@@ -9,20 +9,27 @@ import {SharedService} from '../globals';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.css']
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent implements OnInit, OnChanges {
   @Input() header;
   @Input() hasEditRights;
   @Input() editMode;
   @Input() addName;
   display;
+
+  isLanding: boolean;
   constructor(public router: Router, private _aRoute: ActivatedRoute, private _location: Location, public sidebarService: SidebarService,
               private sharedService: SharedService) {
+    this.isLanding = !(this.router.url === '' || this.router.url === '/landing');
   }
 
   ngOnInit() {
     this.sidebarService.change.subscribe((isOpen: boolean) => {
       this.display = isOpen;
     });
+  }
+
+  ngOnChanges() {
+    this.isLanding = !(this.router.url === '' || this.router.url === '/landing');
   }
 
   restoreFront(event) {
