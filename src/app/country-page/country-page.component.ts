@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Site} from '../interfaces/site';
@@ -6,7 +6,7 @@ import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firest
 import {PreDefined} from '../globals';
 import {Country} from '../interfaces/country';
 import {flatMap, map, take} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
 import * as firebase from 'firebase';
@@ -20,7 +20,7 @@ import * as firebase from 'firebase';
     '.custombar1 .ui-scrollpanel-bar { opacity: 1;}'
   ]
 })
-export class CountryPageComponent implements OnInit {
+export class CountryPageComponent implements OnInit, OnDestroy {
   footerHeight: number;
   clientHeight: number;
   viewWiki = true;
@@ -28,6 +28,7 @@ export class CountryPageComponent implements OnInit {
   countryId: string;
   countryName;
   sections: Observable<any[]>;
+  subUserPref: Subscription;
   hideme = [];
   wikiId: string;
   mainHeight;
@@ -88,13 +89,13 @@ export class CountryPageComponent implements OnInit {
       }));
     }));
 
-    let subUserPref = null;
+    // let subUserPref = null;
     this.authInstance.auth.onAuthStateChanged(user => {
       console.log(user);
-      if (subUserPref) {
-        subUserPref.unsubscribe();
+      if (this.subUserPref) {
+        this.subUserPref.unsubscribe();
       }
-      subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
+      this.subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
         this.canEditSites = this.canEditWiki = pref.admin;
         sharedService.canEdit.emit(pref.admin);
       });
@@ -102,6 +103,12 @@ export class CountryPageComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    if (this.subUserPref) {
+      this.subUserPref.unsubscribe();
+    }
   }
 
   submitEdit(title, markup, newTitle, confirm) {

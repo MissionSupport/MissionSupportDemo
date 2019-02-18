@@ -29,7 +29,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.isLanding = !(this.router.url === '' || this.router.url === '/landing');
+    this.isLanding = !(this.router.url === '' || this.router.url.includes('/landing'));
   }
 
   restoreFront(event) {
