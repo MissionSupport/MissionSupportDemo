@@ -15,7 +15,7 @@
     {{header}}
   </div>
   <div class="p-col-fixed p-col-align-center p-align-end" style="height: 90%;">
-    <div style="padding-right: 15px; text-align: center" (click)="addSection()" [style.display]="!hasEditRights ? 'none' : 'inline-block'">
+    <div style="padding-right: 15px; text-align: center; cursor: pointer" (click)="addSection()" [style.display]="!hasEditRights ? 'none' : 'inline-block'">
       <i class="pi pi-plus"></i>
       <div>
         <span style="font-size: small">{{addName}}</span>

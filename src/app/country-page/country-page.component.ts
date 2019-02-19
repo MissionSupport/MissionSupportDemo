@@ -10,6 +10,7 @@ import {Observable} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
 import * as firebase from 'firebase';
+import { BottomTab } from '../interfaces/bottom-tab';
 
 @Component({
   selector: 'app-country-page',
@@ -47,6 +48,9 @@ export class CountryPageComponent implements OnInit {
   canEditSites: Observable<boolean>; // editing site
 
   titleEdits = [];
+
+  tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
+                            {name: 'Sites', icon: 'pi pi-sitemap'}];
 
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
@@ -167,5 +171,19 @@ export class CountryPageComponent implements OnInit {
       this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(checklistData);
        */
     });
+  }
+
+  onTabClicked(tab: number) {
+    if (tab === 0) {
+      this.viewWiki = true;
+      this.viewSites = false;
+      this.sharedService.addName.emit('New Section');
+      this.sharedService.canEdit.emit(this.canEditWiki);
+    } else if (tab === 1) {
+      this.viewWiki = false;
+      this.viewSites = true;
+      this.sharedService.addName.emit('New Site');
+      this.sharedService.canEdit.emit(this.canEditSites);
+    }
   }
 }

@@ -58,6 +58,7 @@ import { SiteSearchComponent } from './site-search/site-search.component';
 import {DialogModule} from 'primeng/dialog';
 import {AutoCompleteModule} from 'primeng/primeng';
 import {HttpClientModule} from '@angular/common/http';
+import { BottomTabsComponent } from './bottom-tabs/bottom-tabs.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import {HttpClientModule} from '@angular/common/http';
     ChecklistCreationPageComponent,
     DynamicFormQuestionComponent,
     SiteSearchComponent,
+    BottomTabsComponent,
   ],
   imports: [
     BrowserModule,

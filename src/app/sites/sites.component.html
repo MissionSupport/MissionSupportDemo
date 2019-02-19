@@ -95,33 +95,4 @@
 
 </div>
 
-<p-toolbar [style]="{'background': 'none', 'padding': '0', 'border': 'none', 'position': 'fixed', 'bottom': '0', 'left': '0', 'width': '100%', 'height': '50px'}">
-  <button class="footer-button" pButton type="button"
-    style="height: 100%; border: none; border-radius: 0"
-    [ngStyle]="{'width': 100/3 + '%'}"
-    (click)="toggleWikiTab()">
-    <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
-    <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
-      <span>Wiki</span>
-    </div>
-  </button>
-  <button class="footer-button" pButton type="button"
-    style="height: 100%; border: none; border-radius: 0"
-    [ngStyle]="{'width': 100/3 + '%'}"
-    (click)="toggleChecklistTab()">
-    <i class="pi pi-list" [ngStyle]="{'opacity': !viewChecklist ? '0.5' : '1'}"></i>
-    <div [ngStyle]="{'opacity': !viewChecklist ? '0.5' : '1'}">
-      <span>Checklist</span>
-    </div>
-  </button>
-  <button class="footer-button" pButton type="button"
-    style="height: 100%; border: none; border-radius: 0"
-    [ngStyle]="{'width': 100/3 + '%'}"
-    (click)="toggleTripsTab()">
-    <i class="pi pi-briefcase" [ngStyle]="{'opacity': !viewTrips ? '0.5' : '1'}"></i>
-    <div [ngStyle]="{'opacity': !viewTrips ? '0.5' : '1'}">
-      <span>Trips</span>
-    </div>
-  </button>
-</p-toolbar>
-
+<app-bottom-tabs [tabs]="tabs" (tabClicked)="onTabClicked($event)"></app-bottom-tabs>

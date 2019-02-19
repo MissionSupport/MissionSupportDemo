@@ -9,6 +9,7 @@ import {Observable, Subscribable, Subscription} from 'rxjs';
 import {exhaustMap, flatMap, map} from 'rxjs/operators';
 import {AngularFireAuth} from '@angular/fire/auth';
 import * as firebase from 'firebase';
+import { BottomTab } from '../interfaces/bottom-tab';
 
 @Component({
   selector: 'app-group-page',
@@ -53,6 +54,10 @@ export class OrgPageComponent implements OnInit {
   canEditTrips = false;
 
   members = [{value: ''}];
+
+  tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
+                            {name: 'Teams', icon: 'pi pi-users'},
+                            {name: 'Trips', icon: 'pi pi-briefcase'}];
 
   constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,
               private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
@@ -124,10 +129,10 @@ export class OrgPageComponent implements OnInit {
       this.authInstance.auth.onAuthStateChanged(user => {
         this.canEditTrips = this.canEditTeams = this.canEditWiki = org.admins.includes(user.uid);
         if (this.viewWiki) {
-          this.sharedService.addName.emit('New Section')
+          this.sharedService.addName.emit('New Section');
           this.sharedService.canEdit.emit(this.canEditWiki);
         } else if (this.viewTeams) {
-          this.sharedService.addName.emit('New Team')
+          this.sharedService.addName.emit('New Team');
           this.sharedService.canEdit.emit(this.canEditTeams);
         } else {
           this.sharedService.addName.emit('New Trip');
@@ -148,7 +153,7 @@ export class OrgPageComponent implements OnInit {
    */
   submitWikiEdit(title, markup): void {
     const json = {};
-    json[title] = markup
+    json[title] = markup;
     this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
   }
 
@@ -182,5 +187,27 @@ export class OrgPageComponent implements OnInit {
   submitNewTrip() {
     console.log(this.newTripCountry, this.newTripSite, this.newTripTeam);
     this.showNewSectionPopup = false;
+  }
+
+  onTabClicked(tab: number) {
+    if (tab === 0) {
+      this.viewWiki = true;
+      this.viewTeams = false;
+      this.viewTrips = false;
+      this.sharedService.addName.emit('New Section');
+      this.sharedService.canEdit.emit(this.canEditWiki);
+    } else if (tab === 1) {
+      this.viewWiki = false;
+      this.viewTeams = true;
+      this.viewTrips = false;
+      this.sharedService.addName.emit('New Team');
+      this.sharedService.canEdit.emit(this.canEditTeams);
+    } else if (tab === 2) {
+      this.viewWiki = false;
+      this.viewTeams = false;
+      this.viewTrips = true;
+      this.sharedService.addName.emit('New Trip');
+      this.sharedService.canEdit.emit(this.canEditTrips);
+    }
   }
 }
