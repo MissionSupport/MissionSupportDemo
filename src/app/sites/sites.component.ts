@@ -279,8 +279,10 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
-    // TODO: if(add works )
+    const json = {};
+    json[this.newSectionName] = this.newSectionText;
     this.showNewSectionPopup = false;
+    this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${this.wikiId}`).update(json);
   }
 
   submitEdit(title, markup, newTitle, confirm) {
