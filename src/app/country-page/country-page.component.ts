@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ApplicationRef, Component, DoCheck, OnChanges, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Site} from '../interfaces/site';
@@ -6,7 +6,7 @@ import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firest
 import {PreDefined} from '../globals';
 import {Country} from '../interfaces/country';
 import {flatMap, map, take} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
 import * as firebase from 'firebase';
@@ -20,14 +20,15 @@ import * as firebase from 'firebase';
     '.custombar1 .ui-scrollpanel-bar { opacity: 1;}'
   ]
 })
-export class CountryPageComponent implements OnInit {
+export class CountryPageComponent implements OnInit, OnDestroy {
   footerHeight: number;
   clientHeight: number;
-  viewWiki = true;
-  viewSites = false;
+  // viewWiki: boolean;
+  viewSites: boolean;
   countryId: string;
   countryName;
   sections: Observable<any[]>;
+  subUserPref: Subscription;
   hideme = [];
   wikiId: string;
   mainHeight;
@@ -60,6 +61,11 @@ export class CountryPageComponent implements OnInit {
         this.showNewSectionPopup = true;
       }
     );
+    sharedService.goSites.subscribe(
+      (bool) => {
+        if (bool) {this.goSites(); }
+      }
+    );
     this.footerHeight = 45;
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
 
@@ -88,20 +94,26 @@ export class CountryPageComponent implements OnInit {
       }));
     }));
 
-    let subUserPref = null;
+    // let subUserPref = null;
     this.authInstance.auth.onAuthStateChanged(user => {
       console.log(user);
-      if (subUserPref) {
-        subUserPref.unsubscribe();
+      if (this.subUserPref) {
+        this.subUserPref.unsubscribe();
       }
-      subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
+      this.subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
         this.canEditSites = this.canEditWiki = pref.admin;
         sharedService.canEdit.emit(pref.admin);
       });
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+  }
+
+  ngOnDestroy() {
+    if (this.subUserPref) {
+      this.subUserPref.unsubscribe();
+    }
   }
 
   submitEdit(title, markup, newTitle, confirm) {
@@ -163,5 +175,19 @@ export class CountryPageComponent implements OnInit {
     // Go ahead and clear the section variables
     this.isNewSiteHospital = null;
     this.newSiteName = null;
+  }
+
+  goSites() {
+    // this.viewWiki = false;
+    this.viewSites = true;
+    this.sharedService.addName.emit('New Site');
+    this.sharedService.canEdit.emit(this.canEditSites);
+  }
+
+  goWiki() {
+    // this.viewWiki = true;
+    this.viewSites = false;
+    this.sharedService.addName.emit('New Section');
+    this.sharedService.canEdit.emit(this.canEditWiki);
   }
 }

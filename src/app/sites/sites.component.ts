@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from '@angular/fire/firestore';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {MessageService} from 'primeng/api';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {EditTask} from '../interfaces/edit-task';
@@ -54,6 +54,12 @@ export class SitesComponent implements OnInit, OnDestroy {
   siteObservable: Observable<Site>;
 
   groups = []; // Contains an array of group ids
+
+  tripSubArray: Subscription[];
+  addSectionSub: Subscription;
+  siteSub: Subscription;
+  orgSubArray: Subscription[];
+  wikiSub: Subscription;
 
   // Handles part of creating a new trip
   userOrgs: Observable<Organization>[]; // Observable of all the orgs
@@ -113,7 +119,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       questionData: this.preDef.caseVolumeandStafJson
     },
     {
-      name: 'Case Volume and Staff',
+      name: 'Personnel',
       questionData: this.preDef.personnelJson
     },
     {
@@ -135,6 +141,8 @@ export class SitesComponent implements OnInit, OnDestroy {
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
               public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router,
               private preDef: PreDefined, private selected: SelectedInjectable) {
+    this.tripSubArray = [];
+    this.orgSubArray = [];
     this.preDef.testInput.forEach(checklist => {
       this.genericChecklists.forEach( generic => {
         if (checklist.name === generic.name) {
@@ -151,7 +159,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     sharedService.hideToolbar.emit(false);
     // ToDo : edit based on rights
     sharedService.addName.emit('New Section');
-    sharedService.addSection.subscribe(
+    this.addSectionSub = sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
       }
@@ -160,7 +168,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       .valueChanges().pipe(map((site: Site) => {
       return site;
     }));
-    this.siteObservable.subscribe((site: Site) => {
+    this.siteSub = this.siteObservable.subscribe((site: Site) => {
       sharedService.onPageNav.emit(site.siteName);
       this.wikiId = site.current;
         // Get wiki information
@@ -199,10 +207,11 @@ export class SitesComponent implements OnInit, OnDestroy {
         }));
       });
       this.trips.map(ob => {
-        // TODO this will cause memory leaks, primeng can only work with [..., new element] so no idea how to do this otherwise.
-        ob.subscribe((trip: Trip) => {
+        let tripSub: Subscription;
+        tripSub = ob.subscribe((trip: Trip) => {
           this.tripValues = [...this.tripValues, trip];
         });
+        this.tripSubArray = [...this.tripSubArray, tripSub];
       });
     });
 
@@ -211,7 +220,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       if (wikiSubscribe) {
         wikiSubscribe.unsubscribe();
       }
-      wikiSubscribe = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
+      this.wikiSub = wikiSubscribe = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
         this.canEditTrip = this.canEditChecklist = this.canEditWiki = pref.admin;
         sharedService.canEdit.emit(pref.admin);
       });
@@ -219,10 +228,12 @@ export class SitesComponent implements OnInit, OnDestroy {
       this.getOrganizations(user).then((orgs: Observable<Organization>[]) => {
         this.userOrgMap = [];
         orgs.map(d => {
-          d.subscribe((o: Organization) => {
-            console.log(o);
+          let orgSub: Subscription;
+          orgSub = d.subscribe((o: Organization) => {
+            // console.log(o);
             this.userOrgMap = [...this.userOrgMap, o];
           });
+          this.orgSubArray = [...this.orgSubArray, orgSub];
         });
       });
     });
@@ -270,8 +281,24 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-
+    if (this.wikiSub) {
+      this.wikiSub.unsubscribe();
+    }
+    let sub: Subscription;
+    for (sub of this.orgSubArray) {
+      sub.unsubscribe();
+    }
+    for (sub of this.tripSubArray) {
+      sub.unsubscribe();
+    }
+    if (this.siteSub) {
+      this.siteSub.unsubscribe();
+    }
+    if (this.addSectionSub) {
+      this.addSectionSub.unsubscribe();
+    }
   }
+
 
   tripClick(): void {
     this.router.navigate(['trip/' + this.selectedTrip.id]);

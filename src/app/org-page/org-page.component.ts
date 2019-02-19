@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PreDefined, SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Trip} from '../interfaces/trip';
@@ -18,7 +18,7 @@ import {async} from 'q';
   providers: [PreDefined],
   styleUrls: ['./org-page.component.css']
 })
-export class OrgPageComponent implements OnInit {
+export class OrgPageComponent implements OnInit, OnDestroy {
   orgId: string;
   orgName: string;
   currentWikiId: string;
@@ -40,6 +40,11 @@ export class OrgPageComponent implements OnInit {
 
   orgObservable: Observable<Organization>;
 
+  subAddSection: Subscription;
+  orgSub: Subscription;
+  obsSubArr: Subscription[];
+  dataSubArr: Subscription[];
+
   // TODO: Change to proper value based on edit privileges
   showNewSectionPopup = false;
   newSectionText;
@@ -56,6 +61,7 @@ export class OrgPageComponent implements OnInit {
 
   members = [{value: ''}];
 
+
   constructor(public sharedService: SharedService, public router: Router, private preDef: PreDefined,
               private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth,
               private messageService: MessageService) {
@@ -65,11 +71,13 @@ export class OrgPageComponent implements OnInit {
       this.ngOnInit();
     });
     */
-    sharedService.addSection.subscribe(
+    this.subAddSection = sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
       }
     );
+    this.dataSubArr = [];
+    this.obsSubArr = [];
   }
 
   ngOnInit() {
@@ -96,14 +104,16 @@ export class OrgPageComponent implements OnInit {
       });
 
       this.tripsObservable.map(obs => {
-        obs.subscribe((trip: Trip) => {
+        const obsSub = obs.subscribe((trip: Trip) => {
           if (this.trips.indexOf(trip) === -1) {
             this.trips = [...this.trips, trip];
           }
         });
+        this.obsSubArr = [...this.obsSubArr, obsSub];
       });
       this.tripIds.map(data => {
-        data.subscribe();
+        const dataSub = data.subscribe();
+        this.dataSubArr = [...this.dataSubArr, dataSub];
       });
       // Get wiki data
       this.sections = this.db.doc(`organizations/${this.orgId}/wiki/${org.currentWiki}`).valueChanges().pipe(map(data => {
@@ -119,7 +129,7 @@ export class OrgPageComponent implements OnInit {
       return org;
     }));
 
-    this.orgObservable.subscribe((org: Organization) => {
+    this.orgSub = this.orgObservable.subscribe((org: Organization) => {
       this.orgName = org.name;
       this.currentWikiId = org.currentWiki;
       this.sharedService.onPageNav.emit(this.orgName);
@@ -139,6 +149,22 @@ export class OrgPageComponent implements OnInit {
         }
       });
     });
+  }
+
+  ngOnDestroy() {
+    if (this.subAddSection) {
+      this.subAddSection.unsubscribe();
+    }
+    if (this.orgSub) {
+      this.orgSub.unsubscribe();
+    }
+    let sub: Subscription;
+    for (sub of this.obsSubArr) {
+      sub.unsubscribe();
+    }
+    for (sub of this.dataSubArr) {
+      sub.unsubscribe();
+    }
   }
 
   tripClick(): void {
