@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Organization} from '../../interfaces/organization';
 import {AngularFireAuth} from '@angular/fire/auth';
@@ -15,16 +15,14 @@ import {Team} from '../../interfaces/team';
   providers: [PreDefined],
   styleUrls: ['./orgadmin.component.css']
 })
-export class OrgadminComponent implements OnInit {
+export class OrgadminComponent implements OnInit, OnDestroy {
 
   showMainMenu = true;
   showOrgCreation = false;
-
   orgName: string;
-
   allowOrgCreation = false; // we want to delay org creation after a user creates one
-
   orgList: Observable<Observable<Organization>[]>;
+  orgSub: Subscription;
 
   constructor(private readonly db: AngularFirestore, private authInstance: AngularFireAuth, private preDef: PreDefined) {
     // Let's go ahead and list all the orgs the user is apart of
@@ -37,18 +35,19 @@ export class OrgadminComponent implements OnInit {
           }));
         });
       }));
-      this.orgList.subscribe(data => {
-        if (data.length > 0) {
-          // User already has an org and we should just hide the option
-          this.allowOrgCreation = false;
-        } else {
-          this.allowOrgCreation = true;
-        }
+      this.orgSub = this.orgList.subscribe(data => {
+        this.allowOrgCreation = data.length <= 0;
       });
     });
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy(): void {
+    if (this.orgSub) {
+      this.orgSub.unsubscribe();
+    }
   }
 
   showOrgCreationMethod() {

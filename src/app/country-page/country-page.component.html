@@ -1,7 +1,7 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
 
 <p-dialog header="New Section Creation" [(visible)]="showNewSectionPopup">
-  <div [hidden]="!viewWiki">
+  <div [hidden]="viewSites">
     <div style="width: 300px;" >
       <p>Section Title</p>
       <input type="text" pInputText [(ngModel)]="newSectionName"/>
@@ -60,7 +60,7 @@
         <!--&lt;!&ndash;</div>&ndash;&gt;-->
       <!--</div>-->
     <!--</div>-->
-  <div [hidden]="!viewWiki" style="width: 100vw">
+  <div [hidden]="viewSites" style="width: 100vw">
     <div *ngFor="let info of sections | async; let i = index; let confirmTitle = false" style="margin-top: 20px; padding-right: 35px">
       <div [hidden]="!hideme[i]">
         <label>Edit Section Title</label>
@@ -108,15 +108,15 @@
  <p-toolbar [style]="{'background': 'none', 'padding': '0', 'border': 'none', 'position': 'fixed', 'bottom': '0', 'left': '0', 'width': '100%', 'height': '50px'}">
     <button class="footer-button" pButton type="button"
       style="width: 50%; height: 100%; border: none; border-radius: 0"
-      (click)="viewWiki = true; viewSites = false; sharedService.addName.emit('New Section'); sharedService.canEdit.emit(canEditWiki);">
-      <i class="pi pi-align-justify" [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}"></i>
-      <div [ngStyle]="{'opacity': !viewWiki ? '0.5' : '1'}">
+      (click)="goWiki()">
+      <i class="pi pi-align-justify" [ngStyle]="{'opacity': viewSites ? '0.5' : '1'}"></i>
+      <div [ngStyle]="{'opacity': viewSites ? '0.5' : '1'}">
         <span>Wiki</span>
       </div>
     </button>
     <button class="footer-button" pButton type="button"
       style="width: 50%; height: 100%; border: none; border-radius: 0"
-      (click)="viewWiki = false; viewSites = true; sharedService.addName.emit('New Site'); sharedService.canEdit.emit(canEditSites);">
+      (click)="goSites()">
       <i class="pi pi-sitemap" [ngStyle]="{'opacity': !viewSites ? '0.5' : '1'}"></i>
       <div [ngStyle]="{'opacity': !viewSites ? '0.5' : '1'}">
         <span>Sites</span>
