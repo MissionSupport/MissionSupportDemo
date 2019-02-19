@@ -1,16 +1,21 @@
-<div [hidden]="!showMainMenu" style="width: 100vw">
-  <a [hidden] ="!allowOrgCreation" (click)="showOrgCreationMethod()" style="font-size: smaller">Create new org</a>
+<div style="height:9%;"></div>
+
+<div [hidden]="!showMainMenu" style="width: 90vw">
+  <p-button *ngIf="allowOrgCreation" (onClick)="showOrgCreationMethod()" label="Create new org"></p-button>
 </div>
 <div [hidden]="!showOrgCreation">
   <span class="ui-float-label p-col" >
     <input id="float-input3" type="text" size="30" pInputText [(ngModel)] = "orgName">
     <label for="float-input3" style="margin-left: 8px">Organization Name</label>
   </span>
-  <div class="p-grid p-col-align-stretch p-justify-between">
-    <a (click)="showMainOrgMethod()" ><p class="p-col p-col-2">Cancel</p></a>
-    <p-button class="p-col p-col-3 p-col-align-center" label="Submit" (onClick)="createOrg(); showMainOrgMethod();"></p-button>
+  <div class="p-grid p-col-align-stretch p-justify-center" style="width: 90%;">
+    <p-button class="p-col p-col-3 p-col-align-left" label="Cancel" (onClick)="showMainOrgMethod()"></p-button>
+    <span class="p-col p-col-3"></span>
+    <p-button class="p-col p-col-3 p-col-align-right" label="Submit" (onClick)="createOrg(); showMainOrgMethod();"></p-button>
   </div>
 </div>
 <div [hidden]="!showMainMenu" *ngFor="let info of orgList | async;" style="margin-top: 20px; padding-right: 35px">
-  <a routerLink="/org/{{(info | async)?.id}}" ><p class="p-col p-col-2">{{(info | async)?.name}}</p></a>
+  <a routerLink="/org/{{(info | async)?.id}}" >
+    <p-card *ngIf="showMainMenu" header="{{(info | async)?.name}}"></p-card>
+  </a>
 </div>
