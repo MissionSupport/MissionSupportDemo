@@ -392,5 +392,31 @@ export class SitesComponent implements OnInit, OnDestroy {
       }, data);
     return _data;
   }
+
+  getQuestion(question) {
+    if (question.question !== null) {
+      return question.question;
+    } else {
+      console.log(question);
+    }
+  }
+
+  getValue(question) {
+    if (typeof question.value === 'string') {
+      return question.value;
+    } else {
+      console.log(question);
+      let value = '';
+      question.value.forEach(val => {
+        if (typeof val.value === 'string') {
+          value = value + val.value.toString() + ',' + + '<br />';
+
+        } else {
+          value = value + val.drugName + ' - ' + val.strength + ',' + '<br />';
+        }
+      });
+      return value;
+    }
+  }
 }
 

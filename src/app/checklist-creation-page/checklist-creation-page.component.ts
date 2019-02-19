@@ -131,7 +131,7 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
     // });
   }
 
-  onSubmit(form, formObject) {
+  onSubmit(form, formObject, hideForm) {
     // console.log(form);
     formObject.payLoad = JSON.stringify(form.value);
     this.preDef.testInput.push(
@@ -140,8 +140,10 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
         json: formObject.payLoad
       }
     );
-    console.log(this.preDef.testInput);
-    // console.log(formObject.name);
+    console.log(hideForm);
+    hideForm.hidden = true;
+    // console.log(this.preDef.testInput);
+    // console.log(hideForm);
   }
 
 }

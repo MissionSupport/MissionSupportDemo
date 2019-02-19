@@ -62,6 +62,9 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {TableModule} from 'primeng/table';
 import {SelectedInjectable} from './questions/selectedInjectable';
 import {PreDefined, SharedService} from './globals';
+import { AdminNewListComponent } from './admin/admin-new-list/admin-new-list.component';
+import { AdminCountryCreationComponent } from './admin/admin-country-creation/admin-country-creation.component';
+import { DiffEditComponent } from './admin/diff-edit/diff-edit.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +88,9 @@ import {PreDefined, SharedService} from './globals';
     ChecklistCreationPageComponent,
     DynamicFormQuestionComponent,
     SiteSearchComponent,
+    AdminNewListComponent,
+    AdminCountryCreationComponent,
+    DiffEditComponent,
   ],
   imports: [
     BrowserModule,
