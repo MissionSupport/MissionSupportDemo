@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {ApplicationRef, Component, DoCheck, OnChanges, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Site} from '../interfaces/site';
@@ -23,8 +23,8 @@ import * as firebase from 'firebase';
 export class CountryPageComponent implements OnInit, OnDestroy {
   footerHeight: number;
   clientHeight: number;
-  viewWiki = true;
-  viewSites = false;
+  // viewWiki: boolean;
+  viewSites: boolean;
   countryId: string;
   countryName;
   sections: Observable<any[]>;
@@ -59,6 +59,11 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
+      }
+    );
+    sharedService.goSites.subscribe(
+      (bool) => {
+        if (bool) {this.goSites(); }
       }
     );
     this.footerHeight = 45;
@@ -102,7 +107,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
   ngOnDestroy() {
@@ -170,5 +175,19 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     // Go ahead and clear the section variables
     this.isNewSiteHospital = null;
     this.newSiteName = null;
+  }
+
+  goSites() {
+    // this.viewWiki = false;
+    this.viewSites = true;
+    this.sharedService.addName.emit('New Site');
+    this.sharedService.canEdit.emit(this.canEditSites);
+  }
+
+  goWiki() {
+    // this.viewWiki = true;
+    this.viewSites = false;
+    this.sharedService.addName.emit('New Section');
+    this.sharedService.canEdit.emit(this.canEditWiki);
   }
 }

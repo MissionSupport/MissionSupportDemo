@@ -8,6 +8,7 @@ export class SharedService {
   canEdit: EventEmitter<any> = new EventEmitter();
   addSection: EventEmitter<any> = new EventEmitter();
   addName: EventEmitter<any> = new EventEmitter();
+  goSites: EventEmitter<any> = new EventEmitter();
 }
 
 @Injectable()

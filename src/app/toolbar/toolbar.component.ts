@@ -1,6 +1,6 @@
-import {Component, OnInit, Input, OnChanges} from '@angular/core';
+import {Component, OnInit, Input, OnChanges, Output, EventEmitter} from '@angular/core';
 import {Location} from '@angular/common';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router, ActivatedRoute, NavigationEnd} from '@angular/router';
 import { SidebarService } from '../service/sidebar.service';
 import {SharedService} from '../globals';
 
@@ -20,6 +20,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
   constructor(public router: Router, private _aRoute: ActivatedRoute, private _location: Location, public sidebarService: SidebarService,
               private sharedService: SharedService) {
     this.isLanding = !(this.router.url === '' || this.router.url === '/landing');
+
   }
 
   ngOnInit() {
@@ -48,8 +49,11 @@ export class ToolbarComponent implements OnInit, OnChanges {
       url = '/landing';
     }
     this.router.navigateByUrl(url)
-      .then(data => {
+      .then(() => {
         console.log('Route exists, redirection is done');
+        if (urlSegs.toString().includes('site')) {
+          this.sharedService.goSites.emit(true);
+        }
       })
       .catch(e => {
         console.log('Route does not exists, redirection edit');
