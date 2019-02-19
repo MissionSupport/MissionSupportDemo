@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Site} from '../interfaces/site';
 import {Country} from '../interfaces/country';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {SharedService} from '../globals';
 
@@ -11,14 +11,16 @@ import {SharedService} from '../globals';
   templateUrl: './site-search.component.html',
   styleUrls: ['./site-search.component.css']
 })
-export class SiteSearchComponent implements OnInit {
+export class SiteSearchComponent implements OnInit, OnDestroy {
 
   site: Site;
   sites: Site[];
   sitesObservable: Observable<Site[]>;
+  siteSubArray: Subscription[];
   country: Country;
   countries: Country[];
   countriesObservable: Observable<Country[]>;
+  countrySub: Subscription;
 
   selectedSite: Site;
   filterSites: Site[];
@@ -29,64 +31,40 @@ export class SiteSearchComponent implements OnInit {
     sharedService.onPageNav.emit('Site Selection');
     this.sites = [];
     this.countries = [];
+    this.siteSubArray = [];
     this.countriesObservable = db.collection<Country>(`countries`).valueChanges();
-    this.countriesObservable.subscribe( (countries: Country[]) => {
+    this.countrySub = this.countriesObservable.subscribe( (countries: Country[]) => {
       countries.forEach( (country: Country) => {
         this.country = country;
         this.countries = [...this.countries, country];
-        console.log(country);
         this.sitesObservable = db.collection<Site>(`countries/${country.id}/sites`).valueChanges();
-        this.sitesObservable.subscribe( (sites: Site[]) => {
+        let siteSub: Subscription;
+        siteSub = this.sitesObservable.subscribe( (sites: Site[]) => {
           sites.forEach( (site: Site) => {
             this.site = site;
             this.sites = [...this.sites, site];
-            console.log(site);
+            // console.log(site);
           });
         });
+        this.siteSubArray = [...this.siteSubArray, siteSub];
       });
     });
-
-    // can't get it to work outside the loop since the db collection is async too rip
-    // this.countries.forEach( (country: Country) => {
-    //   this.sitesObservable = db.collection<Site>(`countries/${country.id}/sites`).valueChanges();
-    //   this.sitesObservable.subscribe( (sites: Site[]) => {
-    //     sites.forEach( (site: Site) => {
-    //       this.site = site;
-    //       this.sites.push(site);
-    //       console.log(site);
-    //     });
-    //   });
-    // });
-
-    // Tried to use pipes/maps but i dunno what this black magic is
-    // this.sites = [];
-    // this.countries = [];
-    // this.countriesObservable = db.collection<Country>(`countries`).valueChanges();
-    // this.countriesObservable.pipe(map( (countries: Country[]) => {
-    //   countries.forEach( (country: Country) => {
-    //     this.countries.push(country);
-    //   });
-    // }));
-    //
-    // for (const country of this.countries) {
-    //   this.country = country;
-    //   this.sitesObservable = db.collection<Site>(`countries/${this.country.id}/sites`).valueChanges();
-    //   this.sitesObservable.pipe(map( (sites: Site[]) => {
-    //     sites.forEach( (site: Site) => {
-    //       this.sites.push(site);
-    //     });
-    //   }));
-    // }
-
   }
 
   ngOnInit() {
+  }
 
-
+  ngOnDestroy() {
+    if (this.countrySub) {
+      this.countrySub.unsubscribe();
+    }
+    let sub: Subscription;
+    for (sub of this.siteSubArray) {
+      sub.unsubscribe();
+    }
   }
 
   siteClick(): void {
-
     this.router.navigate([`country/${this.selectedSite.countryID}/site/${this.selectedSite.id}`]);
   }
 

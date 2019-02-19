@@ -8,13 +8,14 @@ import {QuestionBase} from '../questions/question-base';
 import {QuestionService} from '../questions/question.service';
 import {FormObject} from '../questions/formObject';
 import {forEach} from '@angular/router/src/utils/collection';
+import {SelectedInjectable} from '../questions/selectedInjectable';
 declare var $: any;
 declare var Def: any;
 @Component({
   selector: 'app-checklist-creation-page',
   templateUrl: './checklist-creation-page.component.html',
   styleUrls: ['./checklist-creation-page.component.css'],
-  providers: [QuestionService, QuestionControlService, PreDefined]
+  providers: [QuestionService, QuestionControlService]
 })
 export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
 
@@ -26,22 +27,80 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
   myForm: FormGroup;
   questions: QuestionBase<any>[] = [];
   forms: FormObject[] = [
-    new FormObject({
-      name: 'Hospital',
-      questionData: this.preDef.questionExampleJson
-    }),
-    new FormObject({
-      name: 'Temp',
-      questionData: this.preDef.questionExampleJson
-    }),
+    // new FormObject({
+    //   name: 'Hospital',
+    //   questionData: this.preDef.hospitalJson
+    // }),
+    // new FormObject({
+    //   name: 'Hospital Infrastructure',
+    //   questionData: this.preDef.hospitalInfrastructureJson
+    // }),
+    // new FormObject({
+    //   name: 'Pharmacy/Lab',
+    //   questionData: this.preDef.pharmacyLabJson
+    // }),
+    // new FormObject( {
+    //   name: 'Operating Room',
+    //   questionData: this.preDef.operatingRoomJson
+    // }),
+    // new FormObject( {
+    //   name: 'Wards',
+    //   questionData: this.preDef.wardJson
+    // }),
+    // new FormObject( {
+    //   name: 'Supplies',
+    //   questionData: this.preDef.suppliesEquipmentJson
+    // }),
+    // new FormObject( {
+    //   name: 'Ambulance',
+    //   questionData: this.preDef.ambulanceJson
+    // }),
+    // new FormObject( {
+    //   name: 'Case Volume and Staff',
+    //   questionData: this.preDef.caseVolumeandStafJson
+    // }),
+    // new FormObject( {
+    //   name: 'Case Volume and Staff',
+    //   questionData: this.preDef.personnelJson
+    // }),
+    // new FormObject( {
+    //   name: 'Education/QI',
+    //   questionData: this.preDef.educationQIJson
+    // }),
+    // new FormObject( {
+    //   name: 'Logistics',
+    //   questionData: this.preDef.logisticsJson
+    // }),
+    // new FormObject( {
+    //   name: 'Accommodations',
+    //   questionData: this.preDef.accommodationsJson
+    // })
   ];
+  selectedLists = [];
 
   constructor(private sharedService: SharedService, // private fb: FormBuilder,
-              private qcs: QuestionControlService, private service: QuestionService, private preDef: PreDefined ) {
+              private qcs: QuestionControlService, private service: QuestionService, private preDef: PreDefined,
+              private selected: SelectedInjectable ) {
     // this.forms.push(new FormObject());
+
+    this.selectedLists = this.selected.selected;
+    // console.log(this.selected.selected);
+    // console.log(this.selectedLists);
+    this.selectedLists.forEach(list => {
+      this.forms.push(new FormObject(list));
+    });
     this.forms.forEach(function(form) {
       form.questions = service.getQuestions(form.questionData);
     });
+
+
+    // console.log(this.selectedLists);
+    // this.selectedLists.forEach(list => {
+    //   this.forms.push(new FormObject(list));
+    // });
+
+
+
     // this.questions = service.getQuestions(this.preDef.questionExampleJson);
 
     sharedService.hideToolbar.emit(false);
@@ -72,10 +131,19 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
     // });
   }
 
-  onSubmit(form, formObject) {
-    console.log(form);
+  onSubmit(form, formObject, hideForm) {
+    // console.log(form);
     formObject.payLoad = JSON.stringify(form.value);
-    console.log(formObject.payLoad);
+    this.preDef.testInput.push(
+      {
+        name: formObject.name,
+        json: formObject.payLoad
+      }
+    );
+    console.log(hideForm);
+    hideForm.hidden = true;
+    // console.log(this.preDef.testInput);
+    // console.log(hideForm);
   }
 
 }

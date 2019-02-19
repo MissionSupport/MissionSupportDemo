@@ -1,7 +1,7 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
 
 <p-dialog header="New Section Creation" [(visible)]="showNewSectionPopup">
-  <div [hidden]="!viewWiki">
+  <div [hidden]="viewSites">
     <div style="width: 300px;" >
       <p>Section Title</p>
       <input type="text" pInputText [(ngModel)]="newSectionName"/>
@@ -60,7 +60,7 @@
         <!--&lt;!&ndash;</div>&ndash;&gt;-->
       <!--</div>-->
     <!--</div>-->
-  <div [hidden]="!viewWiki" style="width: 100vw">
+  <div [hidden]="viewSites" style="width: 100vw">
     <div *ngFor="let info of sections | async; let i = index; let confirmTitle = false" style="margin-top: 20px; padding-right: 35px">
       <div [hidden]="!hideme[i]">
         <label>Edit Section Title</label>

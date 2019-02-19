@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PreDefined, SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Trip} from '../interfaces/trip';
@@ -10,6 +10,8 @@ import {exhaustMap, flatMap, map} from 'rxjs/operators';
 import {AngularFireAuth} from '@angular/fire/auth';
 import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
+import {MessageService} from 'primeng/api';
+import {async} from 'q';
 
 @Component({
   selector: 'app-group-page',
@@ -17,7 +19,7 @@ import { BottomTab } from '../interfaces/bottom-tab';
   providers: [PreDefined],
   styleUrls: ['./org-page.component.css']
 })
-export class OrgPageComponent implements OnInit {
+export class OrgPageComponent implements OnInit, OnDestroy {
   orgId: string;
   orgName: string;
   currentWikiId: string;
@@ -39,6 +41,11 @@ export class OrgPageComponent implements OnInit {
 
   orgObservable: Observable<Organization>;
 
+  subAddSection: Subscription;
+  orgSub: Subscription;
+  obsSubArr: Subscription[];
+  dataSubArr: Subscription[];
+
   // TODO: Change to proper value based on edit privileges
   showNewSectionPopup = false;
   newSectionText;
@@ -59,19 +66,22 @@ export class OrgPageComponent implements OnInit {
                             {name: 'Teams', icon: 'pi pi-users'},
                             {name: 'Trips', icon: 'pi pi-briefcase'}];
 
-  constructor(private sharedService: SharedService, public router: Router, private preDef: PreDefined,
-              private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
+  constructor(public sharedService: SharedService, public router: Router, private preDef: PreDefined,
+              private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth,
+              private messageService: MessageService) {
     /*
     this.route.params.subscribe((params) => {
       this.orgId = params['id'];
       this.ngOnInit();
     });
     */
-    sharedService.addSection.subscribe(
+    this.subAddSection = sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
       }
     );
+    this.dataSubArr = [];
+    this.obsSubArr = [];
   }
 
   ngOnInit() {
@@ -85,7 +95,7 @@ export class OrgPageComponent implements OnInit {
         return x;
       });
       this.tripIds = this.teams.map(team => {
-        return team.pipe(flatMap(t => {
+        return team.pipe(flatMap((t: Team) => {
           return t.trips;
         }));
       });
@@ -98,14 +108,16 @@ export class OrgPageComponent implements OnInit {
       });
 
       this.tripsObservable.map(obs => {
-        obs.subscribe((trip: Trip) => {
+        const obsSub = obs.subscribe((trip: Trip) => {
           if (this.trips.indexOf(trip) === -1) {
             this.trips = [...this.trips, trip];
           }
         });
+        this.obsSubArr = [...this.obsSubArr, obsSub];
       });
       this.tripIds.map(data => {
-        data.subscribe();
+        const dataSub = data.subscribe();
+        this.dataSubArr = [...this.dataSubArr, dataSub];
       });
       // Get wiki data
       this.sections = this.db.doc(`organizations/${this.orgId}/wiki/${org.currentWiki}`).valueChanges().pipe(map(data => {
@@ -121,10 +133,11 @@ export class OrgPageComponent implements OnInit {
       return org;
     }));
 
-    this.orgObservable.subscribe((org: Organization) => {
+    this.orgSub = this.orgObservable.subscribe((org: Organization) => {
       this.orgName = org.name;
       this.currentWikiId = org.currentWiki;
       this.sharedService.onPageNav.emit(this.orgName);
+      this.teamIds = org.teamIds;
       // Check if the user can edit
       this.authInstance.auth.onAuthStateChanged(user => {
         this.canEditTrips = this.canEditTeams = this.canEditWiki = org.admins.includes(user.uid);
@@ -142,6 +155,22 @@ export class OrgPageComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.subAddSection) {
+      this.subAddSection.unsubscribe();
+    }
+    if (this.orgSub) {
+      this.orgSub.unsubscribe();
+    }
+    let sub: Subscription;
+    for (sub of this.obsSubArr) {
+      sub.unsubscribe();
+    }
+    for (sub of this.dataSubArr) {
+      sub.unsubscribe();
+    }
+  }
+
   tripClick(): void {
     console.log(this.selectedTrip);
     this.router.navigate(['trip/' + this.selectedTrip.id]);
@@ -157,16 +186,6 @@ export class OrgPageComponent implements OnInit {
     this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
   }
 
-  /**
-   * Used for updating the title of an entry.
-   */
-  updateWikiTitle(oldTitle, newTitle, index): void {
-    const json = {};
-    json[oldTitle] = firebase.firestore.FieldValue.delete();
-    json[newTitle] = this.sections[index];
-    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
-  }
-
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
     // add to db
@@ -179,9 +198,55 @@ export class OrgPageComponent implements OnInit {
     this.members.push({value: ''});
   }
 
-  submitNewTeam() {
+  async submitNewTeam() {
     console.log(this.orgName, this.newTeamName, this.members);
-    this.showNewSectionPopup = false;
+    // Look up emails to uid to see if exists.
+    const failed = [];
+    const proms = [];
+    console.log(this.members);
+    for (const member of this.members) {
+      if (member.value === '') {
+        continue;
+      }
+      proms.push(this.db.doc(`emails/${member.value}`).get().toPromise().then(data => {
+        if (!data.exists) {
+          // Display error to user that the email does not exist
+          failed.push(member.value);
+        }
+      }));
+    }
+    await Promise.all(proms);
+    // Find if there are any non existent emails
+    if (failed.length === 0) {
+      this.showNewSectionPopup = false;
+      // Let's go ahead and create the team
+      const teamId = this.db.createId();
+      const members = this.members.map(m => m.value);
+      const team: Team = {
+        admins: members,
+        id: teamId,
+        name: this.newTeamName,
+        org: this.orgId,
+        trips: []
+      };
+      this.db.firestore.batch().set(this.db.doc(`teams/${teamId}`).ref, team)
+        .update(this.db.doc(`organizations/${this.orgId}`).ref, {teamIds: [...this.teamIds, teamId]})
+        .commit()
+        .then(() => {
+        console.log('Success!');
+        this.newTeamName = '';
+        this.members = [{value: ''}];
+      }).catch( error => {
+        console.log('Failure!');
+        console.log(error);
+      });
+    } else {
+      const errors = [];
+      for (const email of failed) {
+        errors.push({severity: 'info', summary: 'Member Failure', detail: `The email ${email} does not exist`});
+      }
+      this.messageService.addAll(errors);
+    }
   }
 
   submitNewTrip() {

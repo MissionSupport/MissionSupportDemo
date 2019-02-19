@@ -1,12 +1,12 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ApplicationRef, Component, DoCheck, OnChanges, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Site} from '../interfaces/site';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {PreDefined} from '../globals';
 import {Country} from '../interfaces/country';
-import {flatMap, map} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {flatMap, map, take} from 'rxjs/operators';
+import {Observable, Subscription} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
 import * as firebase from 'firebase';
@@ -21,14 +21,15 @@ import { BottomTab } from '../interfaces/bottom-tab';
     '.custombar1 .ui-scrollpanel-bar { opacity: 1;}'
   ]
 })
-export class CountryPageComponent implements OnInit {
+export class CountryPageComponent implements OnInit, OnDestroy {
   footerHeight: number;
   clientHeight: number;
-  viewWiki = true;
-  viewSites = false;
+  // viewWiki: boolean;
+  viewSites: boolean;
   countryId: string;
   countryName;
   sections: Observable<any[]>;
+  subUserPref: Subscription;
   hideme = [];
   wikiId: string;
   mainHeight;
@@ -44,8 +45,8 @@ export class CountryPageComponent implements OnInit {
   isNewSiteHospital;
 
   // ToDO change based on permissions
-  canEditWiki: Observable<boolean>; // Editing wiki
-  canEditSites: Observable<boolean>; // editing site
+  canEditWiki: boolean; // Editing wiki
+  canEditSites: boolean; // editing site
 
   titleEdits = [];
 
@@ -62,6 +63,11 @@ export class CountryPageComponent implements OnInit {
     sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
+      }
+    );
+    sharedService.goSites.subscribe(
+      (bool) => {
+        if (bool) {this.goSites(); }
       }
     );
     this.footerHeight = 45;
@@ -92,19 +98,26 @@ export class CountryPageComponent implements OnInit {
       }));
     }));
 
+    // let subUserPref = null;
     this.authInstance.auth.onAuthStateChanged(user => {
       console.log(user);
-      this.canEditSites = this.canEditWiki =
-        this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
-        return pref.admin;
-      }));
-      this.canEditWiki.subscribe(data => {
-        sharedService.canEdit.emit(data);
+      if (this.subUserPref) {
+        this.subUserPref.unsubscribe();
+      }
+      this.subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
+        this.canEditSites = this.canEditWiki = pref.admin;
+        sharedService.canEdit.emit(pref.admin);
       });
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+  }
+
+  ngOnDestroy() {
+    if (this.subUserPref) {
+      this.subUserPref.unsubscribe();
+    }
   }
 
   submitEdit(title, markup, newTitle, confirm) {
@@ -141,7 +154,6 @@ export class CountryPageComponent implements OnInit {
   }
 
   submitNewSite() {
-    console.log(this.countryId, this.newSiteName, this.isNewSiteHospital);
     this.showNewSectionPopup = false;
     // Now save to the database
     const siteId = this.db.createId();
@@ -163,24 +175,34 @@ export class CountryPageComponent implements OnInit {
         wikiData[x.title] = x.markup;
       }
       this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(wikiData);
-      /** TODO get checklist predefined and add it.
-      const checklistData = {};
-      for (const x of this.preDef.) {
-        wikiData[x.title] = x.markup;
-      }
-      this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(checklistData);
-       */
     });
+    // Go ahead and clear the section variables
+    this.isNewSiteHospital = null;
+    this.newSiteName = null;
+  }
+
+  goSites() {
+    // this.viewWiki = false;
+    this.viewSites = true;
+    this.sharedService.addName.emit('New Site');
+    this.sharedService.canEdit.emit(this.canEditSites);
+  }
+
+  goWiki() {
+    // this.viewWiki = true;
+    this.viewSites = false;
+    this.sharedService.addName.emit('New Section');
+    this.sharedService.canEdit.emit(this.canEditWiki);
   }
 
   onTabClicked(tab: number) {
     if (tab === 0) {
-      this.viewWiki = true;
+      // this.viewWiki = true;
       this.viewSites = false;
       this.sharedService.addName.emit('New Section');
       this.sharedService.canEdit.emit(this.canEditWiki);
     } else if (tab === 1) {
-      this.viewWiki = false;
+      // this.viewWiki = false;
       this.viewSites = true;
       this.sharedService.addName.emit('New Site');
       this.sharedService.canEdit.emit(this.canEditSites);

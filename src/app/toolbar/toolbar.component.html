@@ -7,11 +7,11 @@
 </p-sidebar>
 <div id="innerToolbar" class="p-grid p-justify-between" style="height: 8%; width: 100vw; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.24); ">
   <!--background-color: #007ad9-->
-  <div class="p-col-fixed p-col-align-center" style="height: 90%;">
+  <div class="p-col-fixed p-col-align-left" style="height: 90%;" >
     <!--<a routerLink="/profile"><img src="assets/icons/nut-icon.png" style="height: 90%"></a>-->
-    <p-button icon="pi pi-arrow-left" styleClass="ui-button-rounded" style="height: 100%; padding-top: 5px; padding-right: 5px; cursor: pointer;" (onClick)="navBack($event)"></p-button>
+    <p-button icon="pi pi-arrow-left" *ngIf="this.isLanding" styleClass="ui-button-rounded" style="height: 100%; padding-top: 5px; padding-right: 5px; cursor: pointer;" (onClick)="navBack($event)"></p-button>
   </div>
-  <div class="p-col-align-center" style="font-size: x-large">
+  <div class="p-col-fixed p-col-align-center p-align-center" style="font-size: x-large; text-align: center;">
     {{header}}
   </div>
   <div class="p-col-fixed p-col-align-center p-align-end" style="height: 90%;">

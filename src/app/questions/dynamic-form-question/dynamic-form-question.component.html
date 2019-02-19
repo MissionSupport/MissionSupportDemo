@@ -6,7 +6,7 @@
 
     <div class="p-col-12" *ngSwitchCase="'radio'" [id]="question.key">
       <div *ngFor="let opt of question.options">
-        <p-radioButton [formControlName]="'value'"  [name]="question.key" [value]="opt.key"
+        <p-radioButton [formControlName]="'value'"  [name]="question.key" [value]="opt.value"
                        [label]="opt.value"></p-radioButton>
       </div>
 
@@ -48,6 +48,26 @@
 
       </div>
       <p-button (onClick)="addField(question.key, 'value')" label="Add" style="margin-top: 10px"></p-button>
+    </div>
+
+    <div *ngSwitchCase="'medmultcheck'" [formArrayName]="'value'">
+      <p-checkbox  [id]="'check'+question.key" binary="true" (onChange)="hide.hidden = !hide.hidden"></p-checkbox>
+      <div #hide [hidden]="'true'">
+        <div *ngFor="let item of form.get(question.key).get('value').controls; let i = index;"  >
+          <div [formGroupName]="i" style="margin-top: 10px">
+            <input pInputText (focus)="searchDrugs(question.key + i)" type="text" [id]="question.key + i + 'rxterms'" placeholder="Drug name" formControlName="drugName">
+            <input pInputText type="text" [id]="question.key + i +'drug_strengths'" placeholder="Strength list" formControlName="strength">
+          </div>
+        </div>
+        <p-button (onClick)="addField(question.key, 'value')" label="Add" style="margin-top: 10px"></p-button>
+      </div>
+
+    </div>
+
+    <div *ngSwitchCase="'header'"></div>
+
+    <div class="p-col-12" *ngSwitchCase="'multi'" [id]="question.key">
+      <p-multiSelect [options]="question.options" optionLabel="value" [formControlName]="'value'" [optionLabel]="'value'" [name]="question.key" [filter]="false"></p-multiSelect>
     </div>
 
   </div>

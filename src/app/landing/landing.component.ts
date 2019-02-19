@@ -9,6 +9,7 @@ import {SharedService} from '../globals';
 import {Country} from '../interfaces/country';
 import { drag } from 'd3-drag';
 import { Topology } from 'topojson-specification';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-landing',
@@ -26,11 +27,12 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   countries: Country[];
   selectedCountry: Country;
   countryCollection: AngularFirestoreCollection<Country>;
+  countrySub: Subscription;
 
   constructor(db: AngularFirestore, public router: Router, sharedService: SharedService) {
     this.countryCollection = db.collection<Country>('countries');
     const countries = this.countryCollection.valueChanges();
-    countries.subscribe( item => {
+    this.countrySub = countries.subscribe( item => {
       this.countries = item;
     });
     sharedService.hideToolbar.emit(false);
@@ -42,6 +44,9 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.countrySub) {
+      this.countrySub.unsubscribe();
+    }
   }
 
   ngAfterContentInit() {

@@ -21,14 +21,38 @@
     </div>
   </div>
   <div style="width: 300px;" [hidden]="!viewChecklist">
-    <p>Add New Checklist Item</p>
+    <!--<p>Select New Checklist Generic</p>-->
+    <p-listbox [options]="genericChecklists" [(ngModel)]="selectedLists" multiple="multiple" checkbox="checkbox" optionLabel="name" [style]="{'width':'100%'}">
+      <p-header>
+        <i class="pi pi-list"></i>
+        Select New Checklist Generic
+      </p-header>
+    </p-listbox>
+    <p-listbox [options]="listsPresent" [(ngModel)]="selectedLists" optionLabel="name" [style]="{'width':'100%'}" readonly="true">
+      <p-header>
+        <i class="pi pi-list"></i>
+        Lists Already Included
+      </p-header>
+    </p-listbox>
+    <div class="p-grid" style="text-align: center; padding-top: 10px">
+      <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
+      <p-button class="p-col-6" (onClick)="submitNewList()" label ="Submit"></p-button>
+    </div>
 
   </div>
   <div style="width: 300px;" [hidden]="!viewTrips">
     <p style="margin-top: 10px">Org hosting Trip</p>
-    <p-dropdown [options]="newTripOrgs" [(ngModel)]="newTripOrg" optionLabel="name" placeholder="Select a Org"></p-dropdown>
+    <p-dropdown [options]="userOrgMap" [(ngModel)]="newTripOrg" optionLabel="name"
+                placeholder="Select a Org" (onClick)="newTripOrg != null ? loadTrips(): null;
+                 newTripTeam = null; newTripName = null;"></p-dropdown>
+    <!--<input type="text" pInputText [(ngModel)]="newTripOrg"/>-->
     <p style="margin-top: 10px">Team on Trip</p>
-    <p-dropdown [options]="newTripTeams" [(ngModel)]="newTripTeam" optionLabel="name" placeholder="Select a Team"></p-dropdown>
+    <p-dropdown [options]="userTeamsMap" [disabled]="newTripOrg == null"  [(ngModel)]="newTripTeam" optionLabel="name"
+                placeholder="Select a Team"></p-dropdown>
+    <p style="margin-top: 10px">Trip Name</p>
+    <input type="text" pInputText [(ngModel)]="newTripName" [disabled]="newTripTeam == null"
+           placeholder="Trip Name"/>
+    <!--<input type="text" pInputText [(ngModel)]="newTripTeam"/>-->
     <div class="p-grid" style="text-align: center; padding-top: 10px">
       <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
       <p-button class="p-col-6" (onClick)="submitNewTrip()" label ="Submit"></p-button>
@@ -80,8 +104,26 @@
   </div>
 
   <div [hidden]="!viewChecklist">
-    <h3>Checklist</h3>
-    <a routerLink="/list" >Create New</a>
+    <h1>Checklist</h1>
+    <div *ngFor="let list of testAnswers">
+      <h2>{{list.name}}</h2>
+      <p-table [value]="jsonParse(list.json)">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Question</th>
+            <th>Answer</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-question>
+          <tr>
+            <td>{{getQuestion(question)}}</td>
+            <td [innerHTML]="getValue(question)"></td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </div>
+    <!--<a routerLink="/list" >Create New</a>-->
   </div>
 
   <div [hidden]="!viewTrips">

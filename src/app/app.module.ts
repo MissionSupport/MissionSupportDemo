@@ -59,6 +59,13 @@ import {DialogModule} from 'primeng/dialog';
 import {AutoCompleteModule} from 'primeng/primeng';
 import {HttpClientModule} from '@angular/common/http';
 import { BottomTabsComponent } from './bottom-tabs/bottom-tabs.component';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {TableModule} from 'primeng/table';
+import {SelectedInjectable} from './questions/selectedInjectable';
+import {PreDefined, SharedService} from './globals';
+import { AdminNewListComponent } from './admin/admin-new-list/admin-new-list.component';
+import { AdminCountryCreationComponent } from './admin/admin-country-creation/admin-country-creation.component';
+import { DiffEditComponent } from './admin/diff-edit/diff-edit.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +90,9 @@ import { BottomTabsComponent } from './bottom-tabs/bottom-tabs.component';
     DynamicFormQuestionComponent,
     SiteSearchComponent,
     BottomTabsComponent,
+    AdminNewListComponent,
+    AdminCountryCreationComponent,
+    DiffEditComponent,
   ],
   imports: [
     BrowserModule,
@@ -125,12 +135,14 @@ import { BottomTabsComponent } from './bottom-tabs/bottom-tabs.component';
     DialogModule,
     AutoCompleteModule,
     HttpClientModule,
+    MultiSelectModule,
+    TableModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     MarkdownModule.forRoot()
   ],
-  providers: [MessageService],
+  providers: [MessageService, SelectedInjectable, PreDefined],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Site} from '../interfaces/site';
 import {AngularFirestore} from '@angular/fire/firestore';
@@ -6,13 +6,14 @@ import {UserSettings} from '../interfaces/user-settings';
 import {UserPreferences} from '../interfaces/user-preferences';
 import {Router} from '@angular/router';
 import { MessageService } from 'primeng/api';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-profile-view',
   templateUrl: './profile-view.component.html',
   styleUrls: ['./profile-view.component.css']
 })
-export class ProfileViewComponent implements OnInit {
+export class ProfileViewComponent implements OnInit, OnDestroy {
   email: string;
   id: string;
   firstName: string;
@@ -30,22 +31,31 @@ export class ProfileViewComponent implements OnInit {
   newPassword: string;
   confirmNewPassword: string;
 
+  settingsSubArray: Subscription[];
+  prefsSubArray: Subscription[];
+
   constructor(public authInstance: AngularFireAuth, private readonly db: AngularFirestore,
     public router: Router, public messageService: MessageService) {
+    this.settingsSubArray = [];
+    this.prefsSubArray = [];
     this.authInstance.auth.onAuthStateChanged(user => {
       this.email = user.email;
       this.id = user.uid;
       console.log(this.id);
-      this.db.doc(`users/${this.id}`).valueChanges().subscribe((data: UserSettings) => {
+      let settingSub: Subscription;
+      settingSub = this.db.doc(`users/${this.id}`).valueChanges().subscribe((data: UserSettings) => {
         this.firstName = data.firstName;
         this.lastName = data.lastName;
         this.organization = data.organization;
         // this.orgs = data.orgs;
       });
-      this.db.doc(`user_preferences/${this.id}`).valueChanges().subscribe((data: UserPreferences) => {
+      this.settingsSubArray = [...this.settingsSubArray, settingSub];
+      let prefSub: Subscription;
+      prefSub = this.db.doc(`user_preferences/${this.id}`).valueChanges().subscribe((data: UserPreferences) => {
         this.isAdmin = data.admin;
         // this.sites = data.sites;
       });
+      this.prefsSubArray = [...this.prefsSubArray, prefSub];
       // TODO: this function only updates the email text input field after being clicked on. Needs to be fixed.
     });
 
@@ -64,6 +74,16 @@ export class ProfileViewComponent implements OnInit {
     //   this.id = user.uid;
     //   // TODO: this function only updates the email text input field after being clicked on. Needs to be fixed.
     // });
+  }
+
+  ngOnDestroy(): void {
+    let sub: Subscription;
+    for (sub of this.prefsSubArray) {
+      sub.unsubscribe();
+    }
+    for (sub of this.settingsSubArray) {
+      sub.unsubscribe();
+    }
   }
 
   updateEmail() {

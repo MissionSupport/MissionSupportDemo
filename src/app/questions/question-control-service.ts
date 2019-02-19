@@ -8,15 +8,15 @@ export class QuestionControlService {
   constructor(private formBuilder: FormBuilder) { }
 
   toFormGroup(questions: QuestionBase<any>[] ) {
-    let group: any = {};
+    const group: any = {};
 
     questions.forEach(question => {
-      if (question.controlType !== 'medmulttextbox' && question.controlType !== 'medtextbox') {
+      if (question.controlType !== 'medmulttextbox' && question.controlType !== 'medmultcheck' && question.controlType !== 'medtextbox') {
         group[question.key] = this.formBuilder.group({
           question: question.label,
           value: question.value
         });
-      } else if ( question.controlType === 'medmulttextbox') {
+      } else if ( question.controlType === 'medmulttextbox' || question.controlType === 'medmultcheck') {
         group[question.key] = this.formBuilder.group({
           question: question.label,
           value: this.formBuilder.array([])

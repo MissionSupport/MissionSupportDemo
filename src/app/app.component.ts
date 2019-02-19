@@ -1,6 +1,7 @@
-import {AfterContentInit, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {SharedService} from './globals';
+import {Subscription} from 'rxjs';
 
 
 @Component({
@@ -11,7 +12,7 @@ import {SharedService} from './globals';
 
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements AfterContentInit {
+export class AppComponent implements AfterContentInit, OnDestroy {
   @ViewChild('toolbar', {read: ElementRef}) toolbar: ElementRef;
   title = 'missionSupport1';
   pageName;
@@ -23,23 +24,28 @@ export class AppComponent implements AfterContentInit {
   editMode = false;
   addName;
 
+  hideToolbarSub: Subscription;
+  pageNavSub: Subscription;
+  canEditSub: Subscription;
+  addNameSub: Subscription;
+
   constructor(db: AngularFirestore, private sharedService: SharedService) {
-    sharedService.hideToolbar.subscribe(
+    this.hideToolbarSub = sharedService.hideToolbar.subscribe(
       (onMain) => {
         this.onMain = onMain;
       }
     );
-    sharedService.onPageNav.subscribe(
+    this.pageNavSub = sharedService.onPageNav.subscribe(
       (page) => {
         this.pageName = page;
       }
     );
-    sharedService.canEdit.subscribe(
+    this.canEditSub = sharedService.canEdit.subscribe(
       (hasEditRights) => {
         this.hasEditRights = hasEditRights;
       }
     );
-    sharedService.addName.subscribe(
+    this.addNameSub = sharedService.addName.subscribe(
       (addName) => {
         this.addName = addName;
       }
@@ -52,6 +58,21 @@ export class AppComponent implements AfterContentInit {
     console.log(this.toolbar.nativeElement.children.namedItem('innerToolbar').offsetHeight);
     this.toolbarHeight = this.toolbar.nativeElement.children.namedItem('innerToolbar').offsetHeight;
     this.height = window.innerHeight - this.toolbarHeight;
+  }
+
+  ngOnDestroy(): void {
+    if (this.addNameSub) {
+      this.addNameSub.unsubscribe();
+    }
+    if (this.canEditSub) {
+      this.canEditSub.unsubscribe();
+    }
+    if (this.pageNavSub) {
+      this.pageNavSub.unsubscribe();
+    }
+    if (this.hideToolbarSub) {
+      this.hideToolbarSub.unsubscribe();
+    }
   }
 
   // onActivate(componentRef) {

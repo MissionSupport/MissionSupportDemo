@@ -4,6 +4,7 @@ import {QuestionBase} from '../question-base';
 
 import 'autocomplete-lhc';
 import {MedicineTextboxQuestion} from '../question-medicine-textbox';
+import HTML = marked.Tokens.HTML;
 declare var $: any;
 declare var Def: any;
 

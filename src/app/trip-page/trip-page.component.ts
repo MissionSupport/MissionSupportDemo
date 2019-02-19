@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PreDefined, SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Organization} from '../interfaces/organization';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Trip} from '../interfaces/trip';
 import { BottomTab } from '../interfaces/bottom-tab';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-trip-page',
@@ -12,7 +13,7 @@ import { BottomTab } from '../interfaces/bottom-tab';
   providers: [PreDefined],
   styleUrls: ['./trip-page.component.css']
 })
-export class TripPageComponent implements OnInit {
+export class TripPageComponent implements OnInit, OnDestroy {
 
   markdown: string;
   viewWiki = true;
@@ -48,24 +49,29 @@ export class TripPageComponent implements OnInit {
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'About', icon: 'pi pi-info-circle'}];
 
-  constructor(private sharedService: SharedService, private preDef: PreDefined, public router: Router, private route: ActivatedRoute,
+  tripSub: Subscription;
+  sectionSub: Subscription;
+  wikiSub: Subscription;
+  orgSub: Subscription;
+
+  constructor(public sharedService: SharedService, private preDef: PreDefined, public router: Router, private route: ActivatedRoute,
               private readonly db: AngularFirestore) {
     sharedService.hideToolbar.emit(false);
     this.footerHeight = 45;
     this.tripId = this.route.snapshot.paramMap.get('id');
     sharedService.addName.emit('New Section');
     const trip = this.db.doc(`trips/${this.tripId}`);
-    trip.valueChanges().subscribe((t: Trip) => {
+    this.tripSub = trip.valueChanges().subscribe((t: Trip) => {
       sharedService.onPageNav.emit(t.tripName);
       // ToDo : edit based on rights
       sharedService.canEdit.emit(true);
-      sharedService.addSection.subscribe(
+      this.sectionSub = sharedService.addSection.subscribe(
         () => {
           this.showNewSectionPopup = true;
         }
       );
       // Get wiki information
-      trip.collection('wiki').doc(t.current).valueChanges().subscribe(data => {
+      this.wikiSub = trip.collection('wiki').doc(t.current).valueChanges().subscribe(data => {
         this.sections = [];
         for (const title in data) {
           if (data.hasOwnProperty(title)) {
@@ -78,7 +84,7 @@ export class TripPageComponent implements OnInit {
         }
       });
       // Now get the org information
-      db.doc(`organizations/${t.orgId}`).valueChanges().subscribe( (data: Organization) => {
+      this.orgSub = db.doc(`organizations/${t.orgId}`).valueChanges().subscribe( (data: Organization) => {
         this.org = data;
         this.group = data.name;
       });
@@ -86,6 +92,21 @@ export class TripPageComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy(): void {
+    if (this.orgSub) {
+      this.orgSub.unsubscribe();
+    }
+    if (this.sectionSub) {
+      this.sectionSub.unsubscribe();
+    }
+    if (this.tripSub) {
+      this.tripSub.unsubscribe();
+    }
+    if (this.wikiSub) {
+      this.wikiSub.unsubscribe();
+    }
   }
 
   submitEdit(title, i, titleEdit, confirmTitleEdit) {
