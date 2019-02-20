@@ -25,9 +25,12 @@ export class QuestionService {
   }
 
   parseQuestionJson(array) {
-    array.forEach(object => {
-      this.createQuestion((<QuestionBase<any>>object));
-    });
+    console.log('array :   ' + array);
+    if (array !== '') {
+      array.forEach(object => {
+        this.createQuestion((<QuestionBase<any>>object));
+      });
+    }
   }
 
   createQuestion(object: QuestionBase<any>) {

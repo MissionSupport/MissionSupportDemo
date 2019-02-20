@@ -1,3 +1,104 @@
-<p>
-  admin-new-list works!
-</p>
+<h1>New List Creation</h1>
+<div class="p-grid">
+  <div  class="p-col-8">
+    <h2>Form Preview</h2>
+      <h3>{{formObject.name}}</h3>
+      <div>
+        <form [formGroup]="formObject.form" class="p-grid">
+          <div *ngFor="let question of formObject.questions" [class] = "question.gridSize" class="form-row">
+            <app-question [question]="question" [form]="formObject.form"></app-question>
+          </div>
+        </form>
+      </div>
+  </div>
+
+
+
+  <div class="p-col-4">
+    <h2>Question Creation</h2>
+    <div>
+      <p-dropdown #questionType [options]="questionTypes" [(ngModel)]="selectedControlType" optionLabel="name" placeholder="New Question Type"></p-dropdown>
+      <div *ngIf="selectedControlType !== undefined">
+        <p>New {{selectedControlType.name}} Question</p>
+        <!--<div [ngSwitch]="selectedControlType.controlType">-->
+          <div *ngIf="selectedControlType.controlType === 'radio'" >
+            <label style="padding-right: 5px">Question</label>
+            <input pInputText type="text" [(ngModel)]="newQuestion">
+            <div>
+              <label style="padding-top: 5px">Options</label>
+              <div *ngFor="let option of options; let i = index">
+                <input pInputText type="text" [(ngModel)]="option.value">
+              </div>
+            </div>
+            <p-button style="padding-top: 5px" (onClick)="addOption()" label="Add Option"></p-button>
+          </div>
+
+          <div *ngIf="selectedControlType.controlType === 'textbox'" >
+            <label style="padding-right: 5px">Question</label>
+            <input pInputText type="text" [(ngModel)]="newQuestion">
+          </div>
+
+
+          <div *ngIf="selectedControlType.controlType === 'dropdown'">
+            <label style="padding-right: 5px">Question</label>
+            <input pInputText type="text" [(ngModel)]="newQuestion">
+            <div>
+              <label style="padding-top: 5px">Options</label>
+              <div *ngFor="let option of options; let i = index">
+                <input pInputText type="text" [(ngModel)]="option.value">
+              </div>
+            </div>
+            <p-button style="padding-top: 5px" (onClick)="addOption()" label="Add Option"></p-button>
+          </div>
+
+          <div *ngIf="selectedControlType.controlType === 'medtextbox'" >
+            <label style="padding-right: 5px">Question</label>
+            <input pInputText type="text" [(ngModel)]="newQuestion">
+          </div>
+
+          <div *ngIf="selectedControlType.controlType === 'freeResponse'" >
+            <label style="padding-right: 5px">Prompt</label>
+            <input pInputText type="text" [(ngModel)]="newQuestion">
+
+          </div>
+
+          <div *ngIf="selectedControlType.controlType === 'medmulttextbox'" >
+            <label style="padding-right: 5px">Question</label>
+            <input pInputText type="text" [(ngModel)]="newQuestion">
+
+          </div>
+
+          <div *ngIf="selectedControlType.controlType === 'medmultcheck'">
+            <label style="padding-right: 5px">Question</label>
+            <input pInputText type="text" [(ngModel)]="newQuestion">
+
+          </div>
+
+          <div *ngIf="selectedControlType.controlType === 'header'">
+            <label style="padding-right: 5px">Text for Break</label>
+            <input pInputText type="text" [(ngModel)]="newQuestion">
+
+          </div>
+
+          <div *ngIf="selectedControlType.controlType === 'multi'" >
+            <label style="padding-right: 5px">Question</label>
+            <input pInputText type="text" [(ngModel)]="newQuestion">
+            <div>
+              <label style="padding-top: 5px">Options</label>
+              <div *ngFor="let option of options; let i = index">
+                <input pInputText type="text" [(ngModel)]="option.value">
+              </div>
+            </div>
+            <p-button style="padding-top: 5px" (onClick)="addOption()" label="Add Option"></p-button>
+          </div>
+        </div>
+      <p-button style="padding-top: 10px" label="Add New Question" (onClick)="pushNewQuestion(); selectedControlType = undefined" [disabled]="selectedControlType=== undefined"></p-button>
+      <div style="padding-top: 30px" >
+        <p-button label="Done Editing?" (onClick)="pushNewForm();"></p-button>
+      </div>
+
+    </div>
+
+
+  </div>
+</div>

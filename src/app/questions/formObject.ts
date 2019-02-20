@@ -3,7 +3,7 @@ import {FormGroup} from '@angular/forms';
 export class FormObject {
   name: string;
   form: FormGroup;
-  questionData;
+  questionData: any[];
   questions;
   payLoad;
 
