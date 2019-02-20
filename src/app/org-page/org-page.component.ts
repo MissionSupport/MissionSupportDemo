@@ -9,6 +9,7 @@ import {Observable, Subscribable, Subscription} from 'rxjs';
 import {exhaustMap, flatMap, map} from 'rxjs/operators';
 import {AngularFireAuth} from '@angular/fire/auth';
 import * as firebase from 'firebase';
+import { BottomTab } from '../interfaces/bottom-tab';
 import {MessageService} from 'primeng/api';
 import {async} from 'q';
 
@@ -61,6 +62,9 @@ export class OrgPageComponent implements OnInit, OnDestroy {
 
   members = [{value: ''}];
 
+  tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
+                            {name: 'Teams', icon: 'pi pi-users'},
+                            {name: 'Trips', icon: 'pi pi-briefcase'}];
 
   constructor(public sharedService: SharedService, public router: Router, private preDef: PreDefined,
               private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth,
@@ -248,5 +252,27 @@ export class OrgPageComponent implements OnInit, OnDestroy {
   submitNewTrip() {
     console.log(this.newTripCountry, this.newTripSite, this.newTripTeam);
     this.showNewSectionPopup = false;
+  }
+
+  onTabClicked(tab: number) {
+    if (tab === 0) {
+      this.viewWiki = true;
+      this.viewTeams = false;
+      this.viewTrips = false;
+      this.sharedService.addName.emit('New Section');
+      this.sharedService.canEdit.emit(this.canEditWiki);
+    } else if (tab === 1) {
+      this.viewWiki = false;
+      this.viewTeams = true;
+      this.viewTrips = false;
+      this.sharedService.addName.emit('New Team');
+      this.sharedService.canEdit.emit(this.canEditTeams);
+    } else if (tab === 2) {
+      this.viewWiki = false;
+      this.viewTeams = false;
+      this.viewTrips = true;
+      this.sharedService.addName.emit('New Trip');
+      this.sharedService.canEdit.emit(this.canEditTrips);
+    }
   }
 }

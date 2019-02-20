@@ -12,6 +12,7 @@ import {Trip} from '../interfaces/trip';
 import {flatMap, map, mergeAll, mergeMap, reduce, switchMap, take} from 'rxjs/operators';
 import {Country} from '../interfaces/country';
 import * as firebase from 'firebase';
+import { BottomTab } from '../interfaces/bottom-tab';
 import {Organization} from '../interfaces/organization';
 import {Team} from '../interfaces/team';
 import {User} from 'firebase';
@@ -85,6 +86,9 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   titleEdits = [];
 
+  tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
+                            {name: 'Checklist', icon: 'pi pi-list'},
+                            {name: 'Trips', icon: 'pi pi-briefcase'}];
   genericChecklists = [
     {
       name: 'Hospital',
@@ -349,28 +353,26 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.showNewSectionPopup = false;
   }
 
-  toggleWikiTab() {
-    this.viewWiki = true;
-    this.viewChecklist = false;
-    this.viewTrips = false;
-    this.sharedService.addName.emit('New Section');
-    this.sharedService.canEdit.emit(this.canEditWiki);
-  }
-
-  toggleChecklistTab() {
-    this.viewWiki = false;
-    this.viewChecklist = true;
-    this.viewTrips = false;
-    this.sharedService.addName.emit('New List');
-    this.sharedService.canEdit.emit(this.canEditChecklist);
-  }
-
-  toggleTripsTab() {
-    this.viewWiki = false;
-    this.viewChecklist = false;
-    this.viewTrips = true;
-    this.sharedService.addName.emit('New Trip');
-    this.sharedService.canEdit.emit(this.canEditTrip);
+  onTabClicked(tab: number) {
+    if (tab === 0) {
+      this.viewWiki = true;
+      this.viewChecklist = false;
+      this.viewTrips = false;
+      this.sharedService.addName.emit('New Section');
+      this.sharedService.canEdit.emit(this.canEditWiki);
+    } else if (tab === 1) {
+      this.viewWiki = false;
+      this.viewChecklist = true;
+      this.viewTrips = false;
+      this.sharedService.addName.emit('New List');
+      this.sharedService.canEdit.emit(this.canEditChecklist);
+    } else if (tab === 2) {
+      this.viewWiki = false;
+      this.viewChecklist = false;
+      this.viewTrips = true;
+      this.sharedService.addName.emit('New Trip');
+      this.sharedService.canEdit.emit(this.canEditTrip);
+    }
   }
 
   submitNewList() {
@@ -393,6 +395,32 @@ export class SitesComponent implements OnInit, OnDestroy {
       };
       }, data);
     return _data;
+  }
+
+  getQuestion(question) {
+    if (question.question !== null) {
+      return question.question;
+    } else {
+      console.log(question);
+    }
+  }
+
+  getValue(question) {
+    if (typeof question.value === 'string') {
+      return question.value;
+    } else {
+      console.log(question);
+      let value = '';
+      question.value.forEach(val => {
+        if (typeof val.value === 'string') {
+          value = value + val.value.toString() + ',' + + '<br />';
+
+        } else {
+          value = value + val.drugName + ' - ' + val.strength + ',' + '<br />';
+        }
+      });
+      return value;
+    }
   }
 }
 

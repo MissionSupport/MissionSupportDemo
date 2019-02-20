@@ -58,10 +58,14 @@ import { SiteSearchComponent } from './site-search/site-search.component';
 import {DialogModule} from 'primeng/dialog';
 import {AutoCompleteModule} from 'primeng/primeng';
 import {HttpClientModule} from '@angular/common/http';
+import { BottomTabsComponent } from './bottom-tabs/bottom-tabs.component';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {TableModule} from 'primeng/table';
 import {SelectedInjectable} from './questions/selectedInjectable';
 import {PreDefined, SharedService} from './globals';
+import { AdminNewListComponent } from './admin/admin-new-list/admin-new-list.component';
+import { AdminCountryCreationComponent } from './admin/admin-country-creation/admin-country-creation.component';
+import { DiffEditComponent } from './admin/diff-edit/diff-edit.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +89,10 @@ import {PreDefined, SharedService} from './globals';
     ChecklistCreationPageComponent,
     DynamicFormQuestionComponent,
     SiteSearchComponent,
+    BottomTabsComponent,
+    AdminNewListComponent,
+    AdminCountryCreationComponent,
+    DiffEditComponent,
   ],
   imports: [
     BrowserModule,

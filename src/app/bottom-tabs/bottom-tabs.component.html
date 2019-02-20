@@ -1,0 +1,11 @@
+<p-toolbar [style]="{'background': 'none', 'padding': '0', 'border': 'none', 'position': 'fixed', 'bottom': '0', 'left': '0', 'width': '100%', 'height': '50px'}">
+  <button *ngFor="let tab of tabs; let i = index" class="footer-button" pButton type="button"
+    style="height: 100%; border: none; border-radius: 0"
+    [ngStyle]="{'width': 100/tabs.length + '%'}"
+    (click)="tabClick(i)">
+    <i [class]="tab.icon" [ngStyle]="{'opacity': (indexClicked !== i) ? '0.5' : '1'}"></i>
+    <div [ngStyle]="{'opacity': (indexClicked !== i) ? '0.5' : '1'}">
+      <span>{{ tab.name }}</span>
+    </div>
+  </button>
+</p-toolbar>

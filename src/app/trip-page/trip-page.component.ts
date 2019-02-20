@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Organization} from '../interfaces/organization';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Trip} from '../interfaces/trip';
+import { BottomTab } from '../interfaces/bottom-tab';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -44,6 +45,9 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   titleEdits = [];
   titleEditsConfirm = [];
+
+  tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
+                            {name: 'About', icon: 'pi pi-info-circle'}];
 
   tripSub: Subscription;
   sectionSub: Subscription;
@@ -130,5 +134,19 @@ export class TripPageComponent implements OnInit, OnDestroy {
     // console.log(this.selectedSite);
     this.router.navigate(['org/' + this.org.id]);
     // this.router.navigate(['/temp']);
+  }
+
+  onTabClicked(tab: number) {
+    if (tab === 0) {
+      this.viewWiki = true;
+      this.viewAbout = false;
+      this.sharedService.addName.emit('New Site');
+      this.sharedService.canEdit.emit(this.editMode);
+    } else if (tab === 1) {
+      this.viewWiki = false;
+      this.viewAbout = true;
+      this.sharedService.addName.emit('New About Info');
+      this.sharedService.canEdit.emit(this.canEditAbout);
+    }
   }
 }

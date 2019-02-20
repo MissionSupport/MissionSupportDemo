@@ -1,0 +1,38 @@
+<h1>Wiki Section Merge Tool</h1>
+<div class="p-grid">
+  <div class="p-col-6">
+    <h2>Current Published Wiki</h2>
+    <h3>Last Updated by: Name, name. On June fisofji</h3>
+    <p-editor [(ngModel)]="left" [style]="{'height': '200px'}" readonly="true">
+      <p-header>
+      </p-header>
+    </p-editor>
+  </div>
+
+  <div class="p-col-6">
+    <h2>New Update Awaiting Approval</h2>
+    <h3>Proposed by: Name, name. todayyy</h3>
+    <p-editor [(ngModel)]="right" [style]="{'height': '200px'}" readonly="true">
+      <p-header>
+      </p-header>
+    </p-editor>
+  </div>
+  <div class="p-col-12" style="margin-top: 15px">
+    <h2>Deletions and Additions</h2>
+    <h3>Correct changes and submit</h3>
+    <p-editor [(ngModel)]="diffOutput" [style]="{'height': '200px'}">
+      <p-header>
+        <span class="ql-formats">
+            <button class="ql-underline" aria-label="Underline"></button>
+            <button class="ql-background" aria-label="Background Color"></button>
+            <button class="ql-color" aria-label="Color"></button>
+            <button class="ql-strike" aria-label="Strikethrough"></button>
+        </span>
+      </p-header>
+    </p-editor>
+
+  </div>
+</div>
+
+
+<p-button (onClick)="log()" label="Submit Revision"></p-button>

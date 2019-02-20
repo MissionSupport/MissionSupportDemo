@@ -17,18 +17,12 @@ import {Subscription} from 'rxjs';
   styleUrls: ['./landing.component.css']
 })
 export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
-  width; // = window.innerWidth;
-  height; // = window.innerHeight;
+  width: number;
+  height: number;
   minx = 0;
   miny = 0;
-  centered;
-  country;
-  projection; // = d3.geoMercator().translate([this.width / 2.2, this.height / 1.5]);
-  projection2 = d3.geoMercator();
-  plane_path = d3.geoPath().projection(this.projection);
-  svg;
-  path;
-  g;
+  svg: d3.Selection<SVGSVGElement, {}, HTMLElement, any>;
+
   // countries: Observable<Country[]>;
   countries: Country[];
   selectedCountry: Country;
