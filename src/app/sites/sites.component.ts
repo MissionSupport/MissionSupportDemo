@@ -85,6 +85,7 @@ export class SitesComponent implements OnInit, OnDestroy {
   testAnswers;
 
   titleEdits = [];
+  confirmTitles: Array<boolean> = [];
 
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'Checklist', icon: 'pi pi-list'},
@@ -161,7 +162,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
     sharedService.hideToolbar.emit(false);
-    // ToDo : edit based on rights
+    // TODO: edit based on rights
     sharedService.addName.emit('New Section');
     this.addSectionSub = sharedService.addSection.subscribe(
       () => {

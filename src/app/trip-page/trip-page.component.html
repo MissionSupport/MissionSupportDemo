@@ -83,15 +83,9 @@
     <h3>About</h3>
     <p>Location: {{location}}</p>
     <p>Leader: {{leader}}</p>
-    <p>Organization: <span><a (click)="groupClick()">{{group}}</a> </span></p>
+    <p style="cursor: pointer">Organization: <span><a (click)="groupClick()">{{group}}</a> </span></p>
     <p>Team: {{team}}</p>
     <p>Date: {{date}}</p>
   </div>
-
-
-
-
 </div>
-
-
-<app-bottom-tabs [tabs]="tabs" (tabClicked)="onTabClicked($event)"></app-bottom-tabs>
+<app-bottom-tabs [tabs]="tabs" [startTab]="0" (tabClicked)="onTabClicked($event)"></app-bottom-tabs>

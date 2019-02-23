@@ -63,7 +63,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
     const trip = this.db.doc(`trips/${this.tripId}`);
     this.tripSub = trip.valueChanges().subscribe((t: Trip) => {
       sharedService.onPageNav.emit(t.tripName);
-      // ToDo : edit based on rights
+      // TODO: edit based on rights
       sharedService.canEdit.emit(true);
       this.sectionSub = sharedService.addSection.subscribe(
         () => {
@@ -111,7 +111,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   submitEdit(title, i, titleEdit, confirmTitleEdit) {
     if (confirmTitleEdit) {
-      // TODo implement:
+      // TODO: implement:
       // changeSectionHeader(titleEdit)
       console.log(titleEdit);
     }

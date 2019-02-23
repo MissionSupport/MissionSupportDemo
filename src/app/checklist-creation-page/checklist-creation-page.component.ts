@@ -1,16 +1,14 @@
-import {AfterContentInit, AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {PreDefined, SharedService} from '../globals';
 
 import 'autocomplete-lhc';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import {QuestionControlService} from '../questions/question-control-service';
 import {QuestionBase} from '../questions/question-base';
 import {QuestionService} from '../questions/question.service';
 import {FormObject} from '../questions/formObject';
-import {forEach} from '@angular/router/src/utils/collection';
 import {SelectedInjectable} from '../questions/selectedInjectable';
-declare var $: any;
-declare var Def: any;
+
 @Component({
   selector: 'app-checklist-creation-page',
   templateUrl: './checklist-creation-page.component.html',
@@ -22,7 +20,7 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
   // @Input() questions: QuestionBase<any>[] = [];
   form: FormGroup;
   payLoad = '';
-  isHospital;
+  // isHospital;
   hasEditRights = true;
   myForm: FormGroup;
   questions: QuestionBase<any>[] = [];
@@ -78,8 +76,8 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
   ];
   selectedLists = [];
 
-  constructor(private sharedService: SharedService, // private fb: FormBuilder,
-              private qcs: QuestionControlService, private service: QuestionService, private preDef: PreDefined,
+  constructor(sharedService: SharedService, // private fb: FormBuilder,
+              private qcs: QuestionControlService, service: QuestionService, private preDef: PreDefined,
               private selected: SelectedInjectable ) {
     // this.forms.push(new FormObject());
 

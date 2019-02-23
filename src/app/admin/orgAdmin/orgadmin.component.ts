@@ -28,13 +28,16 @@ export class OrgadminComponent implements OnInit, OnDestroy {
     // Let's go ahead and list all the orgs the user is apart of
     this.authInstance.auth.onAuthStateChanged(user => {
       console.log(user.uid);
-      this.orgList = this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(map((pref: UserPreferences) => {
-        return pref.orgs.map((org) => {
-          return this.db.doc(`organizations/${org}`).valueChanges().pipe(map((o: Organization) => {
-            return o;
-          }));
-        });
-      }));
+      this.orgList = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
+      .pipe(
+        map((pref: UserPreferences) => {
+          return pref.orgs.map((org: string) => {
+            return this.db.doc(`organizations/${org}`).valueChanges().pipe(map((o: Organization) => {
+              return o;
+            }));
+          });
+        })
+      );
       this.orgSub = this.orgList.subscribe(data => {
         this.allowOrgCreation = data.length <= 0;
       });
@@ -79,7 +82,7 @@ export class OrgadminComponent implements OnInit, OnDestroy {
       this.db.doc(`organizations/${id}/wiki/${wikiId}`).set(array);
     });
     this.allowOrgCreation = false;
-    //TODO wiki generation wont work as user_preferences gets added later
+    // TODO: wiki generation wont work as user_preferences gets added later
   }
 
 }

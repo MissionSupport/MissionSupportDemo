@@ -9,9 +9,10 @@ import { BottomTab } from '../interfaces/bottom-tab';
 export class BottomTabsComponent implements OnInit {
 
   @Input() tabs: Array<BottomTab>;
+  @Input() startTab: number;
   @Output() tabClicked: EventEmitter<number> = new EventEmitter<number>();
 
-  indexClicked = 0;
+  // indexClicked = this.startTab;
 
   constructor() { }
 
@@ -19,7 +20,7 @@ export class BottomTabsComponent implements OnInit {
   }
 
   tabClick(index: number) {
-    this.indexClicked = index;
+    this.startTab = index;
     this.tabClicked.emit(index);
   }
 

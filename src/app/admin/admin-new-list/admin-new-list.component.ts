@@ -8,13 +8,13 @@ import {QuestionService} from '../../questions/question.service';
 import {SelectedInjectable} from '../../questions/selectedInjectable';
 
 export class Option {
-  key;
-  value;
+  key: string;
+  value: FormGroup;
   constructor(options: {
     key?: string,
     value?: FormGroup,
   } = {}) {
-    this.key = options.value;
+    this.key = options.key;
     this.value = options.value;
   }
 }
@@ -26,7 +26,7 @@ export class Option {
 })
 export class AdminNewListComponent implements OnInit {
 
-  newQuestion;
+  newQuestion: string;
   counter = 0;
   // questions: QuestionBase<any>[] = [];
   questionTypes = [
@@ -77,8 +77,6 @@ export class AdminNewListComponent implements OnInit {
   selectedControlType;
   options: Option[] = [];
 
-
-
   constructor(private sharedService: SharedService, // private fb: FormBuilder,
               private qcs: QuestionControlService, private service: QuestionService, private preDef: PreDefined,
               private selected: SelectedInjectable ) {
@@ -99,12 +97,12 @@ export class AdminNewListComponent implements OnInit {
   }
 
   pushNewQuestion() {
-    let object;
+    let object: any;
 
     if (this.selectedControlType.controlType === 'radio' || this.selectedControlType.controlType === 'multi'
     || this.selectedControlType.controlType === 'dropdown') {
       this.options.forEach((o) => {
-          o.key = o.value.replace(/\s+/g, '');
+          o.key = o.value.value.replace(/\s+/g, '');
       });
       object = {
         key: this.selectedControlType.controlType + this.counter.toString(),

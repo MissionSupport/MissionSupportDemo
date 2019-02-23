@@ -28,7 +28,7 @@ export class SiteSearchComponent implements OnInit, OnDestroy {
   constructor(private readonly db: AngularFirestore, public router: Router, private sharedService: SharedService) {
     sharedService.hideToolbar.emit(false);
     sharedService.canEdit.emit(false);
-    sharedService.onPageNav.emit('Site Selection');
+    // sharedService.onPageNav.emit('Site Selection');
     this.sites = [];
     this.countries = [];
     this.siteSubArray = [];
