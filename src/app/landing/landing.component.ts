@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 import {SharedService} from '../globals';
 import {Country} from '../interfaces/country';
 import { drag } from 'd3-drag';
+import { zoom } from 'd3-zoom';
 import { Topology } from 'topojson-specification';
 import {Subscription} from 'rxjs';
 
@@ -17,10 +18,11 @@ import {Subscription} from 'rxjs';
   styleUrls: ['./landing.component.css']
 })
 export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
-  width: number;
-  height: number;
+  width = 1024;
+  height = 600;
   minx = 0;
   miny = 0;
+  scaleFactor = 200;
   svg: d3.Selection<SVGSVGElement, {}, HTMLElement, any>;
 
   // countries: Observable<Country[]>;
@@ -50,10 +52,9 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngAfterContentInit() {
-    this.width = document.getElementById('svgContainer').clientWidth;
-    this.height = document.getElementById('svgContainer').clientHeight;
+    // this.width = document.getElementById('svgContainer').clientWidth;
+    // this.height = document.getElementById('svgContainer').clientHeight;
 
-    // this.projection = d3.geoMercator().translate([this.width / 2.2, this.height / 1.5]);
     this.svg = d3.select('#svgContainer')
       .append('svg')
       .attr('preserveAspectRatio', 'xMidYMid slice')
@@ -70,18 +71,19 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
           d3.select('.map').style('cursor', 'grabbing');
         })
         .on('drag', () => {
-          this.minx += d3.event.dx;
-          this.miny += d3.event.dy;
+          this.minx -= d3.event.dx;
+          this.miny -= d3.event.dy;
           d3.select('.map').attr('viewBox', `${this.minx} ${this.miny} ${this.width} ${this.height}`);
         })
         .on('end', () => {
           d3.select('.map').style('cursor', 'auto');
-        }));
+        })
+      );
 
     d3.json('assets/countries.topo.json')
       .then((topology: Topology) => {
           // projection fn so we can fit geodata within svg's area
-          const projection = d3.geoMercator().scale(200).translate([this.width / 2, this.height / 1.2]);
+          const projection = d3.geoMercator().scale(this.scaleFactor).translate([this.width / 2, this.height / 1.2]);
 
           // use projection fn with geoPath fn
           const path = d3.geoPath().projection(projection);
@@ -100,7 +102,6 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   region_clicked(e) {
-    console.log(e.properties.FORMAL_EN);
     d3.select('.country_highlighted').style('fill', 'black');
     d3.select('.country_highlighted').classed('country_highlighted', false);
     d3.select('#' + e.properties.GU_A3).style('fill', 'red');

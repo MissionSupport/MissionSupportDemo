@@ -1,11 +1,11 @@
-import {ApplicationRef, Component, DoCheck, OnChanges, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SharedService} from '../globals';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Site} from '../interfaces/site';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {PreDefined} from '../globals';
 import {Country} from '../interfaces/country';
-import {flatMap, map, take} from 'rxjs/operators';
+import {flatMap, map} from 'rxjs/operators';
 import {Observable, Subscription} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
@@ -27,16 +27,17 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   // viewWiki: boolean;
   viewSites: boolean;
   countryId: string;
-  countryName;
+  countryName: string;
   sections: Observable<any[]>;
   subUserPref: Subscription;
   hideme = [];
   wikiId: string;
-  mainHeight;
+  mainHeight: number;
   sites: Site[];
   siteCollection: AngularFirestoreCollection<Site>;
   selectedSite: Site;
   countryData: Country;
+
   // TODO: Change to proper value based on edit privileges
   showNewSectionPopup = false;
   newSectionText;
@@ -44,11 +45,12 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   newSiteName;
   isNewSiteHospital;
 
-  // ToDO change based on permissions
+  // TODO: change based on permissions
   canEditWiki: boolean; // Editing wiki
   canEditSites: boolean; // editing site
 
   titleEdits = [];
+  startTab = 0;
 
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'Sites', icon: 'pi pi-sitemap'}];
@@ -59,15 +61,16 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     this.clientHeight = window.innerHeight;
     sharedService.hideToolbar.emit(false);
     sharedService.addName.emit('New Section');
-    // ToDo : edit based on rights
+
+    // TODO: edit based on rights
     sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
       }
     );
     sharedService.goSites.subscribe(
-      (bool) => {
-        if (bool) {this.goSites(); }
+      (bool: boolean) => {
+        if (bool) {this.goSites(); this.startTab = 1; }
       }
     );
     this.footerHeight = 45;
@@ -75,28 +78,35 @@ export class CountryPageComponent implements OnInit, OnDestroy {
 
     // TODO: Change this to get the 'Country/Sites' list instead
     this.siteCollection = db.collection<Site>(`countries/${this.countryId}/sites`);
-    this.siteCollection.valueChanges().subscribe( item => {
+    this.siteCollection.valueChanges().subscribe((item: Site[]) => {
       this.sites = item;
     });
 
-    this.sections = this.db.doc(`countries/${this.countryId}`).valueChanges().pipe(flatMap((data: Country) => {
-      this.countryName = data.countryName;
-      this.countryData = data;
-      this.wikiId = data.current; // Wiki id.
-      sharedService.onPageNav.emit(this.countryName);
-      return this.db.doc(`countries/${this.countryId}/wiki/${this.countryData.current}`).valueChanges().pipe( map(sectionData => {
-        const sections = [];
-        this.titleEdits = [];
-        for (const title in sectionData) {
-          if (sectionData.hasOwnProperty(title)) {
-            const markup = sectionData[title];
-            sections.push({title, markup});
-            this.titleEdits.push();
-          }
-        }
-        return sections;
-      }));
-    }));
+    this.sections = this.db.doc(`countries/${this.countryId}`).valueChanges()
+    .pipe(
+      flatMap((data: Country) => {
+        this.countryName = data.countryName;
+        this.countryData = data;
+        this.wikiId = data.current; // Wiki id.
+        sharedService.onPageNav.emit(this.countryName);
+
+        return this.db.doc(`countries/${this.countryId}/wiki/${this.countryData.current}`).valueChanges()
+        .pipe(
+          map(sectionData => {
+            const sections = [];
+            this.titleEdits = [];
+            for (const title in sectionData) {
+              if (sectionData.hasOwnProperty(title)) {
+                const markup = sectionData[title];
+                sections.push({title, markup});
+                this.titleEdits.push();
+              }
+            }
+            return sections;
+          })
+        );
+      })
+    );
 
     // let subUserPref = null;
     this.authInstance.auth.onAuthStateChanged(user => {
@@ -104,10 +114,12 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       if (this.subUserPref) {
         this.subUserPref.unsubscribe();
       }
-      this.subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
-        this.canEditSites = this.canEditWiki = pref.admin;
-        sharedService.canEdit.emit(pref.admin);
-      });
+      this.subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
+        .subscribe((pref: UserPreferences) => {
+          this.canEditSites = this.canEditWiki = pref.admin;
+          sharedService.canEdit.emit(pref.admin);
+        }
+      );
     });
   }
 
@@ -115,6 +127,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('here');
     if (this.subUserPref) {
       this.subUserPref.unsubscribe();
     }

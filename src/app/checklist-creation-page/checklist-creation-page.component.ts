@@ -1,19 +1,19 @@
-import {AfterContentInit, AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {PreDefined, SharedService} from '../globals';
 
 import 'autocomplete-lhc';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import {QuestionControlService} from '../questions/question-control-service';
 import {QuestionBase} from '../questions/question-base';
 import {QuestionService} from '../questions/question.service';
 import {FormObject} from '../questions/formObject';
-import {forEach} from '@angular/router/src/utils/collection';
 import {SelectedInjectable} from '../questions/selectedInjectable';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ActivatedRoute} from '@angular/router';
 import {Site} from '../interfaces/site';
 declare var $: any;
 declare var Def: any;
+
 @Component({
   selector: 'app-checklist-creation-page',
   templateUrl: './checklist-creation-page.component.html',
