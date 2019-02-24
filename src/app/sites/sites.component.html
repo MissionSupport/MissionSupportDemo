@@ -105,7 +105,7 @@
 
   <div [hidden]="!viewChecklist">
     <h1>Checklist</h1>
-    <div *ngFor="let list of testAnswers">
+    <div *ngFor="let list of (checkList | async)">
       <h2>{{list.name}}</h2>
       <p-table [value]="jsonParse(list.json)">
         <ng-template pTemplate="header">

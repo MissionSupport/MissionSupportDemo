@@ -1,4 +1,4 @@
-import {AfterContentInit, AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {PreDefined, SharedService} from '../globals';
 
 import 'autocomplete-lhc';
@@ -9,6 +9,9 @@ import {QuestionService} from '../questions/question.service';
 import {FormObject} from '../questions/formObject';
 import {forEach} from '@angular/router/src/utils/collection';
 import {SelectedInjectable} from '../questions/selectedInjectable';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {ActivatedRoute} from '@angular/router';
+import {Site} from '../interfaces/site';
 declare var $: any;
 declare var Def: any;
 @Component({
@@ -17,7 +20,7 @@ declare var Def: any;
   styleUrls: ['./checklist-creation-page.component.css'],
   providers: [QuestionService, QuestionControlService]
 })
-export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
+export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // @Input() questions: QuestionBase<any>[] = [];
   form: FormGroup;
@@ -77,10 +80,15 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
     // })
   ];
   selectedLists = [];
+  countryId: string;
+  siteId: string;
+  checkListId: string;
+
+  siteSubscribable;
 
   constructor(private sharedService: SharedService, // private fb: FormBuilder,
               private qcs: QuestionControlService, private service: QuestionService, private preDef: PreDefined,
-              private selected: SelectedInjectable ) {
+              private selected: SelectedInjectable, private readonly db: AngularFirestore, private route: ActivatedRoute) {
     // this.forms.push(new FormObject());
 
     this.selectedLists = this.selected.selected;
@@ -93,15 +101,12 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
       form.questions = service.getQuestions(form.questionData);
     });
 
-
-    // console.log(this.selectedLists);
-    // this.selectedLists.forEach(list => {
-    //   this.forms.push(new FormObject(list));
-    // });
-
-
-
-    // this.questions = service.getQuestions(this.preDef.questionExampleJson);
+    this.siteId = this.route.snapshot.paramMap.get('id');
+    this.countryId = this.route.snapshot.paramMap.get('countryId');
+    this.siteSubscribable = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`).valueChanges()
+      .subscribe((site: Site) => {
+        this.checkListId = site.currentCheckList;
+      });
 
     sharedService.hideToolbar.emit(false);
     sharedService.canEdit.emit(false);
@@ -140,10 +145,14 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit {
         json: formObject.payLoad
       }
     );
-    console.log(hideForm);
     hideForm.hidden = true;
-    // console.log(this.preDef.testInput);
-    // console.log(hideForm);
+    const json = {};
+    json[formObject.name] = formObject.payLoad;
+    this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/checklist/${this.checkListId}`).update(json);
+  }
+
+  ngOnDestroy(): void {
+    this.siteSubscribable.unsubscribe();
   }
 
 }

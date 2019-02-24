@@ -174,7 +174,10 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       for (const x of this.preDef.wikiSite) {
         wikiData[x.title] = x.markup;
       }
-      this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).set(wikiData);
+      this.db.firestore.batch()
+        .set(this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).ref, wikiData)
+        .set(this.db.doc(`countries/${this.countryId}/sites/${siteId}/checklist/${checklistId}`).ref, {})
+        .commit();
     });
     // Go ahead and clear the section variables
     this.isNewSiteHospital = null;

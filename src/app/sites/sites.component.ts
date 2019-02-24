@@ -51,7 +51,7 @@ export class SitesComponent implements OnInit, OnDestroy {
   tripValues: Trip[];
   selectedTrip;
 
-  checkList: Observable<any[]>;
+  checkList: Observable<{}[]>;
   siteObservable: Observable<Site>;
 
   groups = []; // Contains an array of group ids
@@ -82,9 +82,8 @@ export class SitesComponent implements OnInit, OnDestroy {
   canEditWiki: boolean;  // this means the user can edit wiki
   canEditChecklist: boolean;
   canEditTrip: boolean;
-  testAnswers;
 
-  titleEdits = [];
+  titleEdits = []; // For Wiki usage
 
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'Checklist', icon: 'pi pi-list'},
@@ -147,19 +146,10 @@ export class SitesComponent implements OnInit, OnDestroy {
               private preDef: PreDefined, private selected: SelectedInjectable) {
     this.tripSubArray = [];
     this.orgSubArray = [];
-    this.preDef.testInput.forEach(checklist => {
-      this.genericChecklists.forEach( generic => {
-        if (checklist.name === generic.name) {
-          this.listsPresent = [... this.listsPresent, generic];
-          this.genericChecklists = this.genericChecklists.filter(obj => obj !== generic);
-        }
-      });
-    });
-    this.testAnswers = preDef.testInput;
-
 
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
+
     sharedService.hideToolbar.emit(false);
     // ToDo : edit based on rights
     sharedService.addName.emit('New Section');
@@ -192,12 +182,12 @@ export class SitesComponent implements OnInit, OnDestroy {
         this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/checklist/${site.currentCheckList}`)
         .valueChanges().pipe(map(data => {
           const array = [];
-          this.titleEdits = [];
-          for (const id in data) {
-            if (data.hasOwnProperty(id)) {
-              const markup = data[id];
-              array.push({id, markup});
-              this.titleEdits.push(id);
+          for (const title in data) {
+            if (data.hasOwnProperty(title)) {
+              const json = {};
+              json['name'] = title;
+              json['json'] = data[title];
+              array.push(json);
             }
           }
           return array;
