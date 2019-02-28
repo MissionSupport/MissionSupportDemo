@@ -42,20 +42,20 @@ export class OrgsComponent implements OnInit, OnDestroy {
       pageSub = this.db.doc(`Sites/${this.siteId}/groups/${this.groupElementId}/page/${this.pageId}`).valueChanges().subscribe(
         (pageData: Page) => {
         this.pageData = pageData;
-        let layoutSub: Subscription;
-        layoutSub = this.db.collection(`Sites/${this.siteId}/groups/${this.groupElementId}/page/${this.pageId}/layout`).valueChanges()
+
+        const layoutSub = this.db.collection(`Sites/${this.siteId}/groups/${this.groupElementId}/page/${this.pageId}/layout`).valueChanges()
           .subscribe(pageLayoutData => {
-            for (const title in pageLayoutData[0]) {
-              if (pageLayoutData[0].hasOwnProperty(title)) {
-                const markup = pageLayoutData[0][title];
-                this.sections.push({title, markup});
-                this.editText.push(markup);
-              }
-            }
+            Object.keys(pageLayoutData[0]).forEach(title => {
+              const markup = pageLayoutData[0][title];
+              this.sections.push({title, markup});
+              this.editText.push(markup);
+            });
           }
         );
+
         this.layoutSubArr = [...this.layoutSubArr, layoutSub];
       });
+
       this.pageSubArr = [...this.pageSubArr, pageSub];
     });
   }

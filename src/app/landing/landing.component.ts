@@ -2,13 +2,11 @@ import {Component, OnInit, AfterContentInit, OnDestroy} from '@angular/core';
 import * as d3 from 'd3';
 import {feature} from 'topojson';
 import {FeatureCollection} from 'geojson';
-// import {feature} from 'topojson/node_modules/topojson-client';
-import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {Router} from '@angular/router';
 import {SharedService} from '../globals';
 import {Country} from '../interfaces/country';
 import { drag } from 'd3-drag';
-import { zoom } from 'd3-zoom';
 import { Topology } from 'topojson-specification';
 import {Subscription} from 'rxjs';
 
@@ -28,15 +26,13 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   // countries: Observable<Country[]>;
   countries: Country[];
   selectedCountry: Country;
-  countryCollection: AngularFirestoreCollection<Country>;
+  // countryCollection: AngularFirestoreCollection<Country>;
   countrySub: Subscription;
 
   constructor(db: AngularFirestore, public router: Router, sharedService: SharedService) {
-    this.countryCollection = db.collection<Country>('countries');
-    const countries = this.countryCollection.valueChanges();
-    this.countrySub = countries.subscribe( item => {
-      this.countries = item;
-    });
+    this.countrySub = db.collection<Country>('countries').valueChanges()
+      .subscribe(ctries => this.countries = ctries);
+
     sharedService.hideToolbar.emit(false);
     sharedService.canEdit.emit(false);
     sharedService.onPageNav.emit('Country Selection');
@@ -52,9 +48,6 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngAfterContentInit() {
-    // this.width = document.getElementById('svgContainer').clientWidth;
-    // this.height = document.getElementById('svgContainer').clientHeight;
-
     this.svg = d3.select('#svgContainer')
       .append('svg')
       .attr('preserveAspectRatio', 'xMidYMid slice')
@@ -83,7 +76,8 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     d3.json('assets/countries.topo.json')
       .then((topology: Topology) => {
           // projection fn so we can fit geodata within svg's area
-          const projection = d3.geoMercator().scale(this.scaleFactor).translate([this.width / 2, this.height / 1.2]);
+          const projection = d3.geoMercator().scale(this.scaleFactor)
+            .translate([this.width / 2, this.height / 1.2]);
 
           // use projection fn with geoPath fn
           const path = d3.geoPath().projection(projection);

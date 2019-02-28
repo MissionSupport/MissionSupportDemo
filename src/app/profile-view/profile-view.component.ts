@@ -6,7 +6,8 @@ import {UserSettings} from '../interfaces/user-settings';
 import {UserPreferences} from '../interfaces/user-preferences';
 import {Router} from '@angular/router';
 import { MessageService } from 'primeng/api';
-import {Subscription} from 'rxjs';
+import {Subscription, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile-view',
@@ -31,31 +32,37 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   newPassword: string;
   confirmNewPassword: string;
 
-  settingsSubArray: Subscription[];
-  prefsSubArray: Subscription[];
+  // settingsSubArray: Subscription[];
+  // prefsSubArray: Subscription[];
+
+  unsubscribeSubject: Subject<void> = new Subject<void>();
 
   constructor(public authInstance: AngularFireAuth, private readonly db: AngularFirestore,
     public router: Router, public messageService: MessageService) {
-    this.settingsSubArray = [];
-    this.prefsSubArray = [];
+    // this.settingsSubArray = [];
+    // this.prefsSubArray = [];
     this.authInstance.auth.onAuthStateChanged(user => {
       this.email = user.email;
       this.id = user.uid;
       console.log(this.id);
-      let settingSub: Subscription;
-      settingSub = this.db.doc(`users/${this.id}`).valueChanges().subscribe((data: UserSettings) => {
-        this.firstName = data.firstName;
-        this.lastName = data.lastName;
-        this.organization = data.organization;
-        // this.orgs = data.orgs;
-      });
-      this.settingsSubArray = [...this.settingsSubArray, settingSub];
-      let prefSub: Subscription;
-      prefSub = this.db.doc(`user_preferences/${this.id}`).valueChanges().subscribe((data: UserPreferences) => {
+
+      this.db.doc(`users/${this.id}`).valueChanges().pipe(takeUntil(this.unsubscribeSubject))
+        .subscribe((data: UserSettings) => {
+          this.firstName = data.firstName;
+          this.lastName = data.lastName;
+          this.organization = data.organization;
+          // this.orgs = data.orgs;
+        });
+
+      // this.settingsSubArray = [...this.settingsSubArray, settingSub];
+
+      this.db.doc(`user_preferences/${this.id}`).valueChanges().pipe(takeUntil(this.unsubscribeSubject))
+        .subscribe((data: UserPreferences) => {
         this.isAdmin = data.admin;
         // this.sites = data.sites;
-      });
-      this.prefsSubArray = [...this.prefsSubArray, prefSub];
+        });
+
+      // this.prefsSubArray = [...this.prefsSubArray, prefSub];
       // TODO: this function only updates the email text input field after being clicked on. Needs to be fixed.
     });
 
@@ -77,46 +84,49 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    let sub: Subscription;
-    for (sub of this.prefsSubArray) {
-      sub.unsubscribe();
-    }
-    for (sub of this.settingsSubArray) {
-      sub.unsubscribe();
-    }
+    // let sub: Subscription;
+    // for (sub of this.prefsSubArray) {
+    //   sub.unsubscribe();
+    // }
+    // for (sub of this.settingsSubArray) {
+    //   sub.unsubscribe();
+    // }
+
+    this.unsubscribeSubject.next();
+    this.unsubscribeSubject.complete();
   }
 
-  updateEmail() {
+  async updateEmail() {
     const user = this.authInstance.auth.currentUser;
-    user.updateEmail(this.newEmail).then(() => {
-      user.sendEmailVerification().then(() => {
+
+    try {
+      await user.updateEmail(this.newEmail);
+      try {
+        await user.sendEmailVerification();
         console.log('Success: Email updated.');
         this.messageService.add({severity: 'info', summary: 'Email Updated', detail:
-        'Email was successfully updated - please check your email for a verification message.',
-        key: 'profile-view'});
+          'Email was successfully updated - please check your email for a verification message.',
+          key: 'profile-view'});
         this.email = this.newEmail;
-      })
-      .catch(error => {
-        console.log('Error with sending verification email ', error);
+      } catch (errEV) {
+        console.log('Error with sending verification email ', errEV);
         this.messageService.add({severity: 'error', summary: 'Unsuccessful', detail:
               'Error with sending verification email', key: 'profile-view'});
-      });
-    })
-    .catch(error => {
-      if (error['code'] === 'auth/invalid-email') {
+      }
+    } catch (errUE) {
+      if (errUE['code'] === 'auth/invalid-email') {
         // invalid email
         this.messageService.add({severity: 'error', summary: 'Email Error',
-        detail: 'Email is invalid', key: 'profile-view'});
-      } else if (error['code'] === 'auth/email-already-in-use') {
+          detail: 'Email is invalid', key: 'profile-view'});
+      } else if (errUE['code'] === 'auth/email-already-in-use') {
         // email already in use
         this.messageService.add({severity: 'error', summary: 'Email Error',
-        detail: 'Email is already in use', key: 'profile-view'});
-      } else if (error['code'] === 'auth/requires-recent-login') {
+          detail: 'Email is already in use', key: 'profile-view'});
+      } else if (errUE['code'] === 'auth/requires-recent-login') {
         // TODO: come back and have user retype in password in order to update email
         // user.reauthenticateAndRetrieveDataWithCredential(EmailAuthProvider.credential(user.auth.email, password));
       }
-    });
-    this.editingEmail = false;
+    }
   }
 
   changePassword() {

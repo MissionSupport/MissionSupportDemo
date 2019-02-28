@@ -46,45 +46,50 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  registerClick() {
+  async registerClick() {
     if (!this.firstName || !this.lastName || !this.organization) {
-      this.messageService.add({severity: 'error', summary: 'Registration Error', detail: 'All fields must be set'});
+      this.messageService.add({severity: 'error', summary: 'Registration Error',
+        detail: 'All fields must be set'});
     } else if (this.email === this.emailConfirm) {
       if (this.password === this.passwordConfirm) {
         // Now we want to validate if the password is weak or not
-        // this can be easily bypassed by a tech savey user but if they are able to
+        // this can be easily bypassed by a tech savvy user but if they are able to
         // bypass it anyways then they should hopefully have a secure password
         if (!this.passwordValid()) {
           // Password is invalid
-          this.messageService.add({severity: 'error', summary: 'Registration Error', detail: 'Password must contain 1 upper and lower' +
+          this.messageService.add({severity: 'error', summary: 'Registration Error',
+            detail: 'Password must contain 1 upper and lower' +
               ' case letter, numbers, and be 7 characters long'});
         } else {
-          this.authInstance.auth.createUserWithEmailAndPassword(this.email, this.password).then(reason => {
+          try {
+            await this.authInstance.auth.createUserWithEmailAndPassword(this.email, this.password);
             this.authInstance.auth.currentUser.sendEmailVerification();
-            // Now let's save personal information.
-            const userId: string = this.authInstance.auth.currentUser.uid;
-            this.db.collection('users').doc(userId).set({
-              firstName: this.firstName,
-              lastName: this.lastName,
-              organization: this.organization,
-              userId: userId
-            }).then(() => {
-              console.log('Document written with ID: ', userId);
-            }).catch(failure => {
-              console.log('Document failed with ID: ', failure);
-            });
-            this.router.navigate(['']);
-          })
-            .catch(err => {
-                this.messageService.add({severity: 'error', summary: 'Login Error', detail: err});
-              }
-            );
+
+            try {
+              // Now let's save personal information.
+              const userId: string = this.authInstance.auth.currentUser.uid;
+              await this.db.collection('users').doc(userId).set({
+                firstName: this.firstName,
+                lastName: this.lastName,
+                organization: this.organization,
+                userId: userId
+              });
+            } catch (errorSU) {
+              console.log('Document failed with ID: ', errorSU);
+            } finally {
+              this.router.navigate(['']);
+            }
+          } catch (errorCU) {
+            this.messageService.add({severity: 'error', summary: 'Login Error', detail: errorCU});
+          }
         }
       } else {
-        this.messageService.add({severity: 'error', summary: 'Registration Error', detail: 'Passwords do not match'});
+        this.messageService.add({severity: 'error', summary: 'Registration Error',
+          detail: 'Passwords do not match'});
       }
     } else {
-      this.messageService.add({severity: 'error', summary: 'Registration Error', detail: 'Emails do not match'});
+      this.messageService.add({severity: 'error', summary: 'Registration Error',
+        detail: 'Emails do not match'});
     }
   }
 

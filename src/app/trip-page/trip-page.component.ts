@@ -5,7 +5,8 @@ import {Organization} from '../interfaces/organization';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Trip} from '../interfaces/trip';
 import { BottomTab } from '../interfaces/bottom-tab';
-import {Subscription} from 'rxjs';
+import {Subscription, Subject} from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-trip-page',
@@ -49,10 +50,12 @@ export class TripPageComponent implements OnInit, OnDestroy {
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'About', icon: 'pi pi-info-circle'}];
 
-  tripSub: Subscription;
-  sectionSub: Subscription;
-  wikiSub: Subscription;
-  orgSub: Subscription;
+  unsubscribeSubject: Subject<void> = new Subject<void>();
+
+  // tripSub: Subscription;
+  // sectionSub: Subscription;
+  // wikiSub: Subscription;
+  // orgSub: Subscription;
 
   constructor(public sharedService: SharedService, private preDef: PreDefined, public router: Router, private route: ActivatedRoute,
               private readonly db: AngularFirestore) {
@@ -60,53 +63,57 @@ export class TripPageComponent implements OnInit, OnDestroy {
     this.footerHeight = 45;
     this.tripId = this.route.snapshot.paramMap.get('id');
     sharedService.addName.emit('New Section');
+
     const trip = this.db.doc(`trips/${this.tripId}`);
-    this.tripSub = trip.valueChanges().subscribe((t: Trip) => {
-      sharedService.onPageNav.emit(t.tripName);
-      // TODO: edit based on rights
-      sharedService.canEdit.emit(true);
-      this.sectionSub = sharedService.addSection.subscribe(
-        () => {
-          this.showNewSectionPopup = true;
-        }
-      );
-      // Get wiki information
-      this.wikiSub = trip.collection('wiki').doc(t.current).valueChanges().subscribe(data => {
-        this.sections = [];
-        for (const title in data) {
-          if (data.hasOwnProperty(title)) {
+    this.db.doc(`trips/${this.tripId}`).valueChanges()
+      .pipe(takeUntil(this.unsubscribeSubject)).subscribe((t: Trip) => {
+        sharedService.onPageNav.emit(t.tripName);
+        // TODO: edit based on rights
+        sharedService.canEdit.emit(true);
+        sharedService.addSection.pipe(takeUntil(this.unsubscribeSubject))
+          .subscribe(() => this.showNewSectionPopup = true);
+
+        // Get wiki information
+        trip.collection('wiki').doc(t.current).valueChanges()
+          .pipe(takeUntil(this.unsubscribeSubject)).subscribe(data => {
+            this.sections = [];
+            Object.keys(data).forEach(title => {
             const markup = data[title];
             this.sections.push({title, markup});
             this.editText.push(markup);
             this.titleEdits.push();
             this.titleEditsConfirm.push();
-          }
-        }
+          });
+        });
+
+        // Now get the org information
+        db.doc(`organizations/${t.orgId}`).valueChanges()
+          .pipe(takeUntil(this.unsubscribeSubject)).subscribe((data: Organization) => {
+            this.org = data;
+            this.group = data.name;
+          });
       });
-      // Now get the org information
-      this.orgSub = db.doc(`organizations/${t.orgId}`).valueChanges().subscribe( (data: Organization) => {
-        this.org = data;
-        this.group = data.name;
-      });
-    });
   }
 
   ngOnInit() {
   }
 
   ngOnDestroy(): void {
-    if (this.orgSub) {
-      this.orgSub.unsubscribe();
-    }
-    if (this.sectionSub) {
-      this.sectionSub.unsubscribe();
-    }
-    if (this.tripSub) {
-      this.tripSub.unsubscribe();
-    }
-    if (this.wikiSub) {
-      this.wikiSub.unsubscribe();
-    }
+    // if (this.orgSub) {
+    //   this.orgSub.unsubscribe();
+    // }
+    // if (this.sectionSub) {
+    //   this.sectionSub.unsubscribe();
+    // }
+    // if (this.tripSub) {
+    //   this.tripSub.unsubscribe();
+    // }
+    // if (this.wikiSub) {
+    //   this.wikiSub.unsubscribe();
+    // }
+
+    this.unsubscribeSubject.next();
+    this.unsubscribeSubject.complete();
   }
 
   submitEdit(title, i, titleEdit, confirmTitleEdit) {
@@ -132,6 +139,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   groupClick(): void {
     // console.log(this.selectedSite);
+    this.sharedService.backHistory.push(this.router.url);
     this.router.navigate(['org/' + this.org.id]);
     // this.router.navigate(['/temp']);
   }

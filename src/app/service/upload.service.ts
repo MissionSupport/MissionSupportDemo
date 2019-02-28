@@ -3,7 +3,6 @@ import {Upload} from '../utils/upload';
 import {AngularFireDatabase} from '@angular/fire/database';
 import {AngularFireStorage} from '@angular/fire/storage';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
