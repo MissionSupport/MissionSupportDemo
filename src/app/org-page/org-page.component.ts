@@ -75,11 +75,8 @@ export class OrgPageComponent implements OnInit, OnDestroy {
       this.ngOnInit();
     });
     */
-    this.subAddSection = sharedService.addSection.subscribe(
-      () => {
-        this.showNewSectionPopup = true;
-      }
-    );
+
+    this.subAddSection = sharedService.addSection.subscribe(() => this.showNewSectionPopup = true);
     this.dataSubArr = [];
     this.obsSubArr = [];
   }
@@ -87,49 +84,68 @@ export class OrgPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.sharedService.hideToolbar.emit(false);
     this.orgId = this.route.snapshot.paramMap.get('id');
-    this.orgObservable = this.db.doc(`organizations/${this.orgId}`).valueChanges().pipe(map((org: Organization) => {
-      this.teams = org.teamIds.map( teamId => {
-        const x = this.db.doc(`teams/${teamId}`).valueChanges().pipe(map((team: Team) => {
-          return team;
-        }));
-        return x;
-      });
-      this.tripIds = this.teams.map(team => {
-        return team.pipe(flatMap((t: Team) => {
-          return t.trips;
-        }));
-      });
-      this.tripsObservable = this.tripIds.map(t => {
-        return t.pipe(flatMap(tripId => {
-          return this.db.doc(`trips/${tripId}`).valueChanges().pipe(map((data: Trip) => {
-            return data;
-          }));
-        }));
-      });
-
-      this.tripsObservable.map(obs => {
-        const obsSub = obs.subscribe((trip: Trip) => {
-          if (this.trips.indexOf(trip) === -1) {
-            this.trips = [...this.trips, trip];
-          }
+    this.orgObservable = this.db.doc(`organizations/${this.orgId}`).valueChanges()
+    .pipe(
+      map((org: Organization) => {
+        this.teams = org.teamIds.map(teamId => {
+          return this.db.doc(`teams/${teamId}`).valueChanges() as Observable<Team>;
         });
-        this.obsSubArr = [...this.obsSubArr, obsSub];
-      });
-      this.tripIds.map(data => {
-        const dataSub = data.subscribe();
-        this.dataSubArr = [...this.dataSubArr, dataSub];
-      });
-      // Get wiki data
-      this.sections = this.db.doc(`organizations/${this.orgId}/wiki/${org.currentWiki}`).valueChanges().pipe(map(data => {
-        const sections = [];
-        for (const title in data) {
-          if (data.hasOwnProperty(title)) {
-            const markup = data[title];
-            sections.push({title, markup});
-          }
-        }
-        return sections;
-      }));
+
+        this.tripIds = this.teams.map(teamObs => {
+          return teamObs.pipe(
+            flatMap((t: Team) => t.trips)
+          );
+        });
+
+        this.tripsObservable = this.tripIds.map(tripIdObs => {
+          return tripIdObs.pipe(
+            flatMap(tripId => {
+              return this.db.doc(`trips/${tripId}`).valueChanges() as Observable<Trip>;
+            })
+          );
+        });
+
+        this.tripsObservable.forEach(tripObs => {
+          const tripObsSub = tripObs.subscribe((trip: Trip) => {
+            if (!this.trips.includes(trip)) {
+              this.trips = [...this.trips, trip];
+            }
+          });
+          this.obsSubArr = [...this.obsSubArr, tripObsSub];
+        });
+
+        // this.tripsObservable.map(obs => {
+        //   const obsSub = obs.subscribe((trip: Trip) => {
+        //     if (this.trips.indexOf(trip) === -1) {
+        //       this.trips = [...this.trips, trip];
+        //     }
+        //   });
+        //   this.obsSubArr = [...this.obsSubArr, obsSub];
+        // });
+
+        this.tripIds.forEach(tripId => {
+          const tripIdSub = tripId.subscribe();
+          this.dataSubArr = [...this.dataSubArr, tripIdSub];
+        });
+
+        // this.tripIds.map(data => {
+        //   const dataSub = data.subscribe();
+        //   this.dataSubArr = [...this.dataSubArr, dataSub];
+        // });
+
+        // Get wiki data
+        this.sections = this.db.doc(`organizations/${this.orgId}/wiki/${org.currentWiki}`).valueChanges()
+        .pipe(
+          map(data => {
+            const sections = [];
+            Object.keys(data).forEach(title => {
+              const markup = data[title];
+              sections.push({title, markup});
+            });
+            return sections;
+          })
+        );
+
       return org;
     }));
 
@@ -162,30 +178,39 @@ export class OrgPageComponent implements OnInit, OnDestroy {
     if (this.orgSub) {
       this.orgSub.unsubscribe();
     }
-    let sub: Subscription;
-    for (sub of this.obsSubArr) {
-      sub.unsubscribe();
-    }
-    for (sub of this.dataSubArr) {
-      sub.unsubscribe();
-    }
+    this.obsSubArr.forEach(obsSub => obsSub.unsubscribe());
+    this.dataSubArr.forEach(dataSub => dataSub.unsubscribe());
+
+    // let sub: Subscription;
+    // for (sub of this.obsSubArr) {
+    //   sub.unsubscribe();
+    // }
+    // for (sub of this.dataSubArr) {
+    //   sub.unsubscribe();
+    // }
   }
 
   tripClick(): void {
     console.log(this.selectedTrip);
-    this.router.navigate(['trip/' + this.selectedTrip.id]);
+    this.sharedService.backHistory.push(this.router.url);
+    this.router.navigate([`trip/${this.selectedTrip.id}`]);
     // this.router.navigate(['/temp']);
   }
 
   /**
    * Used for updating an already existing wiki entry.
    */
-  async submitWikiEdit(title, markup) {
+  async submitWikiEdit(title: string, markup: string) {
     const array: {} = await this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`)
-      .valueChanges().pipe(map(data => {return data;}), take(1)).toPromise();
+      .valueChanges().pipe(map(data => {
+        return data;
+      }), take(1)).toPromise();
     array[title] = markup;
     // Create a new update
-    //this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
+    //this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json).catch(() =>
+    //         this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
+    //           detail: 'Failed to save your edit to the wiki. Please try again later.'})
+    //       );
   }
 
   submitNewSection() {
@@ -232,13 +257,14 @@ export class OrgPageComponent implements OnInit, OnDestroy {
         .update(this.db.doc(`organizations/${this.orgId}`).ref, {teamIds: [...this.teamIds, teamId]})
         .commit()
         .then(() => {
-        console.log('Success!');
-        this.newTeamName = '';
-        this.members = [{value: ''}];
-      }).catch( error => {
-        console.log('Failure!');
-        console.log(error);
-      });
+          console.log('Success!');
+          this.newTeamName = '';
+          this.members = [{value: ''}];
+        })
+        .catch( error => {
+          console.log('Failure!');
+          console.log(error);
+        });
     } else {
       const errors = [];
       for (const email of failed) {

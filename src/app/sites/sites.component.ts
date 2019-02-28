@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from '@angular/fire/firestore';
-import {Observable, Subscription} from 'rxjs';
+import {Observable, Subscription, Subject} from 'rxjs';
 import {MessageService} from 'primeng/api';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {EditTask} from '../interfaces/edit-task';
@@ -9,7 +9,7 @@ import {UserPreferences} from '../interfaces/user-preferences';
 import {PreDefined, SharedService} from '../globals';
 import {Site} from '../interfaces/site';
 import {Trip} from '../interfaces/trip';
-import {flatMap, map, mergeAll, mergeMap, reduce, switchMap, take} from 'rxjs/operators';
+import {flatMap, map, mergeAll, mergeMap, reduce, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Country} from '../interfaces/country';
 import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
@@ -56,11 +56,11 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   groups = []; // Contains an array of group ids
 
-  tripSubArray: Subscription[];
-  addSectionSub: Subscription;
-  siteSub: Subscription;
-  orgSubArray: Subscription[];
-  wikiSub: Subscription;
+  // tripSubArray: Subscription[];
+  // addSectionSub: Subscription;
+  // siteSub: Subscription;
+  // orgSubArray: Subscription[];
+  // wikiSub: Subscription;
 
   // Handles part of creating a new trip
   userOrgs: Observable<Organization>[]; // Observable of all the orgs
@@ -142,71 +142,67 @@ export class SitesComponent implements OnInit, OnDestroy {
   selectedLists = [];
   listsPresent = [];
 
+  unsubscribeSubject: Subject<void> = new Subject<void>();
+
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
               public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router,
               private preDef: PreDefined, private selected: SelectedInjectable) {
-    this.tripSubArray = [];
-    this.orgSubArray = [];
+    // this.tripSubArray = [];
+    // this.orgSubArray = [];
 
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
 
     sharedService.hideToolbar.emit(false);
+
     // TODO: edit based on rights
     sharedService.addName.emit('New Section');
-    this.addSectionSub = sharedService.addSection.subscribe(
-      () => {
-        this.showNewSectionPopup = true;
-      }
-    );
+
+    sharedService.addSection.pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe(() => this.showNewSectionPopup = true);
+
     this.siteObservable = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`)
-      .valueChanges().pipe(map((site: Site) => {
-      return site;
-    }));
-    this.siteSub = this.siteObservable.subscribe((site: Site) => {
+      .valueChanges() as Observable<Site>;
+
+    this.siteObservable.pipe(takeUntil(this.unsubscribeSubject)).subscribe((site: Site) => {
       sharedService.onPageNav.emit(site.siteName);
       this.wikiId = site.current;
+
         // Get wiki information
       this.sections = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${site.current}`).valueChanges()
         .pipe(map(data => {
           const array = [];
-          for (const title in data) {
-            if (data.hasOwnProperty(title)) {
-              const markup = data[title];
-              array.push({title, markup});
-            }
-          }
+          Object.keys(data).forEach(title => {
+            const markup = data[title];
+            array.push({title, markup});
+          });
           return array;
         }));
+
       // Let's do checklist
       this.checkList =
         this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/checklist/${site.currentCheckList}`)
         .valueChanges().pipe(map(data => {
           const array = [];
-          for (const title in data) {
-            if (data.hasOwnProperty(title)) {
-              const json = {};
-              json['name'] = title;
-              json['json'] = data[title];
-              array.push(json);
-            }
-          }
+          Object.keys(data).forEach(title => {
+            const json = {};
+            json['name'] = title;
+            json['json'] = data[title];
+            array.push(json);
+          });
           return array;
         }));
 
       // Let's get the trips information
       this.tripValues = [];
-      this.trips = site.tripIds.map(id => {
-        return this.db.doc(`trips/${id}`).valueChanges().pipe(map((trip: Trip) => {
-          return trip;
-        }));
-      });
+      this.trips = site.tripIds.map(id => this.db.doc(`trips/${id}`).valueChanges() as Observable<Trip>);
+
       this.trips.map(ob => {
-        let tripSub: Subscription;
-        tripSub = ob.subscribe((trip: Trip) => {
+        // let tripSub: Subscription;
+        ob.pipe(takeUntil(this.unsubscribeSubject)).subscribe((trip: Trip) => {
           this.tripValues = [...this.tripValues, trip];
         });
-        this.tripSubArray = [...this.tripSubArray, tripSub];
+        // this.tripSubArray = [...this.tripSubArray, tripSub];
       });
     });
 
@@ -215,45 +211,38 @@ export class SitesComponent implements OnInit, OnDestroy {
       if (wikiSubscribe) {
         wikiSubscribe.unsubscribe();
       }
-      this.wikiSub = wikiSubscribe = this.db.doc(`user_preferences/${user.uid}`).valueChanges().subscribe((pref: UserPreferences) => {
-        this.canEditTrip = this.canEditChecklist = this.canEditWiki = pref.admin;
-        sharedService.canEdit.emit(pref.admin);
-      });
+      wikiSubscribe = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
+        .pipe(takeUntil(this.unsubscribeSubject)).subscribe((pref: UserPreferences) => {
+          this.canEditTrip = this.canEditChecklist = this.canEditWiki = pref.admin;
+          sharedService.canEdit.emit(pref.admin);
+        });
 
       this.getOrganizations(user).then((orgs: Observable<Organization>[]) => {
         this.userOrgMap = [];
         orgs.map(d => {
-          let orgSub: Subscription;
-          orgSub = d.subscribe((o: Organization) => {
+          // let orgSub: Subscription;
+          d.pipe(takeUntil(this.unsubscribeSubject)).subscribe((o: Organization) => {
             // console.log(o);
             this.userOrgMap = [...this.userOrgMap, o];
           });
-          this.orgSubArray = [...this.orgSubArray, orgSub];
+          // this.orgSubArray = [...this.orgSubArray, orgSub];
         });
       });
     });
   }
 
-  public async getOrganizations(user: any) {
-    const pref: UserPreferences = await this.db.doc(`user_preferences/${user.uid}`).valueChanges()
-      .pipe(map((data: UserPreferences) => {
-        return data;
-    }), take(1)).toPromise();
+  public async getOrganizations(user: firebase.User) {
+    const pref: UserPreferences = await (this.db.doc(`user_preferences/${user.uid}`).valueChanges()
+      .pipe(take(1)).toPromise() as Promise<UserPreferences>);
 
     // Load all the orgs that they belong to on teams
     const teamsOrgs: string[] = await Promise.all(pref.teams.map(team => {
-      return this.db.doc(`teams/${team}`).valueChanges().pipe(map((t: Team) => {
-        return t.org;
-      }, take(1))).toPromise();
+      return this.db.doc(`teams/${team}`).valueChanges().pipe(map((t: Team) => t.org, take(1))).toPromise();
     }));
 
     teamsOrgs.push(...pref.orgs);
 
-    return teamsOrgs.map(org => {
-      return this.db.doc(`organizations/${org}`).valueChanges().pipe(map((o: Organization) => {
-        return o;
-      }));
-    });
+    return teamsOrgs.map(org => this.db.doc(`organizations/${org}`).valueChanges() as Observable<Organization>);
   }
 
   public loadTrips() {
@@ -261,41 +250,44 @@ export class SitesComponent implements OnInit, OnDestroy {
     // Load all trips the user has access to.
     this.userTeamsMap = [];
     this.db.doc(`organizations/${this.newTripOrg.id}`).valueChanges().pipe(
-      map((org: Organization) => {
-      org.teamIds.map(data => {
-        this.db.doc(`teams/${data}`).valueChanges().pipe(map((team: Team) => {
-          if (team.admins.includes(uid) || org.admins.includes(uid)) {
-            this.userTeamsMap = [...this.userTeamsMap, team];
-          }
-        }, take(1))).toPromise().then();
-      });
-    }, take(1))).toPromise().then();
+      tap((org: Organization) => {
+        org.teamIds.map(data => {
+          this.db.doc(`teams/${data}`).valueChanges().pipe(tap((team: Team) => {
+            if (team.admins.includes(uid) || org.admins.includes(uid)) {
+              this.userTeamsMap = [...this.userTeamsMap, team];
+            }
+          }, take(1))).toPromise().then();
+        });
+      }, take(1))).toPromise().then();
   }
 
   ngOnInit() {
   }
 
   ngOnDestroy() {
-    if (this.wikiSub) {
-      this.wikiSub.unsubscribe();
-    }
-    let sub: Subscription;
-    for (sub of this.orgSubArray) {
-      sub.unsubscribe();
-    }
-    for (sub of this.tripSubArray) {
-      sub.unsubscribe();
-    }
-    if (this.siteSub) {
-      this.siteSub.unsubscribe();
-    }
-    if (this.addSectionSub) {
-      this.addSectionSub.unsubscribe();
-    }
+    // if (this.wikiSub) {
+    //   this.wikiSub.unsubscribe();
+    // }
+    // let sub: Subscription;
+    // for (sub of this.orgSubArray) {
+    //   sub.unsubscribe();
+    // }
+    // for (sub of this.tripSubArray) {
+    //   sub.unsubscribe();
+    // }
+    // if (this.siteSub) {
+    //   this.siteSub.unsubscribe();
+    // }
+    // if (this.addSectionSub) {
+    //   this.addSectionSub.unsubscribe();
+    // }
+    this.unsubscribeSubject.next();
+    this.unsubscribeSubject.complete();
   }
 
 
   tripClick(): void {
+    this.sharedService.backHistory.push(this.router.url);
     this.router.navigate(['trip/' + this.selectedTrip.id]);
   }
 
@@ -372,6 +364,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       // console.log(this.selectedSite);
     this.selected.selected = this.selectedLists;
     // console.log(this.selected.selected);
+    this.sharedService.backHistory.push(this.router.url);
     this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
     // this.router.navigate(['/temp']);
     this.showNewSectionPopup = false;

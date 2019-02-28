@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';

@@ -24,9 +24,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.sidebarService.change.subscribe((isOpen: boolean) => {
-      this.display = isOpen;
-    });
+    this.sidebarService.change.subscribe((isOpen: boolean) => this.display = isOpen);
   }
 
   ngOnChanges() {
@@ -38,8 +36,14 @@ export class ToolbarComponent implements OnInit, OnChanges {
   }
 
   navBack(event) {
-    this.navHelper(this.router.parseUrl(this.router.url).root.children.primary.segments);
+    const prevUrl = this.sharedService.backHistory.pop();
+    if (prevUrl) {
+      this.router.navigateByUrl(prevUrl);
+    } else {
+      this.navHelper(this.router.parseUrl(this.router.url).root.children.primary.segments);
+    }
   }
+
   navHelper(urlSegs) {
     let url = '';
     for (let i = 0; i < urlSegs.length - 1; i++) {
@@ -61,6 +65,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
         this.navHelper(segs);
       });
   }
+
   // toggleEditMode() {
   //   this.editMode = !this.editMode;
   //   this.sharedService.editToggle.emit(this.editMode);

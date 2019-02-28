@@ -11,6 +11,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
 import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-country-page',
@@ -56,7 +57,8 @@ export class CountryPageComponent implements OnInit, OnDestroy {
                             {name: 'Sites', icon: 'pi pi-sitemap'}];
 
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
-               private preDef: PreDefined, private route: ActivatedRoute, private authInstance: AngularFireAuth) {
+               private preDef: PreDefined, private route: ActivatedRoute, private authInstance: AngularFireAuth,
+               private messageService: MessageService) {
     this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;
     sharedService.hideToolbar.emit(false);
@@ -95,13 +97,11 @@ export class CountryPageComponent implements OnInit, OnDestroy {
           map(sectionData => {
             const sections = [];
             this.titleEdits = [];
-            for (const title in sectionData) {
-              if (sectionData.hasOwnProperty(title)) {
-                const markup = sectionData[title];
-                sections.push({title, markup});
-                this.titleEdits.push();
-              }
-            }
+            Object.keys(sectionData).forEach(title => {
+              const markup = sectionData[title];
+              sections.push({title, markup});
+              this.titleEdits.push();
+            });
             return sections;
           })
         );
@@ -144,12 +144,17 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     } else {
       jsonVariable[title] = markup;
     }
-    this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`).update(jsonVariable);
+    this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`).update(jsonVariable)
+      .catch(() =>
+        this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
+          detail: 'Failed to save your edit to the wiki. Please try again later.'})
+      );
     console.log(title, markup, newTitle, confirm);
   }
 
   siteClick(): void {
     // console.log(this.selectedSite);
+    this.sharedService.backHistory.push(this.router.url);
     this.router.navigate([`country/${this.countryId}/site/${this.selectedSite.id}`]);
     // this.router.navigate(['/temp']);
   }

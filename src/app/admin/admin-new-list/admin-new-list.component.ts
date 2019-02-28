@@ -101,9 +101,7 @@ export class AdminNewListComponent implements OnInit {
 
     if (this.selectedControlType.controlType === 'radio' || this.selectedControlType.controlType === 'multi'
     || this.selectedControlType.controlType === 'dropdown') {
-      this.options.forEach((o) => {
-          o.key = o.value.value.replace(/\s+/g, '');
-      });
+      this.options.forEach((o) => o.key = o.value.value.replace(/\s+/g, ''));
       object = {
         key: this.selectedControlType.controlType + this.counter.toString(),
         label: this.newQuestion,

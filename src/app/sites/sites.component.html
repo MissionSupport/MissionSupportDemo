@@ -123,13 +123,14 @@
       </p-table>
 
     </div>
-    <!--<a routerLink="/list" >Create New</a>-->
+    <!-- <a routerLink="/list" >Create New</a> -->
   </div>
 
   <div [hidden]="!viewTrips">
     <h3>Trips</h3>
     <span id="listContainer"  style="height: 100%; width: 100%">
-      <p-listbox [options]="tripValues" [style] = "{'width':'100%'}" [(ngModel)]="selectedTrip" optionLabel="tripName" (click)="tripClick()"></p-listbox>
+      <p-listbox [hidden]="!tripValues || tripValues.length === 0" [options]="tripValues" [style] = "{'width':'100%'}" [(ngModel)]="selectedTrip" optionLabel="tripName" (click)="tripClick()"></p-listbox>
+      <p *ngIf="!tripValues ? false : tripValues.length === 0">No trips found.</p>
     </span>
   </div>
 

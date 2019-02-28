@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   email: string;
   password: string;
   time: number; // Time since last email verification
+
   ngOnInit() {
     console.log('User authenticated maybe ', this.authInstance.auth.currentUser);
     this.time = localStorage.getItem('login_time_verify') != null ? +localStorage.getItem('login_time_verify') : 0;
@@ -32,39 +33,46 @@ export class LoginComponent implements OnInit {
               private messageService: MessageService, private sharedService: SharedService) {
   }
 
-  loginClick() {
+  async loginClick() {
     if (!(this.email && this.password)) {
-      this.messageService.add({severity: 'error', summary: 'Login Error', detail: 'Please log in with both an email and a password.'});
+      this.messageService.add({severity: 'error', summary: 'Login Error',
+        detail: 'Please log in with both an email and a password.'});
     } else {
-      this.authInstance.auth.setPersistence(auth.Auth.Persistence.SESSION).then(() => {
+      try {
+        await this.authInstance.auth.setPersistence(auth.Auth.Persistence.SESSION);
         console.log('Auth successfully set!');
-      });
+      } catch (err) {
+        console.log(err);
+        this.messageService.add({severity: 'error', summary: 'Login Error',
+          detail: 'Failed to log in. Please try again.'});
+      }
 
-      this.authInstance.auth.signInWithEmailAndPassword(this.email, this.password).then(request => {
-        localStorage.setItem('user', request.user.uid);
-        // Check if user is authenticated
-        if (request.user.emailVerified) {
+      try {
+        const credential = await this.authInstance.auth.signInWithEmailAndPassword(this.email, this.password);
+        localStorage.setItem('user', credential.user.uid);
+
+        // Check if user is authenticated.
+        if (credential.user.emailVerified) {
           this.router.navigate([{outlets: {primary: 'landing' }}]).catch(reason => {
             console.log('Something went wrong with authguard');
           });
-          // this.router.navigate([{outlets: {primary: 'landing' , sidebar: 'settingsOptions'}}]).catch(reason => {
-          //   console.log('Something went wrong with authguard');
-          // });
         } else {
-          // User was not authenticated
-          this.messageService.add({severity: 'error', summary: 'Login Error', detail: 'Email is not verified, please check your email'});
-          if (this.time === 0 || this.time + 300000 < (new Date()).getTime()) { // If first time or five minutes
-            request.user.sendEmailVerification();
+          // User is not authenticated.
+          this.messageService.add({severity: 'error', summary: 'Login Error',
+            detail: 'Email is not verified, please check your email'});
+
+          // If first time or five minutes
+          if (this.time === 0 || this.time + 300000 < (new Date()).getTime()) {
+            credential.user.sendEmailVerification();
             this.time = new Date().getTime();
             localStorage.setItem('login_time_verify', String(this.time));
           }
           localStorage.removeItem('user');
           this.authInstance.auth.signOut();
         }
-      })
-      .catch(err => {
+      } catch (err) {
         this.messageService.add({severity: 'error', summary: 'Login Error', detail: err});
-      });
+      }
     }
   }
 }
