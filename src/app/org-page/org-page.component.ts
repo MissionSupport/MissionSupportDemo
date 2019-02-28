@@ -6,7 +6,7 @@ import {Team} from '../interfaces/team';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Organization} from '../interfaces/organization';
 import {Observable, Subscribable, Subscription} from 'rxjs';
-import {exhaustMap, flatMap, map} from 'rxjs/operators';
+import {exhaustMap, flatMap, map, take} from 'rxjs/operators';
 import {AngularFireAuth} from '@angular/fire/auth';
 import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
@@ -180,18 +180,17 @@ export class OrgPageComponent implements OnInit, OnDestroy {
   /**
    * Used for updating an already existing wiki entry.
    */
-  submitWikiEdit(title, markup): void {
-    const json = {};
-    json[title] = markup;
-    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
+  async submitWikiEdit(title, markup) {
+    const array: {} = await this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`)
+      .valueChanges().pipe(map(data => {return data;}), take(1)).toPromise();
+    array[title] = markup;
+    // Create a new update
+    //this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
   }
 
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
-    // add to db
-    const json = {};
-    json[this.newSectionName] = this.newSectionText;
-    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json);
+    this.submitWikiEdit(this.newSectionName, this.newSectionText);
   }
 
   addAnotherMember() {
