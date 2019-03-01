@@ -5,8 +5,8 @@ import {Trip} from '../interfaces/trip';
 import {Team} from '../interfaces/team';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Organization} from '../interfaces/organization';
-import {Observable, Subscription} from 'rxjs';
-import {flatMap, map} from 'rxjs/operators';
+import {Observable, Subscribable, Subscription} from 'rxjs';
+import {exhaustMap, flatMap, map, take} from 'rxjs/operators';
 import {AngularFireAuth} from '@angular/fire/auth';
 import { BottomTab } from '../interfaces/bottom-tab';
 import {MessageService} from 'primeng/api';
@@ -198,26 +198,22 @@ export class OrgPageComponent implements OnInit, OnDestroy {
   /**
    * Used for updating an already existing wiki entry.
    */
-  submitWikiEdit(title: string | number, markup: any) {
-    const json = {};
-    json[title] = markup;
-    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json)
-      .catch(() =>
-        this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
-          detail: 'Failed to save your edit to the wiki. Please try again later.'})
-      );
+  async submitWikiEdit(title: string, markup: string) {
+    const array: {} = await this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`)
+      .valueChanges().pipe(map(data => {
+        return data;
+      }), take(1)).toPromise();
+    array[title] = markup;
+    // Create a new update
+    // this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json).catch(() =>
+    //         this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
+    //           detail: 'Failed to save your edit to the wiki. Please try again later.'})
+    //       );
   }
 
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
-    // add to db
-    const json = {};
-    json[this.newSectionName] = this.newSectionText;
-    this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json)
-      .catch(() =>
-        this.messageService.add({severity: 'error', summary: 'Unable to Add New Section',
-          detail: 'Failed to save the new section added to the wiki. Please try again later.'})
-      );
+    this.submitWikiEdit(this.newSectionName, this.newSectionText);
   }
 
   addAnotherMember() {
