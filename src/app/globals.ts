@@ -18,8 +18,8 @@ export class PreDefined {
   wikiCountry = [
     {
       title : 'Communication',
-      markup : 'How much service is there for american carriers? What local carriers work well? What is the process to get cellular ' +
-        'data, if it is available? How common is internet access?'
+      markup : 'How much service is there for American carriers? What local carriers work well? What is the process to get cellular ' +
+        'data, if it is available? How common is Internet access?'
     },
     {
       title: 'Customs',
@@ -28,35 +28,36 @@ export class PreDefined {
     },
     {
       title: 'Contacts',
-      markup: 'Were there any local, government or non-government, organizations you found useful? If so how did they help you? What ' +
-        'was the relationship like? What is their contact info? '
+      markup: 'Were there any local, government, or non-government organizations you found useful? If so, how did they help you? What ' +
+        'was the relationship like? What is their contact info?'
     },
     {
       title: 'Transit',
-      markup: 'How did you get from the airport, or port, to the site? Is the public transportation systems reliable? Can you drive ' +
+      markup: 'How did you get from the airport, or port, to the site? Are the public transportation systems reliable? Can you drive ' +
         'yourself, or did you book transportation? What was your preferred method for traveling between cities?'
     },
     {
       title: 'Culture',
-      markup: 'What cultural taboos should staff be aware of? Is there anything common in western culture that would offend locals? ' +
-        'Conversely, what cultural customs do they have which might offend staff? How did you deal with it? '
+      markup: 'What cultural taboos should staff be aware of? Is there anything common in Western culture that would offend locals? ' +
+        'Conversely, what cultural customs do they have which might offend staff? How did you deal with it?'
     },
     {
       title: 'Money',
-      markup: 'Is the US dollar preferred? If no, where did you exchange currency? Is card taken or is it a primarily cash society? ' +
-        'Did you take all your cash at once, or did you continuously withdraw smaller amounts? If so, where did you withdraw cash from?'
+      markup: 'Is the U.S. dollar preferred? If not, where did you exchange currency? Are cards accepted, ' +
+      'or is it a primarily cash-based society? Did you take all your cash at once, or did you continuously ' +
+      'withdraw smaller amounts? If so, where did you withdraw cash from?'
     },
     {
-      title: 'Comfort_and_Availability',
+      title: 'Comfort and Availability',
       markup: 'What comforts and necessities did you miss while in this country? What was readily available? ' +
         'What should staff bring to stay comfortable during their trips?'
     },
     {
-      title: 'Crimes_and_Scams',
+      title: 'Crimes and Scams',
       markup: 'What is the crime rate like? What scams will staff run across? Are foreigners more likely to be targeted?'
     },
     {
-      title: 'Population_Health',
+      title: 'Population Health',
       markup: 'What level of care does the population generally receive? Is any type of care noticeably lacking? ' +
         'What health issues seem to be common in this country?'
     }
@@ -65,12 +66,12 @@ export class PreDefined {
   wikiSite = [
     {
       title: 'Pharmaceutical',
-      markup: 'Is there a place to get drugs nearby? How accessible are the drugs? If you do not bring everything you need,' +
+      markup: 'Is there a place to get drugs nearby? How accessible are the drugs? If you do not bring everything you need' +
         ' or run out, what is the process for getting more?'
     },
     {
       title: 'Assistance',
-      markup: 'What level of assistance can you expect form local staff? What types of training will the staff have?'
+      markup: 'What level of assistance can you expect from local staff? What types of training will the staff have?'
     },
     {
       title: 'Conditions',
@@ -79,20 +80,20 @@ export class PreDefined {
     },
     {
       title: 'Technology',
-      markup: 'What level of technology do they have, and what is the condition of the Technology. ' +
-        'Do they Have a dedicated maintenance team? Is there a Lab/OR/Imaging/Etc. What are the hours? How is this technology managed?'
+      markup: 'What level of technology do they have, and what is the condition of the technology? ' +
+        'Do they have a dedicated maintenance team? Is there a lab or imaging, etc.? What are the hours? How is this technology managed?'
     },
     {
       title: 'Security',
-      markup: 'How secure is the site? Is there on staff security at all hours? Should staff avoid leaving alone?'
+      markup: 'How secure is the site? Is there on-staff security at all hours? Should staff avoid leaving alone?'
     },
     {
-      title: 'Living_and_Transportation',
-      markup: 'What is nearby accommodation? Should staff live near the site, ' +
-        'or somewhere else? How should staff commute the site, walk, transit, or cars?'
+      title: 'Living and Transportation',
+      markup: 'What accommodation is nearby? Should staff live near the site, ' +
+        'or somewhere else? How should staff commute to the site: walk, transit, or cars?'
     },
     {
-      title: 'Patient_Traffic',
+      title: 'Patient Traffic',
       markup: 'Give a breakdown of the types of operations performed on a day to day basis. ' +
         'What is this site equipped to handle? What do they struggle with?'
     }
@@ -101,7 +102,7 @@ export class PreDefined {
   wikiTrip = [
     {
       title: 'Purpose',
-      markup: 'What was the purpose of the trip? Was it Successful?'
+      markup: 'What was the purpose of the trip? Was it successful?'
     },
     {
       title: 'Type of Care',
@@ -110,7 +111,7 @@ export class PreDefined {
     },
     {
       title: 'Preparation',
-      markup: 'How many people did you bring? Did you follow thge site checklist? Where did you stay?'
+      markup: 'How many people did you bring? Did you follow the site checklist? Where did you stay?'
     },
     {
       title: 'Unique Challenges',
@@ -119,14 +120,14 @@ export class PreDefined {
     },
     {
       title: 'Contact',
-      markup: 'Please leave a contact person who can answer follow up questions about the trip'
+      markup: 'Please leave a contact person who can answer follow up questions about the trip.'
     }
   ];
 
   wikiOrg = [
     {
       title: 'About Us',
-      markup: 'General information about the organization: size, location, funding, purpose, etc. '
+      markup: 'General information about the organization: size, location, funding, purpose, etc.'
     },
     {
       title: 'Types of Care Provided',
@@ -134,7 +135,7 @@ export class PreDefined {
     },
     {
       title: 'Contact Info',
-      markup: 'Contact information'
+      markup: 'Contact information.'
     }
   ];
 
@@ -196,7 +197,7 @@ export class PreDefined {
     },
     {
       key: 'textBox9',
-      label: 'Number of Clinic Rooms (Available for surgery)',
+      label: 'Number of Clinic Rooms (available for surgery)',
       controlType: 'textbox',
       gridSize: 'p-col-4',
       keyFilter: 'pnum'
@@ -225,7 +226,7 @@ export class PreDefined {
   hospitalInfrastructureJson = [
     {
       key: 'radio1',
-      label: 'What is your primary source of electricity',
+      label: 'What is your primary source of electricity?',
       controlType: 'radio',
       gridSize: 'p-col-4',
       options: [
@@ -235,7 +236,7 @@ export class PreDefined {
     },
     {
       key: 'radio2',
-      label: 'Power outlets located on wards?',
+      label: 'Are power outlets located on wards?',
       controlType: 'radio',
       gridSize: 'p-col-4',
       options: [
@@ -245,7 +246,7 @@ export class PreDefined {
     },
     {
       key: 'editor1',
-      label: 'What is your back-up power supply in case of power outage?',
+      label: 'What is your back-up power supply in case of a power outage?',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
@@ -262,7 +263,7 @@ export class PreDefined {
     },
     {
       key: 'textBox1',
-      label: 'Comments about generator/electricity',
+      label: 'Comments about generator/electricity.',
       controlType: 'textbox',
       gridSize: 'p-col-6',
       keyFilter: 'noSpecial'
@@ -289,7 +290,7 @@ export class PreDefined {
     },
     {
       key: 'editor2',
-      label: 'Comments about access to water/sinks?',
+      label: 'Comments about access to water/sinks.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
@@ -323,7 +324,7 @@ export class PreDefined {
     },
     {
       key: 'header1',
-      label: 'What kind of medications do you keep in stocp? (avalibable 100% of the time)',
+      label: 'What kind of medications do you keep in stock? (available 100% of the time)?',
       controlType: 'header',
       gridSize: 'p-col-12'
     },
@@ -341,7 +342,7 @@ export class PreDefined {
     },
     {
       key: 'medmultcheck3',
-      label: 'General Anesthetics? (which ones?)',
+      label: 'General Anesthetics (which ones?)',
       controlType: 'medmultcheck',
       gridSize: 'p-col-12'
     },
@@ -353,7 +354,7 @@ export class PreDefined {
     },
     {
       key: 'medmultcheck5',
-      label: 'Anti-hypertensives? (which ones?)',
+      label: 'Anti-hypertensives (which ones?)',
       controlType: 'medmultcheck',
       gridSize: 'p-col-12'
     },
@@ -365,20 +366,20 @@ export class PreDefined {
     },
     {
       key: 'medmulttextbox1',
-      label: 'Others? Please List',
+      label: 'Others? Please list.',
       controlType: 'medmulttextbox',
       gridSize: 'p-col-12'
     },
     {
       key: 'editor1',
-      label: 'Comments on Medication Supply',
+      label: 'Comments on medication supply.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
     },
     {
       key: 'radio6',
-      label: 'Is there a lab on site?',
+      label: 'Is there a lab on-site?',
       controlType: 'radio',
       gridSize: 'p-col-6',
       options: [
@@ -388,7 +389,7 @@ export class PreDefined {
     },
     {
       key: 'multi1',
-      label: 'Lab Capabilities (select all that apply)',
+      label: 'Lab Capabilities (select all that apply).',
       controlType: 'multi',
       gridSize: 'p-col-6',
       options: [
@@ -416,14 +417,14 @@ export class PreDefined {
     },
     {
       key: 'editor2',
-      label: 'If no lab available, where do patients get them done?',
+      label: 'If no lab is available, where do patients get lab work done?',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
     },
     {
       key: 'radio7',
-      label: 'Is there a blood bank available on site?',
+      label: 'Is there a blood bank available on-site?',
       controlType: 'radio',
       gridSize: 'p-col-6',
       options: [
@@ -433,7 +434,7 @@ export class PreDefined {
     },
     {
       key: 'textBox5',
-      label: 'If no blood available on site, where is the blood bank?',
+      label: 'If no blood is available on-site, where is the blood bank?',
       controlType: 'textbox',
       gridSize: 'p-col-6',
       keyFilter: 'noSpecial'
@@ -447,7 +448,7 @@ export class PreDefined {
     },
     {
       key: 'radio8',
-      label: 'Is there a imagine on site?',
+      label: 'Is there imaging on-site?',
       controlType: 'radio',
       gridSize: 'p-col-6',
       options: [
@@ -457,7 +458,7 @@ export class PreDefined {
     },
     {
       key: 'multi1',
-      label: 'Lab Capabilities (select all that apply)',
+      label: 'Imaging Capabilities (select all that apply).',
       controlType: 'multi',
       gridSize: 'p-col-6',
       options: [
@@ -475,7 +476,7 @@ export class PreDefined {
     },
     {
       key: 'editor3',
-      label: 'Imaging Comments',
+      label: 'Comments on imaging.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
@@ -546,7 +547,7 @@ export class PreDefined {
     },
     {
       key: 'radio3',
-      label: 'Do you have vaporizers? (Anesthesia)?',
+      label: 'Do you have vaporizers? (Anesthesia)',
       controlType: 'radio',
       gridSize: 'p-col-6',
       options: [
@@ -626,7 +627,7 @@ export class PreDefined {
     },
     {
       key: 'radio5',
-      label: 'Do the wards have 24 hour nursing care?',
+      label: 'Do the wards have 24-hour nursing care?',
       controlType: 'radio',
       gridSize: 'p-col-12',
       options: [
@@ -673,14 +674,14 @@ export class PreDefined {
     },
     {
       key: 'editor1',
-      label: 'How do you get oxygen? (tanks delivered? compressors? other?) Comments',
+      label: 'How do you get oxygen? (tanks delivered? compressors? other?) Comments.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
     },
     {
       key: 'editor2',
-      label: 'Where do you get IV fluids? Would we have access to that supply? Comments',
+      label: 'Where do you get IV fluids? Would we have access to that supply? Comments.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
@@ -694,7 +695,7 @@ export class PreDefined {
     },
     {
       key: 'radio2',
-      label: 'Autoclave on-site',
+      label: 'Is there an autoclave on-site?',
       controlType: 'radio',
       gridSize: 'p-col-4',
       options: [
@@ -704,21 +705,21 @@ export class PreDefined {
     },
     {
       key: 'textBox2',
-      label: 'Size and number of autoclaves',
+      label: 'Size and number of autoclaves.',
       controlType: 'textbox',
       gridSize: 'p-col-8',
       keyFilter: 'noSpecial'
     },
     {
       key: 'editor4',
-      label: 'Autoclave comments',
+      label: 'Comments on autoclaves.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
     },
     {
       key: 'editor4',
-      label: 'How do you get equipment repaired? Comments',
+      label: 'How do you get equipment repaired? Comments.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
@@ -748,7 +749,7 @@ export class PreDefined {
     },
     {
       key: 'editor1',
-      label: 'Ambulance Comments',
+      label: 'Comments on ambulances.',
       controlType: 'freeResponse',
       gridSize: 'p-col-8',
       height: '150'
@@ -765,7 +766,7 @@ export class PreDefined {
   caseVolumeandStafJson = [
     {
       key: 'header1',
-      label: 'Surgical Cases per week',
+      label: 'Surgical cases per week.',
       controlType: 'header'
     },
     {
@@ -777,7 +778,7 @@ export class PreDefined {
     },
     {
       key: 'textBox2',
-      label: 'Peds  < 3y',
+      label: 'Peds < 3y',
       controlType: 'textbox',
       gridSize: 'p-col-12',
       keyFilter: 'noSpecial'
@@ -805,14 +806,14 @@ export class PreDefined {
     },
     {
       key: 'textBox6',
-      label: 'Number Full time',
+      label: 'Number full-time',
       controlType: 'textbox',
       gridSize: 'p-col-4',
       keyFilter: 'noSpecial'
     },
     {
       key: 'textBox7',
-      label: 'Number Part time',
+      label: 'Number part-time',
       controlType: 'textbox',
       gridSize: 'p-col-4',
       keyFilter: 'noSpecial'
@@ -842,7 +843,7 @@ export class PreDefined {
     },
     {
       key: 'editor1',
-      label: 'Comments on blocked time',
+      label: 'Comments on blocked time.',
       controlType: 'freeResponse',
       gridSize: 'p-col-6',
       height: '150'
@@ -897,21 +898,21 @@ export class PreDefined {
     },
     {
       key: 'textBox8',
-      label: 'Number of Anesthesiologists',
+      label: 'Number of anesthesiologists',
       controlType: 'textbox',
       gridSize: 'p-col-6',
       keyFilter: 'noSpecial'
     },
     {
       key: 'textBox9',
-      label: 'Number of Anesthetists',
+      label: 'Number of anesthetists',
       controlType: 'textbox',
       gridSize: 'p-col-6',
       keyFilter: 'noSpecial'
     },
     {
       key: 'header2',
-      label: 'Anesthesia cases/wk',
+      label: 'Anesthesia cases per week.',
       controlType: 'header'
     },
     {
@@ -995,7 +996,7 @@ export class PreDefined {
     },
     {
       key: 'editor8',
-      label: 'Comments',
+      label: 'Comments.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
@@ -1005,7 +1006,7 @@ export class PreDefined {
   personnelJson = [
     {
       key: 'editor1',
-      label: 'How would a team integrate into your hospital system? (Surgeons, anesthesia, nursing care)',
+      label: 'How would a team integrate into your hospital system? (surgeons, anesthesia, nursing care)',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
@@ -1022,14 +1023,14 @@ export class PreDefined {
   educationQIJson = [
     {
       key: 'editor1',
-      label: 'Current In-service training programs',
+      label: 'Current in-service training programs.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
     },
     {
       key: 'editor2',
-      label: 'Current quality improvement programs',
+      label: 'Current quality improvement programs.',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
@@ -1056,7 +1057,7 @@ export class PreDefined {
     },
     {
       key: 'editor1',
-      label: 'Hospital pre-op requirements for surgery? (x-ray, labs, etc)',
+      label: 'Are there hospital pre-op requirements for surgery? (x-ray, labs, etc)',
       controlType: 'freeResponse',
       gridSize: 'p-col-6',
       height: '150'
@@ -1095,7 +1096,7 @@ export class PreDefined {
     },
     {
       key: 'editor5',
-      label: 'Access to translators?',
+      label: 'Is there access to translators?',
       controlType: 'freeResponse',
       gridSize: 'p-col-12',
       height: '150'
@@ -1112,7 +1113,7 @@ export class PreDefined {
     },
     {
       key: 'editor2',
-      label: 'Transportation to hospital? (if off campus)?',
+      label: 'Transportation to hospital? (if off-campus)?',
       controlType: 'freeResponse',
       gridSize: 'p-col-6',
       height: '150'
@@ -1167,7 +1168,13 @@ export class PreDefined {
   testInput = [
     {
       name: 'Hospital',
-      json: '{"textBox1":{"question":"Hospital Name","value":"Emory"},"textBox2":{"question":"Name of Host","value":"Vikas O\'Reilly-Shah"},"textBox3":{"question":"Position at Hospital","value":"Anesthesiologist"},"textBox4":{"question":"Host Email Address","value":"EmailBasic@aol.com"},"textBox5":{"question":"Host Phone Number","value":"(555)867-5309"},"textBox6":{"question":"Number of Beds (Total Hospital)","value":"1,043"},"textBox7":{"question":"Number of Med/Surg Beds","value":"204"},"textBox8":{"question":"Number of Operating Rooms","value":"26"},"textBox9":{"question":"Number of Clinic Rooms (Available for surgery)","value":"32"},"radio1":{"question":"PCAU?","value":"Yes"},"radio2":{"question":"Pre-op?","value":"No"}}'
+      json: '{"textBox1":{"question":"Hospital Name","value":"Emory"},"textBox2":{"question":"Name of Host",' +
+      '"value":"Vikas O\'Reilly-Shah"},"textBox3":{"question":"Position at Hospital","value":"Anesthesiologist"},' +
+      '"textBox4":{"question":"Host Email Address","value":"EmailBasic@aol.com"},"textBox5":{"question":"Host Phone' +
+      'Number","value":"(555)867-5309"},"textBox6":{"question":"Number of Beds (Total Hospital)","value":"1,043"},' +
+      '"textBox7":{"question":"Number of Med/Surg Beds","value":"204"},"textBox8":{"question":"Number of Operating Rooms",' +
+      '"value":"26"},"textBox9":{"question":"Number of Clinic Rooms (Available for surgery)","value":"32"},' +
+      '"radio1":{"question":"PCAU?","value":"Yes"},"radio2":{"question":"Pre-op?","value":"No"}}'
     },
   ];
 

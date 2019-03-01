@@ -19,7 +19,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
   markdown: string;
   viewWiki = true;
   viewAbout = false;
-  footerHeight = 45;
+  footerHeight = 50;
   sections = [];
   editText = [];
   hideme = [];
@@ -60,7 +60,6 @@ export class TripPageComponent implements OnInit, OnDestroy {
   constructor(public sharedService: SharedService, private preDef: PreDefined, public router: Router, private route: ActivatedRoute,
               private readonly db: AngularFirestore) {
     sharedService.hideToolbar.emit(false);
-    this.footerHeight = 45;
     this.tripId = this.route.snapshot.paramMap.get('id');
     sharedService.addName.emit('New Section');
 

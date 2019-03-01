@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {PreDefined, SharedService} from '../globals';
 
-import 'autocomplete-lhc';
+// import 'autocomplete-lhc';
 import {FormGroup} from '@angular/forms';
 import {QuestionControlService} from '../questions/question-control-service';
 import {QuestionBase} from '../questions/question-base';
@@ -11,8 +11,8 @@ import {SelectedInjectable} from '../questions/selectedInjectable';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ActivatedRoute} from '@angular/router';
 import {Site} from '../interfaces/site';
-declare var $: any;
-declare var Def: any;
+// declare var $: any;
+// declare var Def: any;
 
 @Component({
   selector: 'app-checklist-creation-page',
@@ -94,30 +94,23 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
     this.selectedLists = this.selected.selected;
     // console.log(this.selected.selected);
     // console.log(this.selectedLists);
-    this.selectedLists.forEach(list => {
-      this.forms.push(new FormObject(list));
-    });
-    this.forms.forEach(function(form) {
-      form.questions = service.getQuestions(form.questionData);
-    });
+    this.selectedLists.forEach(list => this.forms.push(new FormObject(list)));
+
+    this.forms.forEach((form) => form.questions = service.getQuestions(form.questionData));
 
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
     this.siteSubscribable = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`).valueChanges()
-      .subscribe((site: Site) => {
-        this.checkListId = site.currentCheckList;
-      });
+      .subscribe((site: Site) => this.checkListId = site.currentCheckList);
 
-    sharedService.hideToolbar.emit(false);
-    sharedService.canEdit.emit(false);
-    sharedService.onPageNav.emit('Checklist Creation');
+    this.sharedService.hideToolbar.emit(false);
+    this.sharedService.canEdit.emit(false);
+    this.sharedService.onPageNav.emit('Checklist Creation');
   }
 
   ngOnInit() {
     // this.form = this.qcs.toFormGroup(this.questions);
-    this.forms.forEach((form) => {
-      form.form = this.qcs.toFormGroup(form.questions);
-    });
+    this.forms.forEach((form) => form.form = this.qcs.toFormGroup(form.questions));
   }
 
   ngAfterViewInit() {
@@ -148,6 +141,7 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
     hideForm.hidden = true;
     const json = {};
     json[formObject.name] = formObject.payLoad;
+    console.dir(json);
     this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/checklist/${this.checkListId}`).update(json);
   }
 

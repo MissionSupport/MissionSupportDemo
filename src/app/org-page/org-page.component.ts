@@ -5,13 +5,11 @@ import {Trip} from '../interfaces/trip';
 import {Team} from '../interfaces/team';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Organization} from '../interfaces/organization';
-import {Observable, Subscribable, Subscription} from 'rxjs';
-import {exhaustMap, flatMap, map} from 'rxjs/operators';
+import {Observable, Subscription} from 'rxjs';
+import {flatMap, map} from 'rxjs/operators';
 import {AngularFireAuth} from '@angular/fire/auth';
-import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import {MessageService} from 'primeng/api';
-import {async} from 'q';
 
 @Component({
   selector: 'app-group-page',
@@ -31,7 +29,7 @@ export class OrgPageComponent implements OnInit, OnDestroy {
   sections: Observable<any[]>;
   editHeaderText: string; // Used for setting a field when submitting an edit
   hideme = [];
-  footerHeight = 45;
+  footerHeight = 50;
   tripIds: Observable<string>[];
   tripsObservable: Observable<Trip>[];
   trips: Trip[] = [];
@@ -66,9 +64,9 @@ export class OrgPageComponent implements OnInit, OnDestroy {
                             {name: 'Teams', icon: 'pi pi-users'},
                             {name: 'Trips', icon: 'pi pi-briefcase'}];
 
-  constructor(public sharedService: SharedService, public router: Router, private preDef: PreDefined,
-              private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth,
-              private messageService: MessageService) {
+  constructor(public sharedService: SharedService, public router: Router,
+    private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth,
+    private messageService: MessageService) {
     /*
     this.route.params.subscribe((params) => {
       this.orgId = params['id'];
