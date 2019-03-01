@@ -10,10 +10,10 @@ import {SharedService} from '../globals';
   styleUrls: ['./toolbar.component.css']
 })
 export class ToolbarComponent implements OnInit, OnChanges {
-  @Input() header;
+  @Input() header = '';
   @Input() hasEditRights;
   @Input() editMode;
-  @Input() addName;
+  @Input() addName = '';
   display;
 
   isLanding: boolean;

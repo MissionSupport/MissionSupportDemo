@@ -30,34 +30,20 @@ export class AppComponent implements AfterContentInit, OnDestroy {
   addNameSub: Subscription;
 
   constructor(db: AngularFirestore, private sharedService: SharedService) {
-    this.hideToolbarSub = sharedService.hideToolbar.subscribe(
-      (onMain) => {
-        this.onMain = onMain;
-      }
-    );
-    this.pageNavSub = sharedService.onPageNav.subscribe(
-      (page) => {
-        this.pageName = page;
-      }
-    );
-    this.canEditSub = sharedService.canEdit.subscribe(
-      (hasEditRights) => {
-        this.hasEditRights = hasEditRights;
-      }
-    );
-    this.addNameSub = sharedService.addName.subscribe(
-      (addName) => {
-        this.addName = addName;
-      }
-    );
+    this.hideToolbarSub = sharedService.hideToolbar.subscribe((onMain) => this.onMain = onMain);
+    this.pageNavSub = sharedService.onPageNav.subscribe((page) => this.pageName = page);
+    this.canEditSub = sharedService.canEdit.subscribe((hasEditRights) => this.hasEditRights = hasEditRights);
+    this.addNameSub = sharedService.addName.subscribe((addName) => this.addName = addName);
 
-    this.height = window.innerHeight;
+    this.height = window.innerHeight - 50;
+
+    window.addEventListener('resize', () => this.height = window.innerHeight - 50);
   }
 
   ngAfterContentInit(): void {
-    console.log(this.toolbar.nativeElement.children.namedItem('innerToolbar').offsetHeight);
-    this.toolbarHeight = this.toolbar.nativeElement.children.namedItem('innerToolbar').offsetHeight;
-    this.height = window.innerHeight - this.toolbarHeight;
+    // console.log(this.toolbar.nativeElement.children.namedItem('innerToolbar').offsetHeight);
+    // this.toolbarHeight = this.toolbar.nativeElement.children.namedItem('innerToolbar').offsetHeight;
+    // this.height = window.innerHeight - this.toolbarHeight;
   }
 
   ngOnDestroy(): void {

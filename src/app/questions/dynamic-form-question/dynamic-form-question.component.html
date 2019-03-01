@@ -23,8 +23,14 @@
     </div>
 
     <div class="p-col-12" *ngSwitchCase="'medtextbox'" [id]="question.key">
-      <input pInputText (focus)="searchDrugs(question.key)" [value]= "question.value" type="text" [id]="question.key + 'rxterms'" placeholder="Drug name" [formControlName]="'value'">
-      <input pInputText type="text" [id]="question.key + 'drug_strengths'" [value]= "question.value" placeholder="Strength list" [formControlName]="'strength'">
+      <!-- <input pInputText (focus)="searchDrugs(question.key)" [value]= "question.value" type="text" [id]="question.key + 'rxterms'" placeholder="Drug name" [formControlName]="'value'">
+      <input pInputText type="text" [id]="question.key + 'drug_strengths'" [value]= "question.value" placeholder="Strength list" [formControlName]="'strength'"> -->
+      <p-autoComplete [id]="question.key + 'rxterms'" placeholder="Drug Name"
+        [suggestions]="drugsInAutoComplete[0]" [formControlName]="'drugName'" (completeMethod)="searchDrugs($event, 0)"
+        [emptyMessage]="'No drugs found.'" (onSelect)="populateDropdown($event, 0)" [forceSelection]="true"
+        [minLength]="3"></p-autoComplete>
+      <p-dropdown [options]="strengthsInDropdown[0]" [id]="question.key + 'drug_strengths'"
+        [placeholder]="'Drug Strengths'" [formControlName]="'strength'"></p-dropdown>
     </div>
 
     <div class="p-col-12" *ngSwitchCase="'freeResponse'" [id]="question.key">
@@ -42,10 +48,15 @@
     <div *ngSwitchCase="'medmulttextbox'" [formArrayName]="'value'">
       <div *ngFor="let item of form.get(question.key).get('value').controls; let i = index;">
         <div [formGroupName]="i" style="margin-top: 10px">
-          <input pInputText (focus)="searchDrugs(question.key + i)" type="text" [id]="question.key + i + 'rxterms'" placeholder="Drug name" formControlName="drugName">
-          <input pInputText type="text" [id]="question.key + i +'drug_strengths'" placeholder="Strength list" formControlName="strength">
+          <!-- <input pInputText (focus)="searchDrugs(question.key + i)" type="text" [id]="question.key + i + 'rxterms'" placeholder="Drug name" formControlName="drugName">
+          <input pInputText type="text" [id]="question.key + i +'drug_strengths'" placeholder="Strength list" formControlName="strength"> -->
+          <p-autoComplete [id]="question.key + i + 'rxterms'" placeholder="Drug Name"
+            [suggestions]="drugsInAutoComplete[i]" [formControlName]="'drugName'" (completeMethod)="searchDrugs($event, i)"
+            [emptyMessage]="'No drugs found.'" (onSelect)="populateDropdown($event, i)" [forceSelection]="true"
+            [minLength]="3"></p-autoComplete>
+          <p-dropdown [options]="strengthsInDropdown[i]" [id]="question.key + i +'drug_strengths'"
+            [placeholder]="'Drug Strengths'" [formControlName]="'strength'"></p-dropdown>
         </div>
-
       </div>
       <p-button (onClick)="addField(question.key, 'value')" label="Add" style="margin-top: 10px"></p-button>
     </div>
@@ -55,8 +66,14 @@
       <div #hide [hidden]="'true'">
         <div *ngFor="let item of form.get(question.key).get('value').controls; let i = index;"  >
           <div [formGroupName]="i" style="margin-top: 10px">
-            <input pInputText (focus)="searchDrugs(question.key + i)" type="text" [id]="question.key + i + 'rxterms'" placeholder="Drug name" formControlName="drugName">
-            <input pInputText type="text" [id]="question.key + i +'drug_strengths'" placeholder="Strength list" formControlName="strength">
+            <!-- <input pInputText (focus)="searchDrugs(question.key + i)" type="text" [id]="question.key + i + 'rxterms'" placeholder="Drug name" formControlName="drugName">
+            <input pInputText type="text" [id]="question.key + i +'drug_strengths'" placeholder="Strength list" formControlName="strength"> -->
+            <p-autoComplete [id]="question.key + i + 'rxterms'" placeholder="Drug Name"
+            [suggestions]="drugsInAutoComplete[i]" [formControlName]="'drugName'" (completeMethod)="searchDrugs($event, i)"
+            [emptyMessage]="'No drugs found.'" (onSelect)="populateDropdown($event, i)" [forceSelection]="true"
+            [minLength]="3"></p-autoComplete>
+          <p-dropdown [options]="strengthsInDropdown[i]" [id]="question.key + i +'drug_strengths'"
+            [placeholder]="'Drug Strengths'" [formControlName]="'strength'"></p-dropdown>
           </div>
         </div>
         <p-button (onClick)="addField(question.key, 'value')" label="Add" style="margin-top: 10px"></p-button>

@@ -1,24 +1,17 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from '@angular/fire/firestore';
-import {Observable, Subscription, Subject} from 'rxjs';
-import {MessageService} from 'primeng/api';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {Observable, Subject} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {EditTask} from '../interfaces/edit-task';
 import {UserPreferences} from '../interfaces/user-preferences';
 import {PreDefined, SharedService} from '../globals';
 import {Site} from '../interfaces/site';
 import {Trip} from '../interfaces/trip';
-import {flatMap, map, mergeAll, mergeMap, reduce, switchMap, take, takeUntil, tap} from 'rxjs/operators';
-import {Country} from '../interfaces/country';
+import {map, take, takeUntil, tap} from 'rxjs/operators';
 import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import {Organization} from '../interfaces/organization';
 import {Team} from '../interfaces/team';
-import {User} from 'firebase';
-import {createUrlResolverWithoutPackagePrefix} from '@angular/compiler';
-import {FormObject} from '../questions/formObject';
-import {forEach} from '@angular/router/src/utils/collection';
 import {SelectedInjectable} from '../questions/selectedInjectable';
 
 export interface Question {
@@ -45,13 +38,13 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   sections: Observable<any[]>;
   hideme = [];
-  footerHeight = 45;
+  footerHeight = 50;
   // trips: Trip[];
   trips: Observable<Trip>[];
   tripValues: Trip[];
   selectedTrip;
 
-  checkList: Observable<{}[]>;
+  checkList: Observable<{name: string, json: any}[]>;
   siteObservable: Observable<Site>;
 
   groups = []; // Contains an array of group ids
@@ -99,7 +92,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       questionData: this.preDef.hospitalInfrastructureJson
     },
     {
-      name: 'Pharmacy/Lab',
+      name: 'Pharmacy and Lab',
       questionData: this.preDef.pharmacyLabJson
     },
     {
@@ -127,7 +120,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       questionData: this.preDef.personnelJson
     },
     {
-      name: 'Education/QI',
+      name: 'Education and QI',
       questionData: this.preDef.educationQIJson
     },
     {
@@ -144,9 +137,9 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   unsubscribeSubject: Subject<void> = new Subject<void>();
 
-  constructor(public route: ActivatedRoute, private readonly db: AngularFirestore, private messageService: MessageService,
-              public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router,
-              private preDef: PreDefined, private selected: SelectedInjectable) {
+  constructor(public route: ActivatedRoute, private readonly db: AngularFirestore,
+    public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router,
+    private preDef: PreDefined, private selected: SelectedInjectable) {
     // this.tripSubArray = [];
     // this.orgSubArray = [];
 
@@ -198,7 +191,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       this.trips = site.tripIds.map(id => this.db.doc(`trips/${id}`).valueChanges() as Observable<Trip>);
 
       this.trips.map(ob => {
-        // let tripSub: Subscription;
+        // let tripSub: Subscription;height
         ob.pipe(takeUntil(this.unsubscribeSubject)).subscribe((trip: Trip) => {
           this.tripValues = [...this.tripValues, trip];
         });
@@ -284,7 +277,6 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }
-
 
   tripClick(): void {
     this.sharedService.backHistory.push(this.router.url);
@@ -393,14 +385,23 @@ export class SitesComponent implements OnInit, OnDestroy {
     if (typeof question.value === 'string') {
       return question.value;
     } else {
-      console.log(question);
+      // console.log(question);
       let value = '';
-      question.value.forEach(val => {
+      question.value.forEach((val, index) => {
         if (typeof val.value === 'string') {
-          value = value + val.value.toString() + ',' + + '<br />';
-
+          value = value + val.value.toString();
+          if (index !== question.value.length - 1) {
+            value = value + ',';
+          }
+          value = value + '<br/>';
+          // value = value + val.value.toString() + ',' + + '<br />';
         } else {
-          value = value + val.drugName + ' - ' + val.strength + ',' + '<br />';
+          value = value + val.drugName + ' - ' + val.strength;
+          if (index !== question.value.length - 1) {
+            value = value + ',';
+          }
+          value = value + '<br/>';
+          // value = value + val.drugName + ' - ' + val.strength + ',' + '<br />';
         }
       });
       return value;

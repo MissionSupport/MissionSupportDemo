@@ -75,7 +75,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
         if (bool) {this.goSites(); this.startTab = 1; }
       }
     );
-    this.footerHeight = 45;
+    this.footerHeight = 50;
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
 
     // TODO: Change this to get the 'Country/Sites' list instead

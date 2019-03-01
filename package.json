@@ -33,7 +33,6 @@
     "@types/google-maps": "^3.2.0",
     "@types/jquery": "^3.3.29",
     "angular-rich-text-diff": "git+https://github.com/bill-long/angular-rich-text-diff.git",
-    "autocomplete-lhc": "^17.0.3",
     "core-js": "^2.5.4",
     "d3": "^5.7.0",
     "d3-drag": "^1.2.3",
