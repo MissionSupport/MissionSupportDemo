@@ -12,6 +12,7 @@ import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import {MessageService} from 'primeng/api';
 import {async} from 'q';
+import {Wikidata} from '../interfaces/wikidata';
 
 @Component({
   selector: 'app-group-page',
@@ -114,15 +115,6 @@ export class OrgPageComponent implements OnInit, OnDestroy {
           this.obsSubArr = [...this.obsSubArr, tripObsSub];
         });
 
-        // this.tripsObservable.map(obs => {
-        //   const obsSub = obs.subscribe((trip: Trip) => {
-        //     if (this.trips.indexOf(trip) === -1) {
-        //       this.trips = [...this.trips, trip];
-        //     }
-        //   });
-        //   this.obsSubArr = [...this.obsSubArr, obsSub];
-        // });
-
         this.tripIds.forEach(tripId => {
           const tripIdSub = tripId.subscribe();
           this.dataSubArr = [...this.dataSubArr, tripIdSub];
@@ -201,16 +193,29 @@ export class OrgPageComponent implements OnInit, OnDestroy {
    * Used for updating an already existing wiki entry.
    */
   async submitWikiEdit(title: string, markup: string) {
-    const array: {} = await this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`)
-      .valueChanges().pipe(map(data => {
-        return data;
+    const json: {} = await this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`)
+      .valueChanges().pipe(map(d => {
+        return d;
       }), take(1)).toPromise();
-    array[title] = markup;
+    json[title] = markup;
+    const data: Wikidata = {
+      created_id: this.authInstance.auth.currentUser.uid,
+      date: new Date()
+    };
     // Create a new update
-    //this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`).update(json).catch(() =>
-    //         this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
-    //           detail: 'Failed to save your edit to the wiki. Please try again later.'})
-    //       );
+    const wikiId = this.db.createId();
+    this.db.firestore.batch()
+      .update(this.db.doc(`organizations/${this.orgId}`).ref, {'currentWiki': wikiId})
+      .set(this.db.doc(`organizations/${this.orgId}/wiki/${wikiId}`).ref, json)
+      .commit()
+      .then(() => {
+        // Now add the wiki data to it
+        this.db.doc(`organizations/${this.orgId}/wiki/${wikiId}/data/data`).set(data);
+      })
+      .catch(() =>
+             this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
+               detail: 'Failed to save your edit to the wiki. Please try again later.'})
+           );
   }
 
   submitNewSection() {
@@ -236,6 +241,8 @@ export class OrgPageComponent implements OnInit, OnDestroy {
         if (!data.exists) {
           // Display error to user that the email does not exist
           failed.push(member.value);
+        } else {
+          member['id'] = data.get('id');
         }
       }));
     }
