@@ -17,9 +17,9 @@
       </p-header>
     </p-editor>
   </div>
-  <div class="p-col-12" style="margin-top: 15px">
+  <div class="p-col-8" style="margin-top: 15px">
     <h2>Deletions and Additions</h2>
-    <h3>Correct changes and submit</h3>
+    <h3>Manually correct changes and submit</h3>
     <p-editor [(ngModel)]="diffOutput" [style]="{'height': '200px'}">
       <p-header>
         <span class="ql-formats">
@@ -30,6 +30,40 @@
         </span>
       </p-header>
     </p-editor>
+
+  </div>
+  <div class="p-col-4">
+    <h2>Conflict List</h2>
+    <h3>Here you can quick select additions and deletions</h3>
+    <!--<p-listbox [options] = "diffrences" [(ngModel)]="selectedCity2">-->
+      <!--<ng-template let-diffrence pTemplate="item" #listElement>-->
+        <!--<div class="ui-helper-clearfix">{{diffrence.string}}</div>-->
+        <!--&lt;!&ndash; [style.background-color]="(diffrence.type === 1) ? 'green' :  'red'"&ndash;&gt;-->
+      <!--</ng-template>-->
+    <!--</p-listbox>-->
+    <p-table [value]="diffrences">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3em">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th>Type</th>
+          <th>Change</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData>
+        <tr [ngClass]="rowData.type === 1 ? 'green' : 'red'">
+          <td>
+            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+          </td>
+          <td>{{rowData.type === 1 ? 'Insertion' : 'Deletion'}}</td>
+          <td>{{rowData.string}}</td>
+          <!--<td *ngFor="let col of columns" [ngClass]="rowData.type === -1 ? 'old-car' : null">-->
+            <!--{{rowData.string}}-->
+          <!--</td>-->
+        </tr>
+      </ng-template>
+    </p-table>
 
   </div>
 </div>
