@@ -2,6 +2,7 @@
 @import '~primeng/resources/themes/nova-dark/theme.css';
 @import '~primeng/resources/primeng.min.css';
 @import '~primeicons/primeicons.css';
+@import '~primeflex/primeflex.css';
 /* @import '~autocomplete-lhc/source/auto_completion.css'; */
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 * {font-family: "Roboto"}

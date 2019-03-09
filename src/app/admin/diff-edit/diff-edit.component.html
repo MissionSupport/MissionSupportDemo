@@ -1,6 +1,6 @@
-<h1>Wiki Section Merge Tool</h1>
+<!--<h1>Wiki Section Merge Tool</h1>-->
 <div class="p-grid">
-  <div class="p-col-6">
+  <div class="p-col-6" [hidden]="layout != 4">
     <h2>Current Published Wiki</h2>
     <h3>Last Updated by: Name, name. On June fisofji</h3>
     <p-editor [(ngModel)]="left" [style]="{'height': '200px'}" readonly="true">
@@ -9,7 +9,7 @@
     </p-editor>
   </div>
 
-  <div class="p-col-6">
+  <div class="p-col-6" [hidden]="layout != 4">
     <h2>New Update Awaiting Approval</h2>
     <h3>Proposed by: Name, name. todayyy</h3>
     <p-editor [(ngModel)]="right" [style]="{'height': '200px'}" readonly="true">
@@ -17,9 +17,9 @@
       </p-header>
     </p-editor>
   </div>
-  <div class="p-col-12" style="margin-top: 15px">
+  <div [ngClass]="layout < 2 ? 'p-col-12': 'p-col-8'" style="margin-top: 15px">
     <h2>Deletions and Additions</h2>
-    <h3>Correct changes and submit</h3>
+    <h3>Manually correct changes and submit</h3>
     <p-editor [(ngModel)]="diffOutput" [style]="{'height': '200px'}">
       <p-header>
         <span class="ql-formats">
@@ -27,12 +27,39 @@
             <button class="ql-background" aria-label="Background Color"></button>
             <button class="ql-color" aria-label="Color"></button>
             <button class="ql-strike" aria-label="Strikethrough"></button>
+            <button class="ql-image" aria-label="Image"></button>
         </span>
       </p-header>
     </p-editor>
 
   </div>
+  <div class="p-col-4" [hidden]="layout < 2">
+    <h2>Conflict List</h2>
+    <h3>Here you can quick select additions and deletions</h3>
+    <p-table [value]="diffrences" [(selection)]="selectedEdits" [scrollable]="true" scrollHeight="200px">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3em">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th>Type</th>
+          <th>Change</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData>
+        <tr [ngClass]="rowData.type === 1 ? 'green' : 'red'">
+          <td style="width: 3em">
+            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+          </td>
+          <td>{{rowData.type === 1 ? 'Insertion' : 'Deletion'}}</td>
+          <td>{{rowData.string}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <p-button label="Apply Changes" (onClick)="doEdits()" style="margin-top: 10px"></p-button>
+
+  </div>
 </div>
 
 
-<p-button (onClick)="log()" label="Submit Revision"></p-button>
+<p-button (onClick)="submitRevision()" label="Submit Revision"></p-button>

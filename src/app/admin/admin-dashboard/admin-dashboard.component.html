@@ -1,0 +1,47 @@
+<div class="p-grid">
+  <div class="p-col-12 p-lg-2">
+    <p-menu [model]="items" [style]="{'width': '100%', 'margin-top' : '10px'}"></p-menu>
+  </div>
+  <div class="p-col-12 p-lg-10">
+    <div [hidden]="!viewUserApprovals" [style]="{'margin-top' : '10px'}">
+      <div *ngFor="let user of pendingUsers; let i = index">
+        <p-card [style]="{'margin-top' : '10px'}">
+          <p-header>
+            <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:5px; margin-left: 10px; ">{{user.fistName}} {{user.lastName}}</span>
+            <button pButton label="Approve" class= "ui-button-success" style="float: right; margin-top: 5px; margin-right: 10px" (click)="approve(user, i)"></button>
+            <button pButton label="Deny" class="ui-button-danger" style="float: right; margin-right: 10px; margin-top: 5px" (click)="deny(user, i)"></button>
+            <p style="margin-left: 20px">{{user.email}}</p>
+            <p style="margin-left: 20px">{{user.org}}</p>
+          </p-header>
+        </p-card>
+
+      </div>
+    </div>
+    <div [hidden]="!viewWikiEdits" [style]="{'margin-top' : '10px'}">
+      <div *ngFor="let edit of pendingEdits; let i = index" style="margin-top: 10px ">
+        <p-card>
+          <p-header>
+            <span class="ui-panel-title" style="font-size:24px;display:inline-block;margin-top:5px; margin-left: 10px; ">{{edit.wiki}} - {{edit.section}}</span>
+            <p style="margin-left: 20px">{{edit.proposedBy}} -  {{edit.timeProposed}}</p>
+          </p-header>
+          <app-diff-edit [original]="edit.original" [new]="edit.new" [layoutNum]="2" (updatedVersion)="updateVersion($event, i, edit)"></app-diff-edit>
+        </p-card>
+      </div>
+    </div>
+    <div [hidden]="!viewPendingChecklistEdits" [style]="{'margin-top' : '10px'}">
+      <div *ngFor="let edit of pendingChecklistEdits; let i = index" style="margin-top: 10px ">
+        <p-card>
+          <p-header>
+            <span class="ui-panel-title" style="font-size:24px;display:inline-block;margin-top:5px; margin-left: 10px; ">{{edit.site}}</span>
+            <p style="margin-left: 20px">{{edit.proposedBy}} -  {{edit.timeProposed}}</p>
+          </p-header>
+          <app-checklist-version [checkList]="edit.orgChecklist" [checkListNew]="edit.newChecklist" (updatedVersion)="updateChecklistVersion($event, i, edit)"></app-checklist-version>
+        </p-card>
+      </div>
+    </div>
+    <div [hidden]="!viewNewCountrySite" [style]="{'margin-top' : '10px'}">
+      newCountry
+    </div>
+  </div>
+</div>
+<!--<app-diff-edit [original]="original" [new]="proposed" [layoutNum]="4" (updatedVersion)="updateVersion($event)"></app-diff-edit>-->

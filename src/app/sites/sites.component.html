@@ -22,7 +22,7 @@
   </div>
   <div style="width: 300px;" [hidden]="!viewChecklist">
     <!--<p>Select New Checklist Generic</p>-->
-    <p-listbox [options]="genericChecklists" [(ngModel)]="selectedLists" multiple="multiple" checkbox="checkbox" optionLabel="name" [style]="{'width':'100%'}">
+    <p-listbox [options]="genericChecklists" [(ngModel)]="selectedLists" multiple="multiple" checkbox="checkbox" [style]="{'width':'100%'}">
       <p-header>
         <i class="pi pi-list"></i>
         Select New Checklist Generic
@@ -116,8 +116,9 @@
         </ng-template>
         <ng-template pTemplate="body" let-question>
           <tr>
-            <td>{{getQuestion(question)}}</td>
-            <td [innerHTML]="getValue(question)" style="word-wrap: break-word"></td>
+            <!-- <td>{{getQuestion(question)}}</td> -->
+            <td>{{ question.question }}</td>
+            <td [innerHTML]="getAnswer(question)" style="word-wrap: break-word"></td>
           </tr>
         </ng-template>
       </p-table>

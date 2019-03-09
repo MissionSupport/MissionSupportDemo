@@ -1,27 +1,20 @@
 <h1>New List Creation</h1>
 <div class="p-grid">
-  <div  class="p-col-8">
+  <div class="p-col-8">
     <h2>Form Preview</h2>
-      <h3>{{formObject.name}}</h3>
-      <div>
-        <form [formGroup]="formObject.form" class="p-grid">
-          <div *ngFor="let question of formObject.questions" [class] = "question.gridSize" class="form-row">
-            <app-question [question]="question" [form]="formObject.form"></app-question>
-          </div>
-        </form>
-      </div>
+      <h3>{{checklist.name}}</h3>
+      <app-checklist [questions]="checklist.questions"></app-checklist>
   </div>
-
-
 
   <div class="p-col-4">
     <h2>Question Creation</h2>
     <div>
-      <p-dropdown #questionType [options]="questionTypes" [(ngModel)]="selectedControlType" optionLabel="name" placeholder="New Question Type"></p-dropdown>
+      <p-dropdown #questionType [options]="questionTypes" [(ngModel)]="selectedControlType"
+        optionLabel="name" placeholder="New Question Type"></p-dropdown>
       <div *ngIf="selectedControlType !== undefined">
         <p>New {{selectedControlType.name}} Question</p>
         <!--<div [ngSwitch]="selectedControlType.controlType">-->
-          <div *ngIf="selectedControlType.controlType === 'radio'" >
+          <div *ngIf="selectedControlType.type === 'radioButton'" >
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
             <div>
@@ -33,13 +26,13 @@
             <p-button style="padding-top: 5px" (onClick)="addOption()" label="Add Option"></p-button>
           </div>
 
-          <div *ngIf="selectedControlType.controlType === 'textbox'" >
+          <div *ngIf="selectedControlType.type === 'textbox'" >
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
           </div>
 
 
-          <div *ngIf="selectedControlType.controlType === 'dropdown'">
+          <div *ngIf="selectedControlType.type === 'dropdown'">
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
             <div>
@@ -51,36 +44,30 @@
             <p-button style="padding-top: 5px" (onClick)="addOption()" label="Add Option"></p-button>
           </div>
 
-          <div *ngIf="selectedControlType.controlType === 'medtextbox'" >
+          <div *ngIf="selectedControlType.type === 'medicalTextbox'" >
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
           </div>
 
-          <div *ngIf="selectedControlType.controlType === 'freeResponse'" >
+          <div *ngIf="selectedControlType.type === 'freeResponse'" >
             <label style="padding-right: 5px">Prompt</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
 
           </div>
 
-          <div *ngIf="selectedControlType.controlType === 'medmulttextbox'" >
+          <div *ngIf="selectedControlType.type === 'medicalMultipleTextbox'" >
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
 
           </div>
 
-          <div *ngIf="selectedControlType.controlType === 'medmultcheck'">
+          <div *ngIf="selectedControlType.type === 'medicalMultipleCheckbox'">
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
 
           </div>
 
-          <div *ngIf="selectedControlType.controlType === 'header'">
-            <label style="padding-right: 5px">Text for Break</label>
-            <input pInputText type="text" [(ngModel)]="newQuestion">
-
-          </div>
-
-          <div *ngIf="selectedControlType.controlType === 'multi'" >
+          <div *ngIf="selectedControlType.type === 'multipleSelect'" >
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
             <div>
@@ -98,7 +85,5 @@
       </div>
 
     </div>
-
-
   </div>
 </div>

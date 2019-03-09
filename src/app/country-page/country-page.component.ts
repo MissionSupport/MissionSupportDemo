@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {SharedService} from '../globals';
+import {SharedService} from '../service/shared-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Site} from '../interfaces/site';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
@@ -62,16 +62,16 @@ export class CountryPageComponent implements OnInit, OnDestroy {
                private messageService: MessageService) {
     this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;
-    sharedService.hideToolbar.emit(false);
-    sharedService.addName.emit('New Section');
+    this.sharedService.hideToolbar.emit(false);
+    this.sharedService.addName.emit('New Section');
 
     // TODO: edit based on rights
-    sharedService.addSection.subscribe(
+    this.sharedService.addSection.subscribe(
       () => {
         this.showNewSectionPopup = true;
       }
     );
-    sharedService.goSites.subscribe(
+    this.sharedService.goSites.subscribe(
       (bool: boolean) => {
         if (bool) {this.goSites(); this.startTab = 1; }
       }
@@ -91,7 +91,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
         this.countryName = data.countryName;
         this.countryData = data;
         this.wikiId = data.current; // Wiki id.
-        sharedService.onPageNav.emit(this.countryName);
+        this.sharedService.onPageNav.emit(this.countryName);
 
         return this.db.doc(`countries/${this.countryId}/wiki/${this.countryData.current}`).valueChanges()
         .pipe(
@@ -118,7 +118,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       this.subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
         .subscribe((pref: UserPreferences) => {
           this.canEditSites = this.canEditWiki = pref.admin;
-          sharedService.canEdit.emit(pref.admin);
+          this.sharedService.canEdit.emit(pref.admin);
         }
       );
     });

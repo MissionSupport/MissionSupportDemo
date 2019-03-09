@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {PreDefined, SharedService} from '../globals';
+import {PreDefined} from '../globals';
+import {SharedService} from '../service/shared-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Trip} from '../interfaces/trip';
 import {Team} from '../interfaces/team';
@@ -75,7 +76,7 @@ export class OrgPageComponent implements OnInit, OnDestroy {
     });
     */
 
-    this.subAddSection = sharedService.addSection.subscribe(() => this.showNewSectionPopup = true);
+    this.subAddSection = this.sharedService.addSection.subscribe(() => this.showNewSectionPopup = true);
     this.dataSubArr = [];
     this.obsSubArr = [];
   }
@@ -211,9 +212,9 @@ export class OrgPageComponent implements OnInit, OnDestroy {
         this.db.doc(`organizations/${this.orgId}/wiki/${wikiId}/data/data`).set(data);
       })
       .catch(() =>
-             this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
-               detail: 'Failed to save your edit to the wiki. Please try again later.'})
-           );
+        this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
+          detail: 'Failed to save your edit to the wiki. Please try again later.'})
+      );
   }
 
   submitNewSection() {

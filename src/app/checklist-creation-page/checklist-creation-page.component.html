@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
   <div *ngFor="let form of forms; let i = index" >
     <h2>{{form.name}}</h2>
     <div #formToHide>
@@ -17,9 +17,18 @@
       <p-button label="Edit Submission Again" (onClick)="formToHide.hidden = !formToHide.hidden"></p-button>
     </div>
   </div>
+</div> -->
+
+<div *ngFor="let list of lists">
+  <div [hidden]="list.hidden">
+    <h2>{{ list.name }}</h2>
+    <app-checklist [questions]="list.list" (submit)="onSubmit($event, list.name)"></app-checklist>
+  </div>
+  <div [hidden]="!list.hidden">
+    <h2>{{ list.name + ' - Submitted' }}</h2>
+    <p-button label="Edit Submission Again" (onClick)="unhideForm(list.name)"></p-button>
+  </div>
 </div>
-
-
 
 
 

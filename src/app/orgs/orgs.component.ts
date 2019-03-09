@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {SharedService} from '../globals';
+import {SharedService} from '../service/shared-service.service';
 import {Page} from '../interfaces/page';
 import {Subscription} from 'rxjs';
 
@@ -31,7 +31,7 @@ export class OrgsComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private readonly db: AngularFirestore, private sharedService: SharedService) {
     this.siteId = this.route.snapshot.paramMap.get('siteId');
     this.groupId = this.route.snapshot.paramMap.get('groupId');
-    sharedService.hideToolbar.emit(false);
+    this.sharedService.hideToolbar.emit(false);
     // First thing we want to get is the current page
     this.groupSub = this.db.collection(`Sites/${this.siteId}/groups`, ref => ref.limit(1)
     ).snapshotChanges().subscribe(data => {

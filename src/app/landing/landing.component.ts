@@ -4,7 +4,7 @@ import {feature} from 'topojson';
 import {FeatureCollection} from 'geojson';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Router} from '@angular/router';
-import {SharedService} from '../globals';
+import {SharedService} from '../service/shared-service.service';
 import {Country} from '../interfaces/country';
 import { drag } from 'd3-drag';
 import { Topology } from 'topojson-specification';
@@ -29,13 +29,13 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   // countryCollection: AngularFirestoreCollection<Country>;
   countrySub: Subscription;
 
-  constructor(db: AngularFirestore, public router: Router, sharedService: SharedService) {
+  constructor(db: AngularFirestore, public router: Router, private sharedService: SharedService) {
     this.countrySub = db.collection<Country>('countries').valueChanges()
       .subscribe(ctries => this.countries = ctries);
 
-    sharedService.hideToolbar.emit(false);
-    sharedService.canEdit.emit(false);
-    sharedService.onPageNav.emit('Country Selection');
+    this.sharedService.hideToolbar.emit(false);
+    this.sharedService.canEdit.emit(false);
+    this.sharedService.onPageNav.emit('Country Selection');
 
   }
   ngOnInit() {
@@ -60,17 +60,13 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
       .style('height', '100%')
       .style('width', '100%')
       .call(drag()
-        .on('start', () => {
-          d3.select('.map').style('cursor', 'grabbing');
-        })
+        .on('start', () => d3.select('.map').style('cursor', 'grabbing'))
         .on('drag', () => {
           this.minx -= d3.event.dx;
           this.miny -= d3.event.dy;
           d3.select('.map').attr('viewBox', `${this.minx} ${this.miny} ${this.width} ${this.height}`);
         })
-        .on('end', () => {
-          d3.select('.map').style('cursor', 'auto');
-        })
+        .on('end', () => d3.select('.map').style('cursor', 'auto'))
       );
 
     d3.json('assets/countries.topo.json')

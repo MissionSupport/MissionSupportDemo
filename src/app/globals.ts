@@ -1,17 +1,31 @@
 // globals.ts
-import {EventEmitter, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
+import { Question, Validator } from './checklist/question';
+import { Validators } from '@angular/forms';
 
-@Injectable()
-export class SharedService {
-  hideToolbar: EventEmitter<any> = new EventEmitter();
-  onPageNav: EventEmitter<any> = new EventEmitter();
-  canEdit: EventEmitter<any> = new EventEmitter();
-  addSection: EventEmitter<any> = new EventEmitter();
-  addName: EventEmitter<any> = new EventEmitter();
-  goSites: EventEmitter<any> = new EventEmitter();
+const requiredValidator: Validator = {
+  name: 'required',
+  validator: Validators.required,
+  message: 'This field is required.'
+};
 
-  backHistory: Array<string> = [];
-}
+const alphanumericValidator: Validator = {
+  name: 'pattern',
+  validator: Validators.pattern(/^[a-zA-Z0-9\s]+$/),
+  message: 'This field must be alphanumeric.'
+};
+
+const numericValidator: Validator = {
+  name: 'pattern',
+  validator: Validators.pattern(/^[0-9]+$/),
+  message: 'This field must be numeric.'
+};
+
+const emailValidator: Validator = {
+  name: 'email',
+  validator: Validators.email,
+  message: 'This field must be an email address.'
+};
 
 @Injectable()
 export class PreDefined {
@@ -139,258 +153,313 @@ export class PreDefined {
     }
   ];
 
-  hospitalJson = [
+  hospitalChecklist: Question[] = [
     {
-      key: 'textBox1',
+      key: 'textbox1',
+      name: 'hospitalName',
       label: 'Hospital Name',
-      controlType: 'textbox',
-      gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      type: 'textbox',
+      value: '',
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator, alphanumericValidator]
     },
     {
-      key: 'textBox2',
-      label: 'Name of Host',
-      controlType: 'textbox',
-      gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      key: 'textbox2',
+      name: 'hostName',
+      label: 'Host Name',
+      type: 'textbox',
+      value: '',
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator, alphanumericValidator]
     },
     {
-      key: 'textBox3',
-      label: 'Position at Hospital',
-      controlType: 'textbox',
-      gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      key: 'textbox3',
+      name: 'hostHospitalPosition',
+      label: 'Host Position at Hospital',
+      type: 'textbox',
+      value: '',
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator, alphanumericValidator]
     },
     {
-      key: 'textBox4',
+      key: 'textbox4',
+      name: 'hostEmailAddress',
       label: 'Host Email Address',
-      controlType: 'textbox',
-      gridSize: 'p-col-6',
-      keyFilter: 'email'
+      type: 'textbox',
+      value: '',
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator, emailValidator]
     },
     {
-      key: 'textBox5',
+      key: 'textbox5',
+      name: 'hostPhoneNumber',
       label: 'Host Phone Number',
-      controlType: 'textbox',
-      gridSize: 'p-col-6'
+      type: 'textbox',
+      value: '',
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator]
     },
     {
-      key: 'textBox6',
-      label: 'Number of Beds (Total Hospital)',
-      controlType: 'textbox',
-      gridSize: 'p-col-4',
-      keyFilter: 'pnum'
+      key: 'textbox6',
+      name: 'totalNumberOfHospitalBeds',
+      label: 'Total Number of Hospital Beds',
+      type: 'textbox',
+      value: '',
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator, numericValidator]
     },
     {
-      key: 'textBox7',
-      label: 'Number of Med/Surg Beds',
-      controlType: 'textbox',
-      gridSize: 'p-col-4',
-      keyFilter: 'pnum'
+      key: 'textbox7',
+      name: 'numberOfMedSurgBeds',
+      label: 'Number of Medical and Surgical Beds',
+      type: 'textbox',
+      value: '',
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator, numericValidator]
     },
     {
-      key: 'textBox8',
+      key: 'textbox8',
+      name: 'numberOfOperatingRooms',
       label: 'Number of Operating Rooms',
-      controlType: 'textbox',
-      gridSize: 'p-col-4',
-      keyFilter: 'pnum'
+      type: 'textbox',
+      value: '',
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator, numericValidator]
     },
     {
-      key: 'textBox9',
-      label: 'Number of Clinic Rooms (available for surgery)',
-      controlType: 'textbox',
-      gridSize: 'p-col-4',
-      keyFilter: 'pnum'
+      key: 'textbox9',
+      name: 'numberOfClinicRoomsAvailableForSurgery',
+      label: 'Number of Clinic Rooms Available for Surgery',
+      type: 'textbox',
+      value: '',
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'radio1',
+      name: 'pcau',
       label: 'PCAU?',
-      controlType: 'radio',
-      gridSize: 'p-col-4',
+      type: 'radioButton',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator]
     },
     {
       key: 'radio2',
-      label: 'Pre-op?',
-      controlType: 'radio',
-      gridSize: 'p-col-4',
+      name: 'preop',
+      label: 'Pre-Op?',
+      type: 'radioButton',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      gridSize: 'p-col-12 p-sm-6 p-md-6 p-lg-4',
+      validators: [requiredValidator]
     }
   ];
-  hospitalInfrastructureJson = [
+
+  hospitalInfrastructureChecklist: Question[] = [
     {
       key: 'radio1',
+      name: 'electricitySource',
       label: 'What is your primary source of electricity?',
-      controlType: 'radio',
-      gridSize: 'p-col-4',
+      type: 'radioButton',
       options: [
         {key: 'City Grid', value: 'City Grid'},
         {key: 'Generator', value: 'Generator'}
-      ]
+      ],
+      gridSize: 'p-col-4',
+      validators: [requiredValidator]
     },
     {
       key: 'radio2',
+      name: 'powerOutletsLocatedOnWards',
       label: 'Are power outlets located on wards?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-4',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'editor1',
-      label: 'What is your back-up power supply in case of a power outage?',
-      controlType: 'freeResponse',
+      name: 'backupPowerSupply',
+      label: 'What is your backup power supply in case of a power outage?',
+      type: 'freeResponse',
+      value: '',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'radio3',
+      name: 'generatorAvailable',
       label: 'Do you have a generator available 24/7?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'textBox1',
+      name: 'electricityComments',
       label: 'Comments about generator/electricity.',
-      controlType: 'textbox',
+      type: 'textbox',
+      value: '',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      validators: []
     },
     {
       key: 'radio4',
+      name: 'runningWaterAvailability',
       label: 'Do you have running water available 24/7?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'radio5',
+      name: 'scrubSinksAvailability',
       label: 'Do you have scrub sinks?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'editor2',
+      name: 'waterComments',
       label: 'Comments about access to water/sinks.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []
     },
     {
       key: 'radio6',
+      name: 'pharmacyOnsite',
       label: 'Is there a pharmacy on site?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-12',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
   ];
 
-  pharmacyLabJson = [
+  pharmacyLabChecklist: Question[] = [
     {
       key: 'textBox1',
+      name: 'weekendPharmacyHours',
       label: 'Pharmacy Hours - Weekends',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator]
     },
     {
       key: 'textBox2',
+      name: 'weekdayPharmacyHours',
       label: 'Pharmacy Hours - Weekdays',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
-    },
-    {
-      key: 'header1',
-      label: 'What kind of medications do you keep in stock? (available 100% of the time)?',
-      controlType: 'header',
-      gridSize: 'p-col-12'
+      validators: [requiredValidator]
     },
     {
       key: 'medmultcheck1',
-      label: 'Antibiotics (which ones? PO/IV)',
-      controlType: 'medmultcheck',
-      gridSize: 'p-col-12'
+      name: 'antibiotics',
+      label: 'Which antibiotics (PO/IV) do you keep in stock (available 100%)?',
+      type: 'medicineMultipleCheckbox',
+      gridSize: 'p-col-12 p-grid',
+      validators: []
     },
     {
       key: 'medmultcheck2',
-      label: 'Analgesics (which ones? PO/IV) ',
-      controlType: 'medmultcheck',
-      gridSize: 'p-col-12'
+      name: 'analgesics',
+      label: 'Which analgesics (PO/IV) do you keep in stock (available 100%)?',
+      type: 'medicineMultipleCheckbox',
+      gridSize: 'p-col-12 p-grid',
+      validators: []
     },
     {
       key: 'medmultcheck3',
-      label: 'General Anesthetics (which ones?)',
-      controlType: 'medmultcheck',
-      gridSize: 'p-col-12'
+      name: 'generalAnesthetics',
+      label: 'Which general anesthetics do you keep in stock (available 100%)?',
+      type: 'medicineMultipleCheckbox',
+      gridSize: 'p-col-12 p-grid',
+      validators: []
     },
     {
       key: 'medmultcheck4',
-      label: 'Paralytics (which ones?)',
-      controlType: 'medmultcheck',
-      gridSize: 'p-col-12'
+      name: 'paralytics',
+      label: 'Which paralytics do you keep in stock (available 100%)?',
+      type: 'medicineMultipleCheckbox',
+      gridSize: 'p-col-12 p-grid',
+      validators: []
     },
     {
       key: 'medmultcheck5',
-      label: 'Anti-hypertensives (which ones?)',
-      controlType: 'medmultcheck',
-      gridSize: 'p-col-12'
+      name: 'antiHypertensives',
+      label: 'Which hypertensives do you keep in stock (available 100%)?',
+      type: 'medicineMultipleCheckbox',
+      gridSize: 'p-col-12 p-grid',
+      validators: []
     },
     {
       key: 'medmultcheck6',
-      label: 'Vasopressors/Inotropes (which ones?)',
-      controlType: 'medmultcheck',
-      gridSize: 'p-col-12'
+      name: 'vasopressorsInotropes',
+      label: 'Which vasopressors/inotropes do you keep in stock (available 100%)?',
+      type: 'medicineMultipleCheckbox',
+      gridSize: 'p-col-12 p-grid',
+      validators: []
     },
     {
       key: 'medmulttextbox1',
-      label: 'Others? Please list.',
-      controlType: 'medmulttextbox',
-      gridSize: 'p-col-12'
+      name: 'otherDrugs',
+      label: 'Which other drugs do you keep in stock?',
+      type: 'medicineMultipleTextbox',
+      gridSize: 'p-col-12',
+      validators: []
     },
     {
       key: 'editor1',
+      name: 'medicationSupplyComments',
       label: 'Comments on medication supply.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []
     },
     {
       key: 'radio6',
+      name: 'labOnsite',
       label: 'Is there a lab on-site?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'multi1',
+      name: 'labCapabilities',
       label: 'Lab Capabilities (select all that apply).',
-      controlType: 'multi',
+      type: 'multipleSelect',
       gridSize: 'p-col-6',
       options: [
         {key: 'chem_7', value: 'Chem 7'},
@@ -399,95 +468,110 @@ export class PreDefined {
         {key: 'abg', value: 'ABG'},
         {key: 'ua', value: 'UA'},
         {key: 'blood_urine_culture', value: 'Blood/Urine Culture'}
-      ]
+      ],
+      validators: [] // TODO: cross-field validation with labOnsite (if yes)?
     },
     {
       key: 'textBox3',
+      name: 'weekendLabHours',
       label: 'Lab Hours - Weekends',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      validators: []  // TODO: cross-field validation with labOnsite (if yes)?
     },
     {
       key: 'textBox4',
+      name: 'weekdayLabHours',
       label: 'Lab Hours - Weekdays',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      validators: []  // TODO: cross-field validation with labOnsite (if yes)?
     },
     {
       key: 'editor2',
+      name: 'noLabAvailable',
       label: 'If no lab is available, where do patients get lab work done?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []  // TODO: cross-field validation with labOnsite (if no)?
     },
     {
       key: 'radio7',
+      name: 'bloodBankOnsite',
       label: 'Is there a blood bank available on-site?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'textBox5',
+      name: 'noBloodAvailable',
       label: 'If no blood is available on-site, where is the blood bank?',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      validators: []  // TODO: cross-field validation with bloodBankOnsite (if no)?
     },
     {
       key: 'textBox6',
+      name: 'bloodProductsTime',
       label: 'How long does it take to obtain blood products?',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator]
     },
     {
       key: 'radio8',
+      name: 'imagingOnsite',
       label: 'Is there imaging on-site?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'multi1',
+      name: 'imagingCapabilities',
       label: 'Imaging Capabilities (select all that apply).',
-      controlType: 'multi',
+      type: 'multipleSelect',
       gridSize: 'p-col-6',
       options: [
         {key: 'x_ray', value: 'X-ray'},
         {key: 'ultrasound', value: 'ultrasound'},
         {key: 'ct_scan', value: 'CT Scan'}
-      ]
+      ],
+      validators: [] // TODO: cross-field validation with imagingOnsite (if yes)?
     },
     {
       key: 'textBox7',
+      name: 'imagingNotAvailable',
       label: 'If not, where do patients go for imaging?',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: []  // TODO: cross-field validation with imagingOnsite (if no)?
     },
     {
       key: 'editor3',
+      name: 'imagingComments',
       label: 'Comments on imaging.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []
     },
   ];
 
-  operatingRoomJson = [
+  operatingRoomChecklist: Question[] = [
     {
       key: 'multi1',
+      name: 'monitors',
       label: 'Monitors',
-      controlType: 'multi',
+      type: 'multipleSelect',
       gridSize: 'p-col-4',
       options: [
         {key: 'bp', value: 'BP'},
@@ -495,127 +579,149 @@ export class PreDefined {
         {key: 'sao2', value: 'SaO2'},
         {key: 'ekg', value: 'EKG'},
         {key: 'temp', value: 'Temp'},
-      ]
+      ],
+      validators: []
     },
     {
       key: 'radio1',
+      name: 'anesthesia',
       label: 'Anesthesia Machine',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-4',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'radio2',
+      name: 'oxygen',
       label: 'Oxygen',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-4',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'editor1',
+      name: 'surgicalSteelAvailable',
       label: 'What surgical steel is available?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-6',
-      height: '150'
+      validators: []
     },
     {
       key: 'editor2',
+      name: 'surgicalSteelNeeded',
       label: 'What surgical steel is needed?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-6',
-      height: '150'
+      validators: []
     },
     {
       key: 'editor3',
+      name: 'ORLogbook',
       label: 'OR Logbook--what types of cases are performed?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []
     },
     {
       key: 'textBox1',
+      name: 'anesthesiaMachineTypes',
       label: 'What kind of anesthesia machines do you have? (for parts, etc)',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: []
     },
     {
       key: 'radio3',
+      name: 'anesthesiaVaporizers',
       label: 'Do you have vaporizers? (Anesthesia)',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'textBox2',
+      name: 'vaporizerTypes',
       label: 'If yes, what kind of vaporizers do you have?',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [] // TODO: cross-field validator with previous question.
     },
     {
       key: 'editor4',
-      label: 'Comments about ORs',
-      controlType: 'freeResponse',
+      name: 'ORComments',
+      label: 'Comments about ORs.',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []
     }
   ];
 
-  wardJson = [
+  wardChecklist: Question[] = [
     {
       key: 'radio1',
-      label: 'EKG',
-      controlType: 'radio',
+      name: 'ekg',
+      label: 'EKG?',
+      type: 'radioButton',
       gridSize: 'p-col-3',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'radio2',
-      label: 'Defibrillator',
-      controlType: 'radio',
+      name: 'defibrillator',
+      label: 'Defibrillator?',
+      type: 'radioButton',
       gridSize: 'p-col-3',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'radio3',
-      label: 'Oxygen',
-      controlType: 'radio',
+      name: 'oxygen',
+      label: 'Oxygen?',
+      type: 'radioButton',
       gridSize: 'p-col-3',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'radio4',
-      label: 'Ambu bags',
-      controlType: 'radio',
+      name: 'ambuBags',
+      label: 'Ambu bags?',
+      type: 'radioButton',
       gridSize: 'p-col-3',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'multi1',
+      name: 'monitoringCapability',
       label: 'Monitoring Capability',
-      controlType: 'multi',
+      type: 'multipleSelect',
       gridSize: 'p-col-12',
       options: [
         {key: 'bp', value: 'BP'},
@@ -623,205 +729,231 @@ export class PreDefined {
         {key: 'sao2', value: 'SaO2'},
         {key: 'ekg', value: 'EKG'},
         {key: 'temp', value: 'Temp'},
-      ]
+      ],
+      validators: []
     },
     {
       key: 'radio5',
+      name: 'wardsNursingCare',
       label: 'Do the wards have 24-hour nursing care?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-12',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
   ];
 
-  suppliesEquipmentJson = [
+  suppliesEquipmentChecklist: Question[] = [
     {
       key: 'multi1',
-      label: 'Is oxygen available at...',
-      controlType: 'multi',
+      name: 'oxygenAvailable',
+      label: 'Is oxygen available at...?',
+      type: 'multipleSelect',
       gridSize: 'p-col-6',
       options: [
         {key: 'or', value: 'OR'},
         {key: 'wards', value: 'Wards'},
-      ]
+      ],
+      validators: []
     },
     {
       key: 'radio1',
+      name: 'portableO2Tanks',
       label: 'Do you have portable O2 tanks available?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'textBox1',
+      name: 'availableOxygenTanks',
       label: 'How many oxygen tanks are available/full at a time (for use in the OR)?',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      validators: [numericValidator, requiredValidator]
     },
     {
       key: 'textBox2',
+      name: 'manometersForOxygenTanks',
       label: 'How many manometers do you have for oxygen tanks?',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'editor1',
+      name: 'oxygenSources',
       label: 'How do you get oxygen? (tanks delivered? compressors? other?) Comments.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor2',
+      name: 'IVFluidSources',
       label: 'Where do you get IV fluids? Would we have access to that supply? Comments.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor3',
+      name: 'hospitalSuppliesSources',
       label: 'Where do you get hospital supplies and medications?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'radio2',
+      name: 'autoclaveAvailable',
       label: 'Is there an autoclave on-site?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-4',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'textBox2',
+      name: 'sizeNumberAutoclaves',
       label: 'Size and number of autoclaves.',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-8',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator] // TODO: need to add cross-field validation for previous question.
     },
     {
       key: 'editor4',
+      name: 'autoclaveComments',
       label: 'Comments on autoclaves.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []
     },
     {
       key: 'editor4',
+      name: 'equipmentRepairedMethods',
       label: 'How do you get equipment repaired? Comments.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     }
   ];
 
-  ambulanceJson = [
+  ambulanceChecklist: Question[] = [
     {
       key: 'radio1',
+      name: 'functionalAmbulance',
       label: 'Does the hospital have a functional ambulance?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'radio2',
+      name: 'ambulanceEquippedWithOxygen',
       label: 'Is your ambulance equipped with oxygen?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'editor1',
+      name: 'ambulanceComments',
       label: 'Comments on ambulances.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-8',
-      height: '150'
+      validators: []
     },
     {
       key: 'editor2',
+      name: 'transferPatients',
       label: 'How do you typically transfer patients?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     }
   ];
 
-  caseVolumeandStafJson = [
-    {
-      key: 'header1',
-      label: 'Surgical cases per week.',
-      controlType: 'header'
-    },
+  caseVolumeandStaffChecklist: Question[] = [
     {
       key: 'textBox1',
-      label: 'Adult',
-      controlType: 'textbox',
+      name: 'adultSurgicalCases',
+      label: 'Number of adult surgical cases per week',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox2',
-      label: 'Peds < 3y',
-      controlType: 'textbox',
+      name: 'pediatricLessThan3SurgicalCases',
+      label: 'Number of pediatric < 3 years surgical cases per week',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox3',
-      label: 'Peds 3-5y',
-      controlType: 'textbox',
+      name: 'pediatric3To5SurgicalCases',
+      label: 'Number of pediatric 3 - 5 years surgical cases per week',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox4',
-      label: 'Peds >5y',
-      controlType: 'textbox',
+      name: 'pediatricGreaterThan5SurgicalCases',
+      label: 'Number of pediatric > 5 years surgical cases per week',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox5',
+      name: 'numberSurgeons',
       label: 'Number of Surgeons',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-4',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox6',
+      name: 'numberFullTime',
       label: 'Number full-time',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-4',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox7',
+      name: 'numberPartTime',
       label: 'Number part-time',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-4',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'multi1',
+      name: 'surgeonTypes',
       label: 'What types of surgeons staff your hospital?',
-      controlType: 'multi',
+      type: 'multipleSelect',
       gridSize: 'p-col-12',
       options: [
         {key: 'generalSurgeons', value: 'General Surgeons'},
@@ -829,338 +961,383 @@ export class PreDefined {
         {key: 'gynSurgeons', value: 'Gyn Surgeons'},
         {key: 'urologicSurgeon', value: 'Urologic Surgeons'},
         {key: 'temp', value: 'Temp'},
-      ]
+      ],
+      validators: []
     },
     {
       key: 'radio1',
+      name: 'surgeonsBlockedTime',
       label: 'Do your surgeons have blocked time in the OR?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'editor1',
+      name: 'blockedTimeComments',
       label: 'Comments on blocked time.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-6',
-      height: '150'
+      validators: []
     },
     {
       key: 'editor2',
+      name: 'typicalCases',
       label: 'Typical Cases',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'radio2',
+      name: 'urologicCareNeed',
       label: 'Is there a need for urologic care?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'radio3',
+      name: 'urologicCareCanBePerformed',
       label: 'Can you perform urologic procedures?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-6',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'editor3',
+      name: 'urologicProceduresThatCanBePerformed',
       label: 'What urologic procedures can you perform?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []  // TODO: cross-control validation with urologicCareCanBePerformed (if yes)?
     },
     {
       key: 'editor4',
+      name: 'surgicalIllnessTypes',
       label: 'What types of surgical illness have the largest burden at this hospital?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor5',
+      name: 'surgicalIllnessTypesUnableToPerform',
       label: 'Of those procedures, what types of procedures are you unable to perform? (how can groups help?)',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'textBox8',
+      name: 'numberAnesthesiologists',
       label: 'Number of anesthesiologists',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox9',
+      name: 'numberAnesthetists',
       label: 'Number of anesthetists',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-6',
-      keyFilter: 'noSpecial'
-    },
-    {
-      key: 'header2',
-      label: 'Anesthesia cases per week.',
-      controlType: 'header'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox10',
-      label: 'General',
-      controlType: 'textbox',
+      name: 'numberGeneralAnesthesiaCases',
+      label: 'How many general anesthesia cases do you have per week?',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox11',
-      label: 'Spinal',
-      controlType: 'textbox',
+      name: 'numberSpinalAnesthesiaCases',
+      label: 'How many spinal anesthesia cases do you have per week?',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox12',
-      label: 'Regional',
-      controlType: 'textbox',
+      name: 'numberRegionalAnesthesiaCases',
+      label: 'How many regional anesthesia cases do you have per week?',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'textBox13',
-      label: 'MAC',
-      controlType: 'textbox',
+      name: 'numberMACAnesthesiaCases',
+      label: 'How many MAC anesthesia cases do you have per week?',
+      type: 'textbox',
       gridSize: 'p-col-12',
-      keyFilter: 'noSpecial'
+      validators: [requiredValidator, numericValidator]
     },
     {
       key: 'editor6',
+      name: 'nearbyHospitals',
       label: 'What are other nearby hospitals and how is your working relationship with them?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'radio4',
+      name: 'EDOpen',
       label: 'Is your ED open 24/7?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-4',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'textBox14',
+      name: 'EDHoursIfNot247',
       label: 'If not, what hours is it open?',
-      controlType: 'textbox',
+      type: 'textbox',
       gridSize: 'p-col-8',
-      keyFilter: 'noSpecial'
+      validators: [] // TODO: cross-control validation with EDOpen (if no)?
     },
     {
       key: 'editor7',
+      name: 'surgicalCasesInEDNotTrauma',
       label: 'What types of surgical cases come in through the ED other than trauma?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'radio5',
+      name: 'ORForCSections',
       label: 'Do you have an OR dedicated for C-sections?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-4',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'radio6',
+      name: 'CSectionsBumpExistingORCases',
       label: 'Do C-sections bump existing OR cases?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-4',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'editor8',
+      name: 'comments',
       label: 'Comments.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []
     },
   ];
 
-  personnelJson = [
+  personnelChecklist: Question[] = [
     {
       key: 'editor1',
+      name: 'teamIntegration',
       label: 'How would a team integrate into your hospital system? (surgeons, anesthesia, nursing care)',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor2',
+      name: 'medStudentRole',
       label: 'Med student role?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     }
   ];
 
-  educationQIJson = [
+  educationQIChecklist: Question[] = [
     {
       key: 'editor1',
+      name: 'trainingPrograms',
       label: 'Current in-service training programs.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor2',
+      name: 'qualityImprovementPrograms',
       label: 'Current quality improvement programs.',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor3',
+      name: 'educationalPrograms',
       label: 'What educational programs could we provide in order to be helpful to this hospital?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     }
   ];
 
-  logisticsJson = [
+  logisticsChecklist: Question[] = [
     {
       key: 'radio1',
+      name: 'patientPay',
       label: 'Are patients expected to pay? (under our care)',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-12',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'editor1',
+      name: 'hospitalPreOpRequirements',
       label: 'Are there hospital pre-op requirements for surgery? (x-ray, labs, etc)',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-6',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'radio2',
+      name: 'patientPayPreOp',
       label: 'Are patients expected to pay for these services?',
-      controlType: 'radio',
+      type: 'radioButton',
       gridSize: 'p-col-12',
       options: [
         {key: '1', value: 'Yes'},
         {key: '0', value: 'No'}
-      ]
+      ],
+      validators: [requiredValidator]
     },
     {
       key: 'editor2',
+      name: 'doctorsRound',
       label: 'Would your hospital doctors round on the patients on whom we operate? What would be the system for daily sign out?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor3',
+      name: 'charting',
       label: 'How will charting work? What is your preferred system? (' +
         'If we bring our own charts, will the hospital also have a chart for the patients?)',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor4',
+      name: 'signoutSystem',
       label: 'What is the system for sign out for patients still in hospital once a group leaves?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor5',
+      name: 'translators',
       label: 'Is there access to translators?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     }
   ];
 
-  accommodationsJson = [
+  accommodationsChecklist: Question[] = [
     {
       key: 'editor1',
+      name: 'groupStayCost',
       label: 'Where would a group stay? Cost?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-6',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor2',
+      name: 'transportation',
       label: 'Transportation to hospital? (if off-campus)?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-6',
-      height: '150'
+      validators: []
     },
     {
       key: 'editor3',
+      name: 'showersBathrooms',
       label: 'Showers and bathrooms?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []
     },
     {
       key: 'editor4',
+      name: 'bathroomAvailability',
       label: 'What kinds of/how many bathrooms are available during the daytime/workday?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: []
     },
     {
       key: 'editor5',
+      name: 'supplyStorage',
       label: 'How would groups store their supplies and equipment at the hospital? ' +
         '(Dedicated area for supplies vs integration into current hospital supplies?) ' +
         '(Note: question for the purpose of making sure that groups do not consume any of the current hospital resources.)',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor6',
+      name: 'nightShiftAccommodations',
       label: 'Accommodations for those on night call?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor7',
+      name: 'airportTransportation',
       label: 'Transportation from the airport? Cost?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
     {
       key: 'editor8',
+      name: 'mealsSystem',
       label: 'Is there a system for providing meals? Cost?',
-      controlType: 'freeResponse',
+      type: 'freeResponse',
       gridSize: 'p-col-12',
-      height: '150'
+      validators: [requiredValidator]
     },
 
   ];
@@ -1177,6 +1354,4 @@ export class PreDefined {
       '"radio1":{"question":"PCAU?","value":"Yes"},"radio2":{"question":"Pre-op?","value":"No"}}'
     },
   ];
-
-
 }

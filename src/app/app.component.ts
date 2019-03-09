@@ -1,8 +1,6 @@
-import {AfterContentInit, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import {SharedService} from './globals';
+import {AfterContentInit, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation} from '@angular/core';
+import {SharedService} from 'src/app/service/shared-service.service';
 import {Subscription} from 'rxjs';
-
 
 @Component({
   selector: 'app-root',
@@ -29,15 +27,15 @@ export class AppComponent implements AfterContentInit, OnDestroy {
   canEditSub: Subscription;
   addNameSub: Subscription;
 
-  constructor(db: AngularFirestore, private sharedService: SharedService) {
-    this.hideToolbarSub = sharedService.hideToolbar.subscribe((onMain) => this.onMain = onMain);
-    this.pageNavSub = sharedService.onPageNav.subscribe((page) => this.pageName = page);
-    this.canEditSub = sharedService.canEdit.subscribe((hasEditRights) => this.hasEditRights = hasEditRights);
-    this.addNameSub = sharedService.addName.subscribe((addName) => this.addName = addName);
+  constructor(private sharedService: SharedService) {
+    this.hideToolbarSub = this.sharedService.hideToolbar.subscribe((onMain) => this.onMain = onMain);
+    this.pageNavSub = this.sharedService.onPageNav.subscribe((page) => this.pageName = page);
+    this.canEditSub = this.sharedService.canEdit.subscribe((hasEditRights) => this.hasEditRights = hasEditRights);
+    this.addNameSub = this.sharedService.addName.subscribe((addName) => this.addName = addName);
 
-    this.height = window.innerHeight - 50;
+    this.height = window.innerHeight - 100;
 
-    window.addEventListener('resize', () => this.height = window.innerHeight - 50);
+    window.addEventListener('resize', () => this.height = window.innerHeight - 100);
   }
 
   ngAfterContentInit(): void {

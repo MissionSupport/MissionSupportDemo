@@ -1,0 +1,52 @@
+<div class="p-grid">
+  <!--<div class="p-col-4">-->
+    <!--<div *ngFor="let list of checkList">-->
+      <!--<h2>{{list.name}}</h2>-->
+      <!--<p-table [value]="jsonParse(list.json)">-->
+        <!--<ng-template pTemplate="header">-->
+          <!--<tr>-->
+            <!--<th>Question</th>-->
+            <!--<th>Answer</th>-->
+          <!--</tr>-->
+        <!--</ng-template>-->
+        <!--<ng-template pTemplate="body" let-question>-->
+          <!--<tr>-->
+            <!--<td>{{getQuestion(question)}}</td>-->
+            <!--<td [innerHTML]="getValue(question)" style="word-wrap: break-word"></td>-->
+          <!--</tr>-->
+        <!--</ng-template>-->
+      <!--</p-table>-->
+    <!--</div>-->
+  <!--</div>-->
+
+  <div class="p-col-12">
+    <!--<div *ngFor="let list of checkList; let i = index" >-->
+      <h2>{{checkList.name}}</h2>
+      <p>Columns with changes have been highlighted. Rows checked will apply the changes.</p>
+      <p-table #table [value]="jsonParse(checkList.json)" [(selection)]="selectedEdits">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3em">
+            </th>
+            <th>Question</th>
+            <th>Original Answer</th>
+            <th>Proposed Answer</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-question let-j="rowIndex">
+          <tr [ngClass]="checkChange(question, j) ? 'green' : ''">
+            <td style="width: 3em">
+              <p-tableCheckbox [hidden]="orgVal[j] == newVal[j]" [value]="{index: j}"></p-tableCheckbox>
+            </td>
+            <td>{{ question.question }}</td>
+            <td [innerHTML]="orgVal[j]" style="word-wrap: break-word"></td>
+            <td [innerHTML]="newVal[j]" style="word-wrap: break-word"></td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <p-button label="Apply Changes" (onClick)="doEdits()" style="margin-top: 10px"></p-button>
+      <p-button label="Done Editing" (onClick)="finishEdits()" style="margin-top: 10px; float: right"></p-button>
+  <!--</div>-->
+
+
+</div>
