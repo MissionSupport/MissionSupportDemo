@@ -76,6 +76,8 @@ import { RadioButtonQuestionComponent } from './checklist/radio-button-question.
 import { TextboxQuestionComponent } from './checklist/textbox-question.component';
 import { ChecklistQuestionDirective } from './checklist/checklist-question.directive';
 import { MessageModule } from 'primeng/message';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
+import { ChecklistVersionComponent } from './admin/checklist-version/checklist-version.component';
 
 @NgModule({
   declarations: [
@@ -113,6 +115,8 @@ import { MessageModule } from 'primeng/message';
     RadioButtonQuestionComponent,
     TextboxQuestionComponent,
     ChecklistQuestionDirective,
+    AdminDashboardComponent,
+    ChecklistVersionComponent,
   ],
   imports: [
     BrowserModule,

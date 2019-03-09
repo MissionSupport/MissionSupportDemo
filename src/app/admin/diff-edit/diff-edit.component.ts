@@ -1,25 +1,48 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostBinding, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import { diff_match_patch } from 'diff-match-patch';
+import {FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-diff-edit',
   templateUrl: './diff-edit.component.html',
-  styleUrls: ['./diff-edit.component.css']
+  styleUrls: ['./diff-edit.component.css'],
+  styles: [
+    // ':host >>> .ui-listbox-item {background-color: getColor() !important;}'
+  ]
 })
 export class DiffEditComponent implements OnInit {
+  @Input() original;
+  @Input() new;
+  @Input() layoutNum;
+  @Output() updatedVersion = new EventEmitter();
 
+  // @ViewChild('listElement')
+  // private listElTpl: ElementRef<any>;
   unicodeRangeStart = 0xE000;
   tagMap: any;
   mapLength: number;
   dmp: diff_match_patch;
-  left = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore</p>';
-  right = '<p>Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</p>';
+  left;
+  right;
   diffOutput;
   editor;
+  diffrences: {type, string}[] = [];
+  selectedEdits;
+  layout;
 
   constructor() {
     // $scope.$watch('left',() => { this.doDiff(); });
     // $scope.$watch('right',() => { this.doDiff(); });
+
+  }
+
+  ngOnInit(): void {
+    // console.log(this.listElTpl);
+    // const childNode = this.listElTpl.elementRef.nativeElement;
+    // console.log(childNode);
+    this.left = this.original;
+    this.right = this.new;
+    this.layout = this.layoutNum;
     this.tagMap = {};
     this.mapLength = 0;
 
@@ -31,6 +54,7 @@ export class DiffEditComponent implements OnInit {
 
     this.dmp = new diff_match_patch();
     this.doDiff();
+    // console.log(this.diffrences);
   }
 
   doDiff(): void {
@@ -46,12 +70,13 @@ export class DiffEditComponent implements OnInit {
 
     // this.$scope.diffOutput = this.$sce.trustAsHtml(diffOutput);
     this.diffOutput = diffOutput;
-    console.log(this.diffOutput);
+    // console.log(this.diffOutput);
   }
 
   insertTagsForOperation(diffableString: string, operation: number): string {
 
     // Don't insert anything if these are all tags
+    const orgString = diffableString;
     let n = -1;
     do {
       n++;
@@ -103,7 +128,7 @@ export class DiffEditComponent implements OnInit {
     }
 
     if (isOpen) { outputString += closeTag; }
-
+    this.diffrences = [...this.diffrences, {type: operation, string: orgString}];
     return outputString;
   }
 
@@ -146,7 +171,6 @@ export class DiffEditComponent implements OnInit {
         offset = tagEnd + 1;
       }
     }
-
     return diffableString;
   }
 
@@ -169,13 +193,24 @@ export class DiffEditComponent implements OnInit {
         htmlString += tagString;
       }
     }
-
     return htmlString;
   }
-  ngOnInit(): void {
+
+  submitRevision() {
+    console.log(this.diffOutput);
+    this.updatedVersion.emit(this.diffOutput);
   }
-  log() {
-    console.log(this.editor);
+
+  doEdits() {
+    console.log(this.selectedEdits);
+    this.selectedEdits.forEach( edit => {
+      if (edit.type === 1) {
+        this.diffOutput = this.diffOutput.replace('<u style="background-color: rgb(204, 232, 204);">' + edit.string + '</u>', edit.string);
+      } else {
+        // console.log(this.diffOutput, edit);
+        this.diffOutput = this.diffOutput.replace('<s style="background-color: rgb(250, 204, 204);">' + edit.string + '</s>', '');
+      }
+    });
   }
 
 }

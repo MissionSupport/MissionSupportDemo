@@ -335,22 +335,7 @@ export class SitesComponent implements OnInit, OnDestroy {
         answer: data[key]
       };
     });
-    // const _data = Object.keys(data).map((key) => {
-    //   return {
-    //     value: data[key].value,
-    //     question: data[key].question
-    //   };
-    //   }, data);
-    // return _data;
   }
-
-  // getQuestion(question) {
-  //   if (question.question !== null) {
-  //     return question.question;
-  //   } else {
-  //     console.log(question);
-  //   }
-  // }
 
   getAnswer(question: {question: string, answer: any}) {
     if (typeof question.answer === 'string') {
