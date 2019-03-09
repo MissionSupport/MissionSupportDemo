@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import {MessageService} from 'primeng/api';
 import { auth } from 'firebase/app';
-import {SharedService} from '../globals';
+import {SharedService} from '../service/shared-service.service';
 
 @Component({
   selector: 'app-login',

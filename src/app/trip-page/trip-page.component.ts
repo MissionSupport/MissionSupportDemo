@@ -1,11 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {PreDefined, SharedService} from '../globals';
+import {PreDefined} from '../globals';
+import {SharedService} from '../service/shared-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Organization} from '../interfaces/organization';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Trip} from '../interfaces/trip';
 import { BottomTab } from '../interfaces/bottom-tab';
-import {Subscription, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({

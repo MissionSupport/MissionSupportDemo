@@ -2,9 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Site} from '../interfaces/site';
 import {Country} from '../interfaces/country';
-import {Observable, Subscription, Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {Router} from '@angular/router';
-import {SharedService} from '../globals';
+import {SharedService} from '../service/shared-service.service';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -29,8 +29,8 @@ export class SiteSearchComponent implements OnInit, OnDestroy {
   unsubscribeSubject: Subject<void> = new Subject<void>();
 
   constructor(db: AngularFirestore, public router: Router, private sharedService: SharedService) {
-    sharedService.hideToolbar.emit(false);
-    sharedService.canEdit.emit(false);
+    this.sharedService.hideToolbar.emit(false);
+    this.sharedService.canEdit.emit(false);
     // sharedService.onPageNav.emit('Site Selection');
     // this.sites = [];
     // this.countries = [];

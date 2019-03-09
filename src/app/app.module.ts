@@ -48,7 +48,6 @@ import {CheckboxModule} from 'primeng/checkbox';
 import {InputMaskModule} from 'primeng/inputmask';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DynamicFormQuestionComponent } from './questions/dynamic-form-question/dynamic-form-question.component';
 import {DropdownModule} from 'primeng/dropdown';
 import {KeyFilterModule} from 'primeng/keyfilter';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -61,11 +60,22 @@ import {HttpClientModule} from '@angular/common/http';
 import { BottomTabsComponent } from './bottom-tabs/bottom-tabs.component';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {TableModule} from 'primeng/table';
-import {SelectedInjectable} from './questions/selectedInjectable';
-import {PreDefined, SharedService} from './globals';
+import {PreDefined} from './globals';
 import { AdminNewListComponent } from './admin/admin-new-list/admin-new-list.component';
 import { AdminCountryCreationComponent } from './admin/admin-country-creation/admin-country-creation.component';
 import { DiffEditComponent } from './admin/diff-edit/diff-edit.component';
+import { ChecklistComponent } from './checklist/checklist.component';
+import { DropdownQuestionComponent } from './checklist/dropdown-question.component';
+import { FreeResponseQuestionComponent } from './checklist/free-response-question.component';
+import { ImageQuestionComponent } from './checklist/image-question.component';
+import { MedicineMultipleCheckboxQuestionComponent } from './checklist/medicine-multiple-checkbox-question.component';
+import { MedicineMultipleTextboxQuestionComponent } from './checklist/medicine-multiple-textbox-question.component';
+import { MedicineTextboxQuestionComponent } from './checklist/medicine-textbox-question.component';
+import { MultipleSelectQuestionComponent } from './checklist/multiple-select-question.component';
+import { RadioButtonQuestionComponent } from './checklist/radio-button-question.component';
+import { TextboxQuestionComponent } from './checklist/textbox-question.component';
+import { ChecklistQuestionDirective } from './checklist/checklist-question.directive';
+import { MessageModule } from 'primeng/message';
 
 @NgModule({
   declarations: [
@@ -87,12 +97,22 @@ import { DiffEditComponent } from './admin/diff-edit/diff-edit.component';
     MyOrgsListComponent,
     MyTripsListComponent,
     ChecklistCreationPageComponent,
-    DynamicFormQuestionComponent,
     SiteSearchComponent,
     BottomTabsComponent,
     AdminNewListComponent,
     AdminCountryCreationComponent,
     DiffEditComponent,
+    ChecklistComponent,
+    DropdownQuestionComponent,
+    FreeResponseQuestionComponent,
+    ImageQuestionComponent,
+    MedicineMultipleCheckboxQuestionComponent,
+    MedicineMultipleTextboxQuestionComponent,
+    MedicineTextboxQuestionComponent,
+    MultipleSelectQuestionComponent,
+    RadioButtonQuestionComponent,
+    TextboxQuestionComponent,
+    ChecklistQuestionDirective,
   ],
   imports: [
     BrowserModule,
@@ -137,12 +157,24 @@ import { DiffEditComponent } from './admin/diff-edit/diff-edit.component';
     HttpClientModule,
     MultiSelectModule,
     TableModule,
+    MessageModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireModule.initializeApp( environment.firebase, 'MissionSupport1'),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     MarkdownModule.forRoot()
   ],
-  providers: [MessageService, SelectedInjectable, PreDefined],
+  entryComponents: [
+    DropdownQuestionComponent,
+    FreeResponseQuestionComponent,
+    ImageQuestionComponent,
+    MedicineMultipleCheckboxQuestionComponent,
+    MedicineMultipleTextboxQuestionComponent,
+    MedicineTextboxQuestionComponent,
+    MultipleSelectQuestionComponent,
+    RadioButtonQuestionComponent,
+    TextboxQuestionComponent
+  ],
+  providers: [MessageService, PreDefined],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

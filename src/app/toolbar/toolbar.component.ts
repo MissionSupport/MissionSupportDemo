@@ -1,8 +1,7 @@
-import {Component, OnInit, Input, OnChanges, Output, EventEmitter} from '@angular/core';
-import {Location} from '@angular/common';
-import {Router, ActivatedRoute, NavigationEnd} from '@angular/router';
+import {Component, OnInit, Input, OnChanges} from '@angular/core';
+import {Router} from '@angular/router';
 import { SidebarService } from '../service/sidebar.service';
-import {SharedService} from '../globals';
+import {SharedService} from '../service/shared-service.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -17,7 +16,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
   display;
 
   isLanding: boolean;
-  constructor(public router: Router, private _aRoute: ActivatedRoute, private _location: Location, public sidebarService: SidebarService,
+  constructor(public router: Router, public sidebarService: SidebarService,
               private sharedService: SharedService) {
     this.isLanding = !(this.router.url === '' || this.router.url === '/landing');
 
@@ -31,11 +30,11 @@ export class ToolbarComponent implements OnInit, OnChanges {
     this.isLanding = !(this.router.url === '' || this.router.url.includes('/landing'));
   }
 
-  restoreFront(event) {
+  restoreFront() {
     this.router.navigate(['', { outlets: { sidebar: ['settingsOptions'] } }]);
   }
 
-  navBack(event) {
+  navBack() {
     const prevUrl = this.sharedService.backHistory.pop();
     if (prevUrl) {
       this.router.navigateByUrl(prevUrl);
@@ -59,7 +58,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
           this.sharedService.goSites.emit(true);
         }
       })
-      .catch(e => {
+      .catch(() => {
         console.log('Route does not exists, redirection edit');
         const segs = this.router.parseUrl(url).root.children.primary.segments;
         this.navHelper(segs);

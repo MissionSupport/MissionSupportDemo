@@ -4,7 +4,8 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {Observable, Subject} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
-import {PreDefined, SharedService} from '../globals';
+import {PreDefined} from '../globals';
+import {SharedService} from '../service/shared-service.service';
 import {Site} from '../interfaces/site';
 import {Trip} from '../interfaces/trip';
 import {map, take, takeUntil, tap} from 'rxjs/operators';
@@ -12,7 +13,7 @@ import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import {Organization} from '../interfaces/organization';
 import {Team} from '../interfaces/team';
-import {SelectedInjectable} from '../questions/selectedInjectable';
+import { SelectItem } from 'primeng/api';
 
 export interface Question {
   question;
@@ -25,7 +26,6 @@ export interface Question {
   providers: [],
   styleUrls: ['./sites.component.css']
 })
-
 export class SitesComponent implements OnInit, OnDestroy {
 
   siteId: string;
@@ -82,56 +82,20 @@ export class SitesComponent implements OnInit, OnDestroy {
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'Checklist', icon: 'pi pi-list'},
                             {name: 'Trips', icon: 'pi pi-briefcase'}];
-  genericChecklists = [
-    {
-      name: 'Hospital',
-      questionData: this.preDef.hospitalJson
-    },
-    {
-      name: 'Hospital Infrastructure',
-      questionData: this.preDef.hospitalInfrastructureJson
-    },
-    {
-      name: 'Pharmacy and Lab',
-      questionData: this.preDef.pharmacyLabJson
-    },
-    {
-      name: 'Operating Room',
-      questionData: this.preDef.operatingRoomJson
-    },
-    {
-      name: 'Wards',
-      questionData: this.preDef.wardJson
-    },
-    {
-      name: 'Supplies',
-      questionData: this.preDef.suppliesEquipmentJson
-    },
-    {
-      name: 'Ambulance',
-      questionData: this.preDef.ambulanceJson
-    },
-    {
-      name: 'Case Volume and Staff',
-      questionData: this.preDef.caseVolumeandStafJson
-    },
-    {
-      name: 'Personnel',
-      questionData: this.preDef.personnelJson
-    },
-    {
-      name: 'Education and QI',
-      questionData: this.preDef.educationQIJson
-    },
-    {
-      name: 'Logistics',
-      questionData: this.preDef.logisticsJson
-    },
-    {
-      name: 'Accommodations',
-      questionData: this.preDef.accommodationsJson
-    }
+  genericChecklists: SelectItem[] = [
+    {label: 'Hospital', value: 'Hospital'},
+    {label: 'Hospital Infrastructure', value: 'Hospital Infrastructure'},
+    {label: 'Pharmacy and Lab', value: 'Pharmacy and Lab'},
+    {label: 'Operating Room', value: 'Operating Room'},
+    {label: 'Wards', value: 'Wards'},
+    {label: 'Supplies', value: 'Supplies'},
+    {label: 'Ambulance', value: 'Ambulance'},
+    {label: 'Case Volume and Staff', value: 'Case Volume and Staff'},
+    {label: 'Education and QI', value: 'Education and QI'},
+    {label: 'Logistics', value: 'Logistics'},
+    {label: 'Accommodations', value: 'Accommodations'}
   ];
+
   selectedLists = [];
   listsPresent = [];
 
@@ -139,7 +103,7 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore,
     public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router,
-    private preDef: PreDefined, private selected: SelectedInjectable) {
+    private preDef: PreDefined) {
     // this.tripSubArray = [];
     // this.orgSubArray = [];
 
@@ -354,7 +318,8 @@ export class SitesComponent implements OnInit, OnDestroy {
     // console.log(this.selectedLists);
 
       // console.log(this.selectedSite);
-    this.selected.selected = this.selectedLists;
+    // this.selected.selected = this.selectedLists;
+    this.sharedService.selectedChecklists = this.selectedLists;
     // console.log(this.selected.selected);
     this.sharedService.backHistory.push(this.router.url);
     this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
@@ -364,44 +329,50 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   jsonParse(list) {
     const data = JSON.parse(list);
-    const _data = Object.keys(data).map((key) => {
+    return Object.keys(data).map((key: string) => {
       return {
-        value: data[key].value,
-        question: data[key].question
+        question: key,
+        answer: data[key]
       };
-      }, data);
-    return _data;
+    });
+    // const _data = Object.keys(data).map((key) => {
+    //   return {
+    //     value: data[key].value,
+    //     question: data[key].question
+    //   };
+    //   }, data);
+    // return _data;
   }
 
-  getQuestion(question) {
-    if (question.question !== null) {
-      return question.question;
-    } else {
-      console.log(question);
-    }
-  }
+  // getQuestion(question) {
+  //   if (question.question !== null) {
+  //     return question.question;
+  //   } else {
+  //     console.log(question);
+  //   }
+  // }
 
-  getValue(question) {
-    if (typeof question.value === 'string') {
-      return question.value;
+  getAnswer(question: {question: string, answer: any}) {
+    if (typeof question.answer === 'string') {
+      return question.answer;
     } else {
-      // console.log(question);
+      // The answer is an array.
       let value = '';
-      question.value.forEach((val, index) => {
-        if (typeof val.value === 'string') {
-          value = value + val.value.toString();
-          if (index !== question.value.length - 1) {
+      question.answer.forEach((item, index) => {
+        if (typeof item === 'string') {
+          // The answer is an array of strings.
+          value = value + item;
+          if (index !== question.answer.length - 1) {
             value = value + ',';
           }
           value = value + '<br/>';
-          // value = value + val.value.toString() + ',' + + '<br />';
-        } else {
-          value = value + val.drugName + ' - ' + val.strength;
-          if (index !== question.value.length - 1) {
+        } else if (typeof item === 'object') {
+          // The answer is an array of objects (for medicine questions).
+          value = value + item.drugName + ' - ' + item.drugStrength;
+          if (index !== question.answer.length - 1) {
             value = value + ',';
           }
           value = value + '<br/>';
-          // value = value + val.drugName + ' - ' + val.strength + ',' + '<br />';
         }
       });
       return value;
