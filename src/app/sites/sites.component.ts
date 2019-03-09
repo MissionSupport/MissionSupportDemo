@@ -13,6 +13,8 @@ import { BottomTab } from '../interfaces/bottom-tab';
 import {Organization} from '../interfaces/organization';
 import {Team} from '../interfaces/team';
 import {SelectedInjectable} from '../questions/selectedInjectable';
+import {Wikidata} from '../interfaces/wikidata';
+import {MessageService} from 'primeng/api';
 
 export interface Question {
   question;
@@ -139,7 +141,7 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore,
     public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router,
-    private preDef: PreDefined, private selected: SelectedInjectable) {
+    private preDef: PreDefined, private selected: SelectedInjectable, private messageService: MessageService) {
     // this.tripSubArray = [];
     // this.orgSubArray = [];
 
@@ -285,22 +287,40 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
-    const json = {};
-    json[this.newSectionName] = this.newSectionText;
-    this.showNewSectionPopup = false;
-    this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${this.wikiId}`).update(json);
+    this.submitEdit(this.newSectionName, this.newSectionText, null, false);
   }
 
-  submitEdit(title, markup, newTitle, confirm) {
-    const jsonVariable = {};
+  async submitEdit(title, markup, newTitle, confirm) {
+    const json: {} = await this.db
+        .doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${this.wikiId}`)
+      .valueChanges().pipe(map(d => {
+        return d;
+      }), take(1)).toPromise();
     if (confirm) {
-      jsonVariable[newTitle] = markup;
-      jsonVariable[title] = firebase.firestore.FieldValue.delete();
+      json[newTitle] = markup;
+      json[title] = firebase.firestore.FieldValue.delete();
     } else {
-      jsonVariable[title] = markup;
+      json[title] = markup;
     }
-    console.log(title, markup, newTitle, confirm);
-    this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${this.wikiId}`).update(jsonVariable);
+    const data: Wikidata = {
+      created_id: this.authInstance.auth.currentUser.uid,
+      date: new Date()
+    };
+    // Create a new update
+    const wikiId = this.db.createId();
+    this.db.firestore.batch()
+      .update(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`).ref, {'current': wikiId})
+      .set(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}`).ref, json)
+      .commit()
+      .then(() => {
+        this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}/data/data`).set(data);
+      })
+      .catch((error) => {
+          console.log(error);
+          this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
+            detail: 'Failed to save your edit to the wiki. Please try again later.'});
+        }
+      );
   }
 
   submitNewTrip() {
@@ -312,6 +332,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       countryId: this.countryId,
       current: currentWiki,
       currentAbout: currentAbout,
+      date: new Date(),
       id: id,
       orgId: this.newTripOrg.id,
       siteId: this.siteId,

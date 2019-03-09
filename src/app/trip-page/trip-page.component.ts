@@ -6,7 +6,13 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {Trip} from '../interfaces/trip';
 import { BottomTab } from '../interfaces/bottom-tab';
 import {Subscription, Subject} from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import {map, take, takeUntil} from 'rxjs/operators';
+import {Wikidata} from '../interfaces/wikidata';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
+import {AngularFireAuth} from '@angular/fire/auth';
+import {MessageService} from 'primeng/api';
+import {Team} from '../interfaces/team';
 
 @Component({
   selector: 'app-trip-page',
@@ -21,7 +27,6 @@ export class TripPageComponent implements OnInit, OnDestroy {
   viewAbout = false;
   footerHeight = 50;
   sections = [];
-  editText = [];
   hideme = [];
   org: Organization;
   tripId: string;
@@ -34,12 +39,10 @@ export class TripPageComponent implements OnInit, OnDestroy {
   newSectionName;
 
   // TODO: get all of these from actual database
-  location = 'USA';
-  group: string;
-  groupId: string;
-  leader = 'Vikas';
-  team = 'Emory 12';
-  date = '7.12.17';
+  location: string;
+  orgName: string;
+  teamName: string;
+  date: Date;
 
   // ToDo: Edit based on permissions
   canEditAbout = true;
@@ -52,19 +55,15 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   unsubscribeSubject: Subject<void> = new Subject<void>();
 
-  // tripSub: Subscription;
-  // sectionSub: Subscription;
-  // wikiSub: Subscription;
-  // orgSub: Subscription;
-
-  constructor(public sharedService: SharedService, private preDef: PreDefined, public router: Router, private route: ActivatedRoute,
-              private readonly db: AngularFirestore) {
+  constructor(public sharedService: SharedService, private preDef: PreDefined, public router: Router,
+              private route: ActivatedRoute, private readonly db: AngularFirestore,
+              private authInstance: AngularFireAuth, private messageService: MessageService) {
     sharedService.hideToolbar.emit(false);
     this.tripId = this.route.snapshot.paramMap.get('id');
     sharedService.addName.emit('New Section');
 
     const trip = this.db.doc(`trips/${this.tripId}`);
-    this.db.doc(`trips/${this.tripId}`).valueChanges()
+    trip.valueChanges()
       .pipe(takeUntil(this.unsubscribeSubject)).subscribe((t: Trip) => {
         sharedService.onPageNav.emit(t.tripName);
         // TODO: edit based on rights
@@ -79,7 +78,6 @@ export class TripPageComponent implements OnInit, OnDestroy {
             Object.keys(data).forEach(title => {
             const markup = data[title];
             this.sections.push({title, markup});
-            this.editText.push(markup);
             this.titleEdits.push();
             this.titleEditsConfirm.push();
           });
@@ -89,8 +87,14 @@ export class TripPageComponent implements OnInit, OnDestroy {
         db.doc(`organizations/${t.orgId}`).valueChanges()
           .pipe(takeUntil(this.unsubscribeSubject)).subscribe((data: Organization) => {
             this.org = data;
-            this.group = data.name;
+            this.orgName = data.name;
           });
+
+        db.doc(`teams/${t.teamId}`).valueChanges()
+          .pipe(takeUntil(this.unsubscribeSubject)).subscribe((data: Team) => {
+          this.teamName = data.name;
+        });
+        this.date = t.date;
       });
   }
 
@@ -115,25 +119,42 @@ export class TripPageComponent implements OnInit, OnDestroy {
     this.unsubscribeSubject.complete();
   }
 
-  submitEdit(title, i, titleEdit, confirmTitleEdit) {
+  async submitEdit(title, markup, titleEdit, confirmTitleEdit) {
+    const json: {} = await this.db.doc(`trips/${this.tripId}`)
+      .valueChanges().pipe(map(d => {
+        return d;
+      }), take(1)).toPromise();
     if (confirmTitleEdit) {
-      // TODO: implement:
-      // changeSectionHeader(titleEdit)
-      console.log(titleEdit);
+      json[titleEdit] = markup;
+      json[title] = firebase.firestore.FieldValue.delete();
+    } else {
+      json[title] = markup;
     }
-    // this.editText[i] is the data we with to push into firebase with the section header title
-    // to then revert the page to the view do "hidden[i] = !hidden[i];"
-    // TODO: This implenentation
-    const jsonVariable = {};
-    jsonVariable[title] = this.editText[i];
-    // this.db.doc(`Countries/${this.id}/versions/${this.versionId}/wikiSections/${this.wikiId}`).update(jsonVariable);
-    this.hideme[i] = !this.hideme[i];
+    const data: Wikidata = {
+      created_id: this.authInstance.auth.currentUser.uid,
+      date: new Date()
+    };
+    // Create a new update
+    const wikiId = this.db.createId();
+    this.db.firestore.batch()
+      .update(this.db.doc(`trips/${this.tripId}`).ref, {'current': wikiId})
+      .set(this.db.doc(`trips/${this.tripId}/wiki/${wikiId}`).ref, json)
+      .commit()
+      .then(() => {
+        this.db.doc(`trips/${this.tripId}/wiki/${wikiId}/data/data`).set(data);
+      })
+      .catch((error) => {
+          console.log(error);
+          this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
+            detail: 'Failed to save your edit to the wiki. Please try again later.'});
+        }
+      );
   }
 
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
-    // TODO: if(add works )
     this.showNewSectionPopup = false;
+    this.submitEdit(this.newSectionName, this.newSectionName, null, false);
   }
 
   groupClick(): void {

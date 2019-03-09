@@ -5,13 +5,14 @@ import {Site} from '../interfaces/site';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {PreDefined} from '../globals';
 import {Country} from '../interfaces/country';
-import {flatMap, map} from 'rxjs/operators';
+import {flatMap, map, take} from 'rxjs/operators';
 import {Observable, Subscription} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserPreferences} from '../interfaces/user-preferences';
 import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import { MessageService } from 'primeng/api';
+import {Wikidata} from '../interfaces/wikidata';
 
 @Component({
   selector: 'app-country-page',
@@ -133,23 +134,39 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  submitEdit(title, markup, newTitle, confirm) {
+  async submitEdit(title, markup, newTitle, confirm) {
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
-    // TODO: Currently we are not having edits on the page. We will wait for later sprints to add
-    const jsonVariable = {};
+    // Just going to create a new wiki version
+    const json: {} = await this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`)
+      .valueChanges().pipe(map(d => {
+        return d;
+      }), take(1)).toPromise();
     if (confirm) {
-      jsonVariable[newTitle] = markup;
-      jsonVariable[title] = firebase.firestore.FieldValue.delete();
+      json[newTitle] = markup;
+      json[title] = firebase.firestore.FieldValue.delete();
     } else {
-      jsonVariable[title] = markup;
+      json[title] = markup;
     }
-    this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`).update(jsonVariable)
-      .catch(() =>
+    const data: Wikidata = {
+      created_id: this.authInstance.auth.currentUser.uid,
+      date: new Date()
+    };
+    // Create a new update
+    const wikiId = this.db.createId();
+    this.db.firestore.batch()
+      .update(this.db.doc(`countries/${this.countryId}`).ref, {'current': wikiId})
+      .set(this.db.doc(`countries/${this.countryId}/wiki/${wikiId}`).ref, json)
+      .commit()
+      .then(() => {
+        this.db.doc(`countries/${this.countryId}/wiki/${wikiId}/data/data`).set(data);
+      })
+      .catch((error) => {
+        console.log(error);
         this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
-          detail: 'Failed to save your edit to the wiki. Please try again later.'})
+          detail: 'Failed to save your edit to the wiki. Please try again later.'});
+        }
       );
-    console.log(title, markup, newTitle, confirm);
   }
 
   siteClick(): void {
@@ -162,6 +179,8 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
     this.showNewSectionPopup = false;
+    this.submitEdit(this.newSectionName, this.newSectionText, null, false);
+    /*
     // Now save to the database
     const jsonVariable = {};
     jsonVariable[this.newSectionName] = this.newSectionText;
@@ -169,6 +188,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       // Success
       console.log('Successfully added new section');
     });
+    */
   }
 
   submitNewSite() {
