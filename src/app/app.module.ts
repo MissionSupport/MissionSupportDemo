@@ -66,7 +66,8 @@ import {PreDefined, SharedService} from './globals';
 import { AdminNewListComponent } from './admin/admin-new-list/admin-new-list.component';
 import { AdminCountryCreationComponent } from './admin/admin-country-creation/admin-country-creation.component';
 import { DiffEditComponent } from './admin/diff-edit/diff-edit.component';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
+import { ChecklistVersionComponent } from './admin/checklist-version/checklist-version.component';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
     AdminCountryCreationComponent,
     DiffEditComponent,
     AdminDashboardComponent,
+    ChecklistVersionComponent,
   ],
   imports: [
     BrowserModule,

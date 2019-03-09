@@ -21,7 +21,8 @@ import {LoginGuardService} from './service/login-guard.service';
 import {AdminNewListComponent} from './admin/admin-new-list/admin-new-list.component';
 import {AdminCountryCreationComponent} from './admin/admin-country-creation/admin-country-creation.component';
 import {DiffEditComponent} from './admin/diff-edit/diff-edit.component';
-import {AdminDashboardComponent} from './admin-dashboard/admin-dashboard.component';
+import {AdminDashboardComponent} from './admin/admin-dashboard/admin-dashboard.component';
+import {ChecklistVersionComponent} from './admin/checklist-version/checklist-version.component';
 
 
 const routes: Routes = [
@@ -162,6 +163,12 @@ const routes: Routes = [
     path: 'adminDash',
     canActivate: [AuthguardService],
     component: AdminDashboardComponent,
+
+  },
+  {
+    path: 'adminChecklistVersion',
+    canActivate: [AuthguardService],
+    component: ChecklistVersionComponent,
 
   },
 ];
