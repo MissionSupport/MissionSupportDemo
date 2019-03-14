@@ -10,6 +10,7 @@ export class SharedService {
   addSection: EventEmitter<any> = new EventEmitter();
   addName: EventEmitter<any> = new EventEmitter();
   goSites: EventEmitter<any> = new EventEmitter();
+  scrollPanelHeightToSubtract: EventEmitter<number> = new EventEmitter();
 
   backHistory: Array<string> = [];
   selectedChecklists: Array<string> = [];

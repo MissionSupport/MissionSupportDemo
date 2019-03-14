@@ -1,24 +1,3 @@
-<!-- <div>
-  <div *ngFor="let form of forms; let i = index" >
-    <h2>{{form.name}}</h2>
-    <div #formToHide>
-      <form [formGroup]="form.form" class="p-grid">
-        <div *ngFor="let question of form.questions" [class]="question.gridSize" class="form-row">
-          <app-question [question]="question" [form]="form.form"></app-question>
-        </div>
-
-        <div class="form-row p-col-12">
-          <p-button (onClick)="onSubmit(form.form, form, formToHide)" type="submit" [disabled]="!form.form.valid" label="Save"></p-button>
-        </div>
-      </form>
-    </div>
-    <div [hidden] = "!(formToHide.hidden)">
-      Form Submitted
-      <p-button label="Edit Submission Again" (onClick)="formToHide.hidden = !formToHide.hidden"></p-button>
-    </div>
-  </div>
-</div> -->
-
 <div *ngFor="let list of lists">
   <div [hidden]="list.hidden">
     <h2>{{ list.name }}</h2>

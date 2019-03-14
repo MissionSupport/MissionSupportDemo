@@ -50,6 +50,8 @@ export class AdminNewListComponent implements OnInit {
     // sharedService.hideToolbar.emit(false);
     // sharedService.canEdit.emit(false);
     // sharedService.onPageNav.emit('Checklist Creation');
+    // this.sharedService.scrollPanelHeightToSubtract.emit(50);
+
   }
 
   ngOnInit() {}

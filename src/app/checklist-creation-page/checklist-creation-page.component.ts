@@ -56,6 +56,7 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
     this.sharedService.hideToolbar.emit(false);
     this.sharedService.canEdit.emit(false);
     this.sharedService.onPageNav.emit('Checklist Creation');
+    this.sharedService.scrollPanelHeightToSubtract.emit(50);
   }
 
   ngOnInit() {}

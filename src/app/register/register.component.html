@@ -1,56 +1,88 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
-<div style="display:flex; position:absolute; top:0; bottom:0; right:15px; left:0">
-  <div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">
+<div class="p-grid p-nogutter p-align-center p-justify-center" style="width: 100%; height: 100%">
+  <div class="p-sm-8 p-md-6 p-lg-4">
     <p-card>
       <p-header>
         <p style="text-align: center; font-size: 24px; padding-top: 20px">Join the Mission</p>
       </p-header>
-      <span class="p-col">
-        <div class="ui-inputgroup">
-          <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
-          <input placeholder="First Name" type="text" size="34" pInputText [(ngModel)] = "firstName" >
-        </div>
-      </span>
-      <span class="p-col">
-        <div class="ui-inputgroup">
-          <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
-          <input placeholder="Last Name" type="text" size="34" pInputText [(ngModel)] = "lastName" >
-        </div>
-      </span>
-      <span class="p-col">
-        <div class="ui-inputgroup">
-          <span class="ui-inputgroup-addon"><i class="pi pi-briefcase"></i></span>
-          <input placeholder="Organization" type="text" size="34" pInputText [(ngModel)] = "organization" >
-        </div>
-      </span>
-      <span class="p-col">
-        <div class="ui-inputgroup">
-          <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-          <input placeholder="Email Address" type="text" size="34" pInputText [(ngModel)] = "email" >
-        </div>
-      </span>
-      <span class="p-col">
-        <div class="ui-inputgroup">
-          <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-          <input placeholder="Confirm Email Address" type="text" size="34" pInputText [(ngModel)] = "emailConfirm" >
-        </div>
-      </span>
-      <span class="p-col">
-        <div class="ui-inputgroup">
-          <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
-          <input pPassword placeholder="Password" type="password" size="30" [(ngModel)] = "password" [feedback]="false" [showPassword]="showPassword">
-          <button pButton type="button" [icon]="showPasswordIcon" (click)="togglePasswordCheck()"></button>
-        </div>
-      </span>
-      <span class="p-col">
-        <div class="ui-inputgroup">
-          <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
-          <input pPassword placeholder="Confirm Password" type="password" size="30"  [(ngModel)] = "passwordConfirm"  [feedback]="false" [showPassword]="showPasswordConfirm">
-          <button pButton type="button" [icon]="showPasswordConfirmIcon" (click)="toggleConfirmPasswordCheck()"></button>
-        </div>
-      </span>
 
-      <button pButton label="Register" style="width: 100%" (click)="registerClick()"></button>
+      <form [formGroup]="registerForm" (submit)="registerClick()">
+        <span class="p-col">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+            <input placeholder="First Name" type="text" size="34" pInputText
+              formControlName="firstName">
+          </div>
+          <p-message severity="error" *ngIf="isControlValid('firstName', 'required')"
+            [text]="'First Name is required.'"></p-message>
+        </span>
+        <span class="p-col">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+            <input placeholder="Last Name" type="text" size="34" pInputText
+              formControlName="lastName">
+          </div>
+          <p-message severity="error" *ngIf="isControlValid('lastName', 'required')"
+            [text]="'Last Name is required.'"></p-message>
+        </span>
+        <span class="p-col">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-briefcase"></i></span>
+            <input placeholder="Organization" type="text" size="34" pInputText
+              formControlName="organization">
+          </div>
+          <p-message severity="error" *ngIf="isControlValid('organization', 'required')"
+            [text]="'Organization is required.'"></p-message>
+        </span>
+        <span class="p-col">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+            <input placeholder="Email Address" type="text" size="34" pInputText
+              formControlName="email">
+          </div>
+          <p-message severity="error" *ngIf="isControlValid('email', 'required')"
+            [text]="'Email Address is required.'"></p-message>
+          <p-message severity="error" *ngIf="isControlValid('email', 'email')"
+            [text]="'Email Address must be an email.'"></p-message>
+        </span>
+        <span class="p-col">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+            <input placeholder="Confirm Email Address" type="text" size="34" pInputText
+              formControlName="confirmEmail">
+          </div>
+          <p-message severity="error" *ngIf="isControlValid('confirmEmail', 'required')"
+            [text]="'Confirm Email Address is required.'"></p-message>
+          <p-message severity="error" *ngIf="registerForm.errors?.emailCheck && (registerForm.get('confirmEmail').touched || registerForm.get('confirmEmail').dirty)"
+            [text]="'Confirm Email Address must match Email Address.'"></p-message>
+        </span>
+        <span class="p-col">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
+            <input pPassword placeholder="Password" type="password" size="30"
+              formControlName="password" [feedback]="false" [showPassword]="showPassword">
+            <button pButton type="button" [icon]="showPasswordIcon" (click)="togglePasswordCheck()"></button>
+          </div>
+          <p-message severity="error" *ngIf="isControlValid('password', 'required')"
+            [text]="'Password is required.'"></p-message>
+          <p-message severity="error" *ngIf="isControlValid('password', 'pattern')"
+            [text]="'Password must contain 1 upper and lower case letter, numbers, and be at least 7 characters long.'"></p-message>
+        </span>
+        <span class="p-col">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
+            <input pPassword placeholder="Confirm Password" type="password" size="30"
+              formControlName="confirmPassword" [feedback]="false" [showPassword]="showPasswordConfirm">
+            <button pButton type="button" [icon]="showPasswordConfirmIcon" (click)="toggleConfirmPasswordCheck()"></button>
+          </div>
+          <p-message severity="error" *ngIf="isControlValid('confirmPassword', 'required')"
+            [text]="'Confirm Password is required.'"></p-message>
+          <p-message severity="error" *ngIf="registerForm.errors?.passwordCheck && (registerForm.get('confirmPassword').touched || registerForm.get('confirmPassword').dirty)"
+            [text]="'Confirm Password must match Password.'"></p-message>
+        </span>
+
+        <button pButton type="submit" label="Register" style="width: 100%"></button>
+      </form>
 
       <p-footer>
         <p style="text-align: center"><a routerLink="/">Cancel</a></p>

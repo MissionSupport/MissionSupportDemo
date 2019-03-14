@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import {CanActivate, Router} from '@angular/router';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {MessageService} from 'primeng/api';
@@ -8,13 +8,14 @@ import {Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class AuthguardService implements CanActivate {
-  constructor(private router: Router, public authInstance: AngularFireAuth, private messageService: MessageService) { }
+  constructor(private router: Router, public authInstance: AngularFireAuth, private ngZone: NgZone) { }
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
     this.authInstance.auth.onAuthStateChanged(user => {
       if (user == null) {
         // User is not signed in
         localStorage.removeItem('user');
-        this.router.navigate(['/']);
+        this.ngZone.run(() => this.router.navigate(['/']));
+        return false;
       }
     });
     if (!localStorage.getItem('user') && (this.authInstance.auth.currentUser == null ||
@@ -25,7 +26,7 @@ export class AuthguardService implements CanActivate {
       } else {
         console.log('User is not verified.');
       }
-      this.router.navigate(['/']);
+      this.ngZone.run(() => this.router.navigate(['/']));
       return false;
     }
     console.log('User is authenticated.');
