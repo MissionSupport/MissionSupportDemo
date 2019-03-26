@@ -1,24 +1,36 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
-<div style="display:flex; position:absolute; top:0; bottom:0; right:15px; left:0">
-  <div class="p-grid p-align-center p-dir-col p-justify-center" style = "margin: auto">
+<div class="p-grid p-nogutter p-align-center p-justify-center" style="width: 100%; height: 100%">
+  <div class="p-sm-8 p-md-6 p-lg-4">
     <p-card>
       <p-header>
         <p style="text-align: center; font-size: 24px; padding-top: 20px">Support the Mission</p>
       </p-header>
 
-      <span class="p-col" >
-        <div class="ui-inputgroup">
-          <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-          <input placeholder="Email Address" type="text" size="30" pInputText [(ngModel)] = "email" (keydown.enter)="loginClick()">
-        </div>
-      </span>
-      <span class="p-col" style="margin-top:20px">
-        <div class="ui-inputgroup">
-          <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
-          <input placeholder="Password" type="password" size="30" pInputText [(ngModel)] = "password" (keydown.enter)="loginClick()">
-        </div>
-      </span>
-      <button pButton label="Login" style="width: 100%" (click)="loginClick()"></button>
+      <form [formGroup]="loginForm" (submit)="loginClick()">
+        <span class="p-col-12" >
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+            <input placeholder="Email Address" type="text" pInputText
+              (keydown.enter)="loginClick()" style="width: 100%"
+              formControlName="email">
+          </div>
+          <p-message severity="error" *ngIf="loginForm.get('email').hasError('required') && (loginForm.get('email').dirty || loginForm.get('email').touched)"
+            [text]="'Email address is required.'"></p-message>
+          <p-message severity="error" *ngIf="loginForm.get('email').hasError('email') && (loginForm.get('email').dirty || loginForm.get('email').touched)"
+            [text]="'Email address must be an email.'"></p-message>
+        </span>
+        <span class="p-col-12" style="margin-top: 20px">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
+            <input placeholder="Password" type="password" pInputText
+              (keydown.enter)="loginClick()" style="width: 100%"
+              formControlName="password">
+          </div>
+          <p-message severity="error" *ngIf="loginForm.get('password').hasError('required') && (loginForm.get('password').dirty || loginForm.get('password').touched)"
+            [text]="'Password is required.'"></p-message>
+        </span>
+        <button pButton label="Login" style="width: 100%" type="submit"></button>
+      </form>
 
       <p-footer>
         <p style="text-align: center">Don't have an account? <a routerLink="/register">Register</a></p>

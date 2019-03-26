@@ -78,6 +78,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
         if (bool) {this.goSites(); this.startTab = 1; }
       }
     );
+    this.sharedService.scrollPanelHeightToSubtract.emit(100);
     this.footerHeight = 50;
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
 

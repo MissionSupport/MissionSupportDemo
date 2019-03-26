@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import {MessageService} from 'primeng/api';
 import { auth } from 'firebase/app';
 import {SharedService} from '../service/shared-service.service';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -11,32 +12,32 @@ import {SharedService} from '../service/shared-service.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  email: string;
-  password: string;
   time: number; // Time since last email verification
+
+  loginForm: FormGroup;
+
+  constructor(public router: Router, public authInstance: AngularFireAuth,
+              private messageService: MessageService, private sharedService: SharedService,
+              private fb: FormBuilder) {
+    this.loginForm = this.fb.group({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', Validators.required)
+    });
+    this.sharedService.scrollPanelHeightToSubtract.emit(0);
+  }
 
   ngOnInit() {
     console.log('User authenticated maybe ', this.authInstance.auth.currentUser);
     this.time = localStorage.getItem('login_time_verify') != null ? +localStorage.getItem('login_time_verify') : 0;
     this.sharedService.hideToolbar.emit(true);
     this.sharedService.canEdit.emit(false);
-    // auto log in user
-    /*
-    this.authInstance.auth.onAuthStateChanged(user => {
-      if (user != null) {
-        this.router.navigate(['landing']);
-      }
-    });
-    */
-  }
-  constructor(public router: Router, public authInstance: AngularFireAuth,
-              private messageService: MessageService, private sharedService: SharedService) {
   }
 
   async loginClick() {
-    if (!(this.email && this.password)) {
-      this.messageService.add({severity: 'error', summary: 'Login Error',
-        detail: 'Please log in with both an email and a password.'});
+    if (!this.loginForm.valid) {
+      Object.keys(this.loginForm.controls).forEach(field => {
+        this.loginForm.controls[field].markAsTouched({onlySelf: true});
+      });
     } else {
       try {
         await this.authInstance.auth.setPersistence(auth.Auth.Persistence.SESSION);
@@ -48,7 +49,8 @@ export class LoginComponent implements OnInit {
       }
 
       try {
-        const credential = await this.authInstance.auth.signInWithEmailAndPassword(this.email, this.password);
+        const credential = await this.authInstance.auth.signInWithEmailAndPassword(this.loginForm.get('email').value,
+          this.loginForm.get('password').value);
         localStorage.setItem('user', credential.user.uid);
 
         // Check if user is authenticated.

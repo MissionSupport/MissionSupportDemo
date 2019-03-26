@@ -120,6 +120,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   constructor( public sharedService: SharedService, private readonly db: AngularFirestore) {
     sharedService.hideToolbar.emit(false);
     sharedService.onPageNav.emit('Admin Dashboard');
+    this.sharedService.scrollPanelHeightToSubtract.emit(50);
     this.viewUserApprovals = true;
   }
 

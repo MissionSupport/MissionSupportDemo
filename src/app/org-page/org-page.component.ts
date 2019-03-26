@@ -83,6 +83,7 @@ export class OrgPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sharedService.hideToolbar.emit(false);
+    this.sharedService.scrollPanelHeightToSubtract.emit(100);
     this.orgId = this.route.snapshot.paramMap.get('id');
     this.orgObservable = this.db.doc(`organizations/${this.orgId}`).valueChanges()
     .pipe(

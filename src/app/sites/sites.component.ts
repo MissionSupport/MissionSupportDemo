@@ -110,6 +110,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.countryId = this.route.snapshot.paramMap.get('countryId');
 
     sharedService.hideToolbar.emit(false);
+    this.sharedService.scrollPanelHeightToSubtract.emit(100);
 
     // TODO: edit based on rights
     sharedService.addName.emit('New Section');

@@ -36,7 +36,7 @@
         <ng-template pTemplate="body" let-question let-j="rowIndex">
           <tr [ngClass]="checkChange(question, j) ? 'green' : ''">
             <td style="width: 3em">
-              <p-tableCheckbox [hidden]="orgVal[j] == newVal[j]" [value]="{index: j}"></p-tableCheckbox>
+              <p-tableCheckbox [hidden]="orgVal[j] === newVal[j]" [value]="{index: j}"></p-tableCheckbox>
             </td>
             <td>{{ question.question }}</td>
             <td [innerHTML]="orgVal[j]" style="word-wrap: break-word"></td>

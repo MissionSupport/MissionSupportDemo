@@ -7,18 +7,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class ChecklistVersionComponent implements OnInit {
   @Output() updatedVersion = new EventEmitter();
-  // TODO: change to reflect checklist changes (see checklist folder or database)
-  // Has form {question: answer}
-  // @Input() checkList = {
-  //     name: 'Hospital',
-  //     json: '{"textBox1":{"question":"Hospital Name","value":"Emory"},"textBox2":{"question":"Name of Host",' +
-  //       '"value":"Vikas O\'Reilly-Shah"},"textBox3":{"question":"Position at Hospital","value":"Anesthesiologist"},' +
-  //       '"textBox4":{"question":"Host Email Address","value":"EmailBasic@aol.com"},"textBox5":{"question":"Host Phone' +
-  //       'Number","value":"(555)867-5309"},"textBox6":{"question":"Number of Beds (Total Hospital)","value":"1,043"},' +
-  //       '"textBox7":{"question":"Number of Med/Surg Beds","value":"204"},"textBox8":{"question":"Number of Operating Rooms",' +
-  //       '"value":"26"},"textBox9":{"question":"Number of Clinic Rooms (Available for surgery)","value":"32"},' +
-  //       '"radio1":{"question":"PCAU?","value":"Yes"},"radio2":{"question":"Pre-op?","value":"No"}}'
-  //   };
 
   @Input() checkList = {
     name: 'Hospital',
@@ -29,18 +17,6 @@ export class ChecklistVersionComponent implements OnInit {
     '"Number of Clinic Rooms Available for Surgery":"1","PCAU?":"Yes","Pre-Op?":"Yes"}'
   };
 
-  // TODO: change to reflect checklist changes (see checklist folder or database)
-  // Has form {question: answer}
-  // @Input() checkListNew = {
-  //     name: 'Hospital',
-  //     json: '{"textBox1":{"question":"Hospital Name","value":"Katies Place"},"textBox2":{"question":"Name of Host",' +
-  //       '"value":"Vikas O\'Reilly-Shah"},"textBox3":{"question":"Position at Hospital","value":"Anesthesiologist"},' +
-  //       '"textBox4":{"question":"Host Email Address","value":"EmailBasic@aol.com"},"textBox5":{"question":"Host Phone' +
-  //       'Number","value":"(555)867-5309"},"textBox6":{"question":"Number of Beds (Total Hospital)","value":"1,072"},' +
-  //       '"textBox7":{"question":"Number of Med/Surg Beds","value":"204"},"textBox8":{"question":"Number of Operating Rooms",' +
-  //       '"value":"26"},"textBox9":{"question":"Number of Clinic Rooms (Available for surgery)","value":"32"},' +
-  //       '"radio1":{"question":"PCAU?","value":"No"},"radio2":{"question":"Pre-op?","value":"No"}}'
-  //   };
   @Input() checkListNew = {
     name: 'Hospital',
     json: '{"Hospital Name":"Test","Host Name":"Jane Doe",' +
@@ -84,30 +60,6 @@ export class ChecklistVersionComponent implements OnInit {
     return _data;
   }
 
-  // getValue(question) {
-  //   if (typeof question.value === 'string') {
-  //     return question.value;
-  //   } else {
-  //     let value = '';
-  //     question.value.forEach((val, index) => {
-  //       if (typeof val.value === 'string') {
-  //         value = value + val.value.toString();
-  //         if (index !== question.value.length - 1) {
-  //           value = value + ',';
-  //         }
-  //         value = value + '<br/>';
-  //       } else {
-  //         value = value + val.drugName + ' - ' + val.strength;
-  //         if (index !== question.value.length - 1) {
-  //           value = value + ',';
-  //         }
-  //         value = value + '<br/>';
-  //       }
-  //     });
-  //     return value;
-  //   }
-  // }
-
   getAnswer(question: {question: string, answer: any}) {
     if (typeof question.answer === 'string') {
       return question.answer;
@@ -134,31 +86,6 @@ export class ChecklistVersionComponent implements OnInit {
       return value;
     }
   }
-
-  // getChangeValue(question, j) {
-  //   if (typeof question.value === 'string') {
-  //     return this._dataChanged[j].value;
-  //   } else {
-  //     // console.log(question);
-  //     let value = '';
-  //     this._dataChanged[j].value.forEach((val, index) => {
-  //       if (typeof val.value === 'string') {
-  //         value = value + val.value.toString();
-  //         if (index !== this._dataChanged[j].value.length - 1) {
-  //           value = value + ',';
-  //         }
-  //         value = value + '<br/>';
-  //       } else {
-  //         value = value + val.drugName + ' - ' + val.strength;
-  //         if (index !== this._dataChanged[j].value.length - 1) {
-  //           value = value + ',';
-  //         }
-  //         value = value + '<br/>';
-  //       }
-  //     });
-  //     return value;
-  //   }
-  // }
 
   getChangeAnswer(question: {question: string, answer: any}, j: number) {
     if (typeof question.answer === 'string') {

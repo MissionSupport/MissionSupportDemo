@@ -36,6 +36,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     this.sharedService.hideToolbar.emit(false);
     this.sharedService.canEdit.emit(false);
     this.sharedService.onPageNav.emit('Country Selection');
+    this.sharedService.scrollPanelHeightToSubtract.emit(50);
 
   }
   ngOnInit() {

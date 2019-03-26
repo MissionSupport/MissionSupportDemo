@@ -62,6 +62,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
     sharedService.hideToolbar.emit(false);
     this.tripId = this.route.snapshot.paramMap.get('id');
     sharedService.addName.emit('New Section');
+    this.sharedService.scrollPanelHeightToSubtract.emit(100);
 
     const trip = this.db.doc(`trips/${this.tripId}`);
     trip.valueChanges()
