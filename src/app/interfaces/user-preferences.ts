@@ -6,4 +6,5 @@ export interface UserPreferences {
   id: string;
   orgs: string[];
   teams: string[];
+  verified: boolean; // Handle whether a user is verified or not
 }

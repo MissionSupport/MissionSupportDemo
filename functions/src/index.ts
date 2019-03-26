@@ -7,13 +7,16 @@ exports.createUserPreferences = functions.auth.user().onCreate(user => {
   const userId = user.uid;
   console.log(user);
   console.log('Creating user_preferences for', userId);
+  // Let's see if they will be verified or not.
+  const verified = user.email.includes('.edu', user.email.length - 4);
   const batch = admin.firestore().batch();
   const pref = admin.firestore().doc(`user_preferences/${userId}`)
   batch.create(pref, {
     admin: false,
     id: userId,
     orgs: [],
-    teams: []
+    teams: [],
+    verified: verified
   });
   console.log('Create email mapping to uid for user');
   const email = admin.firestore().doc(`emails/${user.email}`);
@@ -57,3 +60,17 @@ exports.updateTeamAndSite = functions.firestore.document('trips/{tripId}').onCre
     admin.firestore().doc(`countries/${countryId}/sites/${siteId}`).update({'tripIds': array});
   })
 });
+
+// When a verified user submits a change
+exports.verifiedUserCountryUpdate = functions.firestore.document('countries/{countryId}/wiki/{wikiId}')
+  .onCreate((snapshot, context) => {
+
+    return admin.firestore().doc(`edits/${context.params.wikiId}`).get().set()
+    /*
+    return admin.firestore().doc(`misc/pendingupdates`).get().then(data => {
+      const array = data.data().pendingCountries;
+      array.push(`countries/${context.params.countryId}/wiki/${context.params.wikiId}`);
+      return admin.firestore().doc(`misc/pendingupdates`).update({'pendingCountries': array});
+    });
+    */
+  });

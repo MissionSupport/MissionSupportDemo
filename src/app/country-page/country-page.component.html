@@ -78,7 +78,7 @@
       <p-fieldset [toggleable]="true" [hidden]="hideme[i]">
         <p-header>
           {{info.title}}
-          <div [style.display]="!canEditWiki ? 'none' : 'inline-block'">
+          <div [style.display]="!(canEditWiki || canProposeWiki)? 'none' : 'inline-block'">
             <i class="pi pi-pencil" style="cursor: pointer; padding-left: 10px" (click)="hideme[i] = !hideme[i]"></i>
           </div>
         </p-header>

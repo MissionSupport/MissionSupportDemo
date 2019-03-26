@@ -1,13 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import { SharedService } from 'src/app/service/shared-service.service';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {Subject} from 'rxjs';
+import {flatMap, map, take, takeUntil} from 'rxjs/operators';
+import {UserPreferences} from '../../interfaces/user-preferences';
+import {UserSettings} from '../../interfaces/user-settings';
+import * as firebase from 'firebase/app';
+import 'firebase/firestore';
+import {Country} from '../../interfaces/country';
+import {EditTask} from '../../interfaces/edit-task';
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   original = 'Hello my name is Katie and I like Doggos. Doggos are cute. dodododo daddy shark sososos';
   proposed = 'Hello my name is Katie and I LOVE Doggos & Baby Sharku do do do. Moma Shark dodododo';
@@ -16,18 +25,15 @@ export class AdminDashboardComponent implements OnInit {
   viewWikiEdits;
   viewPendingChecklistEdits;
   viewNewCountrySite;
-  pendingUsers = [
-    {fistName: 'Katie', lastName: 'Cox', email: 'katy@aol.com', org: 'Gatech'},
-    {fistName: 'Daniel', lastName: 'Jung', email: 'DJung@aol.com', org: 'Gatech'},
-    {fistName: 'Josh', lastName: 'Philliber', email: 'jPh@aol.com', org: 'Gatech'},
-    {fistName: 'Sri', lastName: 'Bhat', email: 'katy@aol.com', org: 'Gatech'},
-    {fistName: 'Rourke', lastName: 'Rabinowitz', email: 'rr@aol.com', org: 'Gatech'}
-  ];
+  unsubscribeSubject: Subject<void> = new Subject<void>();
+  pendingUsers = [];
 
   pendingEdits = [
     {original: 'hi i am katie', new: 'hi i am Katie Cox', section: 'Communication',
       wiki: 'USA', proposedBy: 'Katie Cox', timeProposed: 'timeStamp'},
-    {original: 'BabyShark Doddod do', new: 'BabyShark Dodododo', section: 'Baby Sharks',
+    {original: 'BabyShark Doddod do', new: 'BabySharhik Dodododo hi', section: 'Baby Sharks',
+      wiki: 'USA', proposedBy: 'Katie Cox', timeProposed: 'timeStamp'},
+    {original: 'BabyShark Doddod do', new: 'BabySharhik dsfsdfdDodododo hi', section: 'Baby Sharks',
       wiki: 'USA', proposedBy: 'Katie Cox', timeProposed: 'timeStamp'},
     {original: 'If I were a shark I would want to cuddle humans', new: 'If I were a shark I would want to cuddle humans.' +
         ' But why humans no wanna cuddle me?', section: 'Baby Sharks With emotional problems blog',
@@ -111,13 +117,61 @@ export class AdminDashboardComponent implements OnInit {
     },
   ];
 
-  constructor( public sharedService: SharedService) {
+  constructor( public sharedService: SharedService, private readonly db: AngularFirestore) {
     sharedService.hideToolbar.emit(false);
     sharedService.onPageNav.emit('Admin Dashboard');
     this.viewUserApprovals = true;
   }
 
   ngOnInit() {
+    // Code for dealing with pending users
+    this.db.collection(`user_preferences`, ref => ref.where('verified', '==', false))
+      .valueChanges().pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe(async (users: UserPreferences[]) => {
+        this.pendingUsers = await Promise.all(users.map(async (user: UserPreferences) => {
+          const id = user.id;
+          // TODO Get email
+          // const x = await this.db.doc(`emails/${id}`).get().toPromise();
+          const details: UserSettings = await this.db.doc(`users/${id}`)
+            .valueChanges().pipe(map((x: UserSettings) => {
+              return x;
+          }), take(1)).toPromise();
+          return {
+            id: id,
+            firstName: details.firstName,
+            lastName: details.lastName,
+            email: '',
+            org: ''
+          };
+        }));
+      });
+    // Code for dealing with pending wiki edits
+    this.db.collection('countries').valueChanges().pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe((countries: Country[]) => {
+        const array = {};
+        for (const country of countries) {
+          array[country.id] = country;
+        }
+        this.db.collection('edits').valueChanges().pipe(takeUntil(this.unsubscribeSubject))
+          .subscribe((edits: EditTask[]) => {
+            const values = [];
+            for (const edit of edits) {
+              const json = {
+                original: this.db.doc(`countries/${edit.country_id}/wiki/${array[edit.country_id].current}`).valueChanges()
+                  .pipe(map(d => {
+                    return d[edit.title];
+                    }), take(1)).toPromise(),
+                new: edit.markup,
+                section: edit.title,
+                wiki: array[edit.country_id].countryName,
+                proposedBy: edit.email,
+                timeProposed: edit.date
+              };
+              values.push(json);
+            }
+            this.pendingEdits = values;
+          });
+      });
     this.items = [
       {label: 'Pending User Approvals', icon: 'pi pi-fw pi-user-plus', command: event1 => {
           this.viewUserApprovals = true;
@@ -154,23 +208,32 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   approve(user, index) {
-    // TODO wire up
-    console.log(user);
     this.pendingUsers.splice(index, 1);
     this.pendingUsers = this.pendingUsers;
+    // Take user and change status.
+    this.db.doc(`user_preferences/${user.id}`).update({verified: true}).catch(() => {
+      console.log('There was a problem with updating user verification status');
+    });
   }
 
   deny(user, index) {
-    // ToDO wire up
-    console.log(user);
     this.pendingUsers.splice(index, 1);
     this.pendingUsers = this.pendingUsers;
+    this.db.doc(`user_preferences/${user.id}`).update({verified: firebase.firestore.FieldValue.delete()})
+      .catch(() => {
+      console.log('There was a problem with updating user verification status');
+    });
   }
 
   updateChecklistVersion(updatedJson, i, edit) {
     console.log(updatedJson);
     this.pendingChecklistEdits.splice(i, 1);
     this.pendingChecklistEdits = this.pendingChecklistEdits;
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeSubject.next();
+    this.unsubscribeSubject.complete();
   }
 
 }

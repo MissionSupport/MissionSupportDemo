@@ -7,7 +7,7 @@
       <div *ngFor="let user of pendingUsers; let i = index">
         <p-card [style]="{'margin-top' : '10px'}">
           <p-header>
-            <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:5px; margin-left: 10px; ">{{user.fistName}} {{user.lastName}}</span>
+            <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:5px; margin-left: 10px; ">{{user.firstName}} {{user.lastName}}</span>
             <button pButton label="Approve" class= "ui-button-success" style="float: right; margin-top: 5px; margin-right: 10px" (click)="approve(user, i)"></button>
             <button pButton label="Deny" class="ui-button-danger" style="float: right; margin-right: 10px; margin-top: 5px" (click)="deny(user, i)"></button>
             <p style="margin-left: 20px">{{user.email}}</p>
@@ -24,7 +24,9 @@
             <span class="ui-panel-title" style="font-size:24px;display:inline-block;margin-top:5px; margin-left: 10px; ">{{edit.wiki}} - {{edit.section}}</span>
             <p style="margin-left: 20px">{{edit.proposedBy}} -  {{edit.timeProposed}}</p>
           </p-header>
-          <app-diff-edit [original]="edit.original" [new]="edit.new" [layoutNum]="2" (updatedVersion)="updateVersion($event, i, edit)"></app-diff-edit>
+          <div *ngIf="edit.original | async as og">
+            <app-diff-edit [original]="og" [new]="edit.new" [layoutNum]="2" (updatedVersion)="updateVersion($event, i, edit)"></app-diff-edit>
+          </div>
         </p-card>
       </div>
     </div>

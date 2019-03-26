@@ -160,7 +160,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'adminDash',
+    path: 'admindash',
     canActivate: [AuthguardService],
     component: AdminDashboardComponent,
 

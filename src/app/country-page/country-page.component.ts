@@ -13,6 +13,7 @@ import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import { MessageService } from 'primeng/api';
 import {Wikidata} from '../interfaces/wikidata';
+import {EditTask} from '../interfaces/edit-task';
 
 @Component({
   selector: 'app-country-page',
@@ -50,6 +51,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   // TODO: change based on permissions
   canEditWiki: boolean; // Editing wiki
   canEditSites: boolean; // editing site
+  canProposeWiki: boolean; // Propose wiki changes. Only applies to verified users
 
   titleEdits = [];
   startTab = 0;
@@ -118,7 +120,8 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       this.subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
         .subscribe((pref: UserPreferences) => {
           this.canEditSites = this.canEditWiki = pref.admin;
-          this.sharedService.canEdit.emit(pref.admin);
+          this.canProposeWiki = pref.verified;
+          this.sharedService.canEdit.emit(pref.admin || pref.verified);
         }
       );
     });
@@ -137,36 +140,61 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   async submitEdit(title, markup, newTitle, confirm) {
     // this.editText[i] is the data we with to push into firebase with the section header title
     // to then revert the page to the view do "hidden[i] = !hidden[i];"
-    // Just going to create a new wiki version
-    const json: {} = await this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`)
-      .valueChanges().pipe(map(d => {
-        return d;
-      }), take(1)).toPromise();
-    if (confirm) {
-      json[newTitle] = markup;
-      json[title] = firebase.firestore.FieldValue.delete();
-    } else {
-      json[title] = markup;
-    }
-    const data: Wikidata = {
-      created_id: this.authInstance.auth.currentUser.uid,
-      date: new Date()
-    };
-    // Create a new update
-    const wikiId = this.db.createId();
-    this.db.firestore.batch()
-      .update(this.db.doc(`countries/${this.countryId}`).ref, {'current': wikiId})
-      .set(this.db.doc(`countries/${this.countryId}/wiki/${wikiId}`).ref, json)
-      .commit()
-      .then(() => {
-        this.db.doc(`countries/${this.countryId}/wiki/${wikiId}/data/data`).set(data);
-      })
-      .catch((error) => {
-        console.log(error);
-        this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
-          detail: 'Failed to save your edit to the wiki. Please try again later.'});
+    // Need to see if we are proposing this change or just changing it
+    if (this.canProposeWiki && !this.canEditWiki) { // If they are verified but not admin
+      const id = this.db.createId();
+      const pending_update_json: EditTask = {
+        email: this.authInstance.auth.currentUser.email, // the email of who changed the doc
+        date: new Date(), // date of the changed doc
+        title: title,
+        markup: markup,
+        new_title: newTitle ? newTitle : null,
+        user_id: this.authInstance.auth.currentUser.uid,
+        id: id,
+        country_id: this.countryId
+      }
+      this.db.doc(`edits/${id}`).set(pending_update_json).catch((error) => {
+          console.log(error);
+          this.messageService.add({
+            severity: 'error', summary: 'Unable to Save Edit',
+            detail: 'Failed to save your edit to the wiki. Please try again later.'
+          });
         }
       );
+    } else { // They are admin
+      // Just going to create a new wiki version
+      const json: {} = await this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`)
+        .valueChanges().pipe(map(d => {
+          return d;
+        }), take(1)).toPromise();
+      if (confirm) {
+        json[newTitle] = markup;
+        json[title] = firebase.firestore.FieldValue.delete();
+      } else {
+        json[title] = markup;
+      }
+      const data = {
+        created_id: this.authInstance.auth.currentUser.uid,
+        date: new Date()
+      };
+      // Create a new update
+      const wikiId = this.db.createId();
+      this.db.firestore.batch()
+        .update(this.db.doc(`countries/${this.countryId}`).ref, {'current': wikiId})
+        .set(this.db.doc(`countries/${this.countryId}/wiki/${wikiId}`).ref, json)
+        .commit()
+        .then(() => {
+          this.db.doc(`countries/${this.countryId}/wiki/${wikiId}/data/data`).set(data);
+        })
+        .catch((error) => {
+            console.log(error);
+            this.messageService.add({
+              severity: 'error', summary: 'Unable to Save Edit',
+              detail: 'Failed to save your edit to the wiki. Please try again later.'
+            });
+          }
+        );
+    }
   }
 
   siteClick(): void {
@@ -226,7 +254,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     // this.viewWiki = false;
     this.viewSites = true;
     this.sharedService.addName.emit('New Site');
-    this.sharedService.canEdit.emit(this.canEditSites);
+    this.sharedService.canEdit.emit(this.canEditSites || this.canProposeWiki);
   }
 
   goWiki() {
@@ -241,12 +269,12 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       // this.viewWiki = true;
       this.viewSites = false;
       this.sharedService.addName.emit('New Section');
-      this.sharedService.canEdit.emit(this.canEditWiki);
+      this.sharedService.canEdit.emit(this.canEditWiki || this.canProposeWiki);
     } else if (tab === 1) {
       // this.viewWiki = false;
       this.viewSites = true;
       this.sharedService.addName.emit('New Site');
-      this.sharedService.canEdit.emit(this.canEditSites);
+      this.sharedService.canEdit.emit(this.canEditSites || this.canProposeWiki);
     }
   }
 }
