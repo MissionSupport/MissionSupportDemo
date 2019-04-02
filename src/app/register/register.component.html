@@ -11,7 +11,7 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
             <input placeholder="First Name" type="text" size="34" pInputText
-              formControlName="firstName">
+              formControlName="firstName" style="width: 100%">
           </div>
           <p-message severity="error" *ngIf="isControlValid('firstName', 'required')"
             [text]="'First Name is required.'"></p-message>
@@ -20,7 +20,7 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
             <input placeholder="Last Name" type="text" size="34" pInputText
-              formControlName="lastName">
+              formControlName="lastName" style="width: 100%">
           </div>
           <p-message severity="error" *ngIf="isControlValid('lastName', 'required')"
             [text]="'Last Name is required.'"></p-message>
@@ -29,7 +29,7 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon"><i class="pi pi-briefcase"></i></span>
             <input placeholder="Organization" type="text" size="34" pInputText
-              formControlName="organization">
+              formControlName="organization" style="width: 100%">
           </div>
           <p-message severity="error" *ngIf="isControlValid('organization', 'required')"
             [text]="'Organization is required.'"></p-message>
@@ -38,7 +38,7 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
             <input placeholder="Email Address" type="text" size="34" pInputText
-              formControlName="email">
+              formControlName="email" style="width: 100%">
           </div>
           <p-message severity="error" *ngIf="isControlValid('email', 'required')"
             [text]="'Email Address is required.'"></p-message>
@@ -49,7 +49,7 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
             <input placeholder="Confirm Email Address" type="text" size="34" pInputText
-              formControlName="confirmEmail">
+              formControlName="confirmEmail" style="width: 100%">
           </div>
           <p-message severity="error" *ngIf="isControlValid('confirmEmail', 'required')"
             [text]="'Confirm Email Address is required.'"></p-message>
@@ -60,7 +60,7 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
             <input pPassword placeholder="Password" type="password" size="30"
-              formControlName="password" [feedback]="false" [showPassword]="showPassword">
+              formControlName="password" [feedback]="false" [showPassword]="showPassword" style="width: 100%">
             <button pButton type="button" [icon]="showPasswordIcon" (click)="togglePasswordCheck()"></button>
           </div>
           <p-message severity="error" *ngIf="isControlValid('password', 'required')"
@@ -72,7 +72,8 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
             <input pPassword placeholder="Confirm Password" type="password" size="30"
-              formControlName="confirmPassword" [feedback]="false" [showPassword]="showPasswordConfirm">
+              formControlName="confirmPassword" [feedback]="false" [showPassword]="showPasswordConfirm"
+              style="width: 100%">
             <button pButton type="button" [icon]="showPasswordConfirmIcon" (click)="toggleConfirmPasswordCheck()"></button>
           </div>
           <p-message severity="error" *ngIf="isControlValid('confirmPassword', 'required')"

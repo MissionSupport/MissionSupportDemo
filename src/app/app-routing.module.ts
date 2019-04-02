@@ -44,31 +44,11 @@ const routes: Routes = [
     path: 'landing',
     canActivate: [AuthguardService],
     component: LandingComponent,
-    // children: [
-    //   {
-    //     path: 'settingsOptions',
-    //     canActivate: [AuthguardService],
-    //     component: SettingsListComponent,
-    //     outlet: 'sidebar'
-    //   }
-    // ]
   },
   {
     path: 'country/:countryId/site/:id',
     canActivate: [AuthguardService],
     component: SitesComponent,
-//    children: [
-//      {
-//        path: '',
-//        redirectTo: 'orgs',
-//        pathMatch: 'full'
-//      },
-//      {
-//        path: 'group/:groupId',
-//        canActivate: [AuthguardService],
-//        component: OrgsComponent
-//      },
-//    ]
   },
   {
     path: 'settingsOptions',
@@ -126,11 +106,6 @@ const routes: Routes = [
     canActivate: [AuthguardService],
     component: OrgPageComponent,
   },
-  // {
-  //   path: 'list',
-  //   canActivate: [AuthguardService],
-  //   component: ChecklistCreationPageComponent,
-  // },
   {
     path: 'search-sites',
     component: SiteSearchComponent,
@@ -139,7 +114,6 @@ const routes: Routes = [
     path: 'country/:countryId/site/:id/list',
     canActivate: [AuthguardService],
     component: ChecklistCreationPageComponent,
-
   },
   {
     path: 'version',
@@ -169,7 +143,6 @@ const routes: Routes = [
     path: 'adminChecklistVersion',
     canActivate: [AuthguardService],
     component: ChecklistVersionComponent,
-
   },
 ];
 

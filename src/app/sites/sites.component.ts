@@ -16,11 +16,6 @@ import {Team} from '../interfaces/team';
 import {Wikidata} from '../interfaces/wikidata';
 import {MessageService, SelectItem} from 'primeng/api';
 
-export interface Question {
-  question;
-  value;
-}
-
 @Component({
   selector: 'app-sites',
   templateUrl: './sites.component.html',
@@ -40,7 +35,6 @@ export class SitesComponent implements OnInit, OnDestroy {
   sections: Observable<any[]>;
   hideme = [];
   footerHeight = 50;
-  // trips: Trip[];
   trips: Observable<Trip>[];
   tripValues: Trip[];
   selectedTrip;
@@ -49,12 +43,6 @@ export class SitesComponent implements OnInit, OnDestroy {
   siteObservable: Observable<Site>;
 
   groups = []; // Contains an array of group ids
-
-  // tripSubArray: Subscription[];
-  // addSectionSub: Subscription;
-  // siteSub: Subscription;
-  // orgSubArray: Subscription[];
-  // wikiSub: Subscription;
 
   // Handles part of creating a new trip
   userOrgs: Observable<Organization>[]; // Observable of all the orgs
@@ -72,7 +60,7 @@ export class SitesComponent implements OnInit, OnDestroy {
   newTripTeam: Team;
   newTripName: string;
 
-  // ToDo edit based on permissions
+  // TODO: edit based on permissions
   canEditWiki: boolean;  // this means the user can edit wiki
   canEditChecklist: boolean;
   canEditTrip: boolean;
@@ -141,12 +129,14 @@ export class SitesComponent implements OnInit, OnDestroy {
         this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/checklist/${site.currentCheckList}`)
         .valueChanges().pipe(map(data => {
           const array = [];
-          Object.keys(data).forEach(title => {
-            const json = {};
-            json['name'] = title;
-            json['json'] = data[title];
-            array.push(json);
-          });
+          if (data) {
+            Object.keys(data).forEach(title => {
+              const json = {};
+              json['name'] = title;
+              json['json'] = data[title];
+              array.push(json);
+            });
+          }
           return array;
         }));
 
@@ -155,11 +145,9 @@ export class SitesComponent implements OnInit, OnDestroy {
       this.trips = site.tripIds.map(id => this.db.doc(`trips/${id}`).valueChanges() as Observable<Trip>);
 
       this.trips.map(ob => {
-        // let tripSub: Subscription;height
         ob.pipe(takeUntil(this.unsubscribeSubject)).subscribe((trip: Trip) => {
           this.tripValues = [...this.tripValues, trip];
         });
-        // this.tripSubArray = [...this.tripSubArray, tripSub];
       });
     });
 
@@ -177,12 +165,9 @@ export class SitesComponent implements OnInit, OnDestroy {
       this.getOrganizations(user).then((orgs: Observable<Organization>[]) => {
         this.userOrgMap = [];
         orgs.map(d => {
-          // let orgSub: Subscription;
           d.pipe(takeUntil(this.unsubscribeSubject)).subscribe((o: Organization) => {
-            // console.log(o);
             this.userOrgMap = [...this.userOrgMap, o];
           });
-          // this.orgSubArray = [...this.orgSubArray, orgSub];
         });
       });
     });
@@ -222,22 +207,6 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // if (this.wikiSub) {
-    //   this.wikiSub.unsubscribe();
-    // }
-    // let sub: Subscription;
-    // for (sub of this.orgSubArray) {
-    //   sub.unsubscribe();
-    // }
-    // for (sub of this.tripSubArray) {
-    //   sub.unsubscribe();
-    // }
-    // if (this.siteSub) {
-    //   this.siteSub.unsubscribe();
-    // }
-    // if (this.addSectionSub) {
-    //   this.addSectionSub.unsubscribe();
-    // }
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }
@@ -334,15 +303,9 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   submitNewList() {
-    // console.log(this.selectedLists);
-
-      // console.log(this.selectedSite);
-    // this.selected.selected = this.selectedLists;
     this.sharedService.selectedChecklists = this.selectedLists;
-    // console.log(this.selected.selected);
     this.sharedService.backHistory.push(this.router.url);
     this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
-    // this.router.navigate(['/temp']);
     this.showNewSectionPopup = false;
   }
 

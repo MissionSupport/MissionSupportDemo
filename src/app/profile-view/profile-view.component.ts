@@ -1,12 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {Site} from '../interfaces/site';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {UserSettings} from '../interfaces/user-settings';
 import {UserPreferences} from '../interfaces/user-preferences';
 import {Router} from '@angular/router';
 import { MessageService } from 'primeng/api';
-import {Subscription, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 @Component({
@@ -32,15 +31,10 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   newPassword: string;
   confirmNewPassword: string;
 
-  // settingsSubArray: Subscription[];
-  // prefsSubArray: Subscription[];
-
   unsubscribeSubject: Subject<void> = new Subject<void>();
 
   constructor(public authInstance: AngularFireAuth, private readonly db: AngularFirestore,
     public router: Router, public messageService: MessageService) {
-    // this.settingsSubArray = [];
-    // this.prefsSubArray = [];
     this.authInstance.auth.onAuthStateChanged(user => {
       this.email = user.email;
       this.id = user.uid;
@@ -51,18 +45,13 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
           this.firstName = data.firstName;
           this.lastName = data.lastName;
           this.organization = data.organization;
-          // this.orgs = data.orgs;
         });
-
-      // this.settingsSubArray = [...this.settingsSubArray, settingSub];
 
       this.db.doc(`user_preferences/${this.id}`).valueChanges().pipe(takeUntil(this.unsubscribeSubject))
         .subscribe((data: UserPreferences) => {
         this.isAdmin = data.admin;
-        // this.sites = data.sites;
         });
 
-      // this.prefsSubArray = [...this.prefsSubArray, prefSub];
       // TODO: this function only updates the email text input field after being clicked on. Needs to be fixed.
     });
 
@@ -84,14 +73,6 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // let sub: Subscription;
-    // for (sub of this.prefsSubArray) {
-    //   sub.unsubscribe();
-    // }
-    // for (sub of this.settingsSubArray) {
-    //   sub.unsubscribe();
-    // }
-
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }

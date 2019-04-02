@@ -1,15 +1,12 @@
 <p-sidebar [(visible)]="display" position="right" (onShow) = "restoreFront($event)" (onHide)="display ? this.sidebarService.toggle() : null">
   <div style="position: fixed; top: 20px" *ngIf="!this.router.url.includes('sidebar:settingsOptions')">
-    <!--<a (click)="restoreFront($event)"> Back</a>-->
     <p-button icon="pi pi-arrow-left" styleClass="ui-button-rounded" (onClick)="restoreFront($event)"></p-button>
   </div>
   <router-outlet name="sidebar"></router-outlet>
 </p-sidebar>
 
 <div id="innerToolbar" class="p-grid p-justify-between" style="height: 50px; width: 100vw; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.24); ">
-  <!--background-color: #007ad9-->
   <div class="p-col-fixed p-col-align-left" style="height: 90%;" >
-    <!--<a routerLink="/profile"><img src="assets/icons/nut-icon.png" style="height: 90%"></a>-->
     <p-button icon="pi pi-arrow-left" *ngIf="this.isLanding" styleClass="ui-button-rounded" style="height: 100%; padding-top: 5px; padding-right: 5px; cursor: pointer;" (onClick)="navBack($event)"></p-button>
   </div>
   <div class="p-col-fixed p-col-align-center p-align-center" style="font-size: x-large; text-align: center;">
@@ -22,11 +19,9 @@
         <span style="font-size: small">{{addName}}</span>
       </div>
     </div>
-    <!--<a (click)="toggleEditMode()" [hidden]="!hasEditRights"><img src="assets/icons/pencil.png" style="height: 100%; padding-top: 5px; padding-right: 5px; cursor: pointer;"></a>-->
     <div style="display: inline-block">
       <i class="pi pi-cog" style="cursor: pointer; font-size: 40px" (click)="this.sidebarService.toggle()"></i>
     </div>
-    <!-- <img src="assets/icons/nut-icon.png" style="height: 100%; padding-top: 5px; padding-right: 5px; cursor: pointer;"></a> -->
   </div>
 </div>
 
