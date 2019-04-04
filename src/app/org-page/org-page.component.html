@@ -83,6 +83,9 @@
     <h3>Teams</h3>
     <p-accordion [multiple]="false">
       <p-accordionTab *ngFor="let team of teams" [header]="(team | async)?.name">
+        <div *ngFor="let user of (team | async)?.admins">
+          {{user}}
+        </div>
       </p-accordionTab>
     </p-accordion>
     <!--Show create team button if they are admin-->

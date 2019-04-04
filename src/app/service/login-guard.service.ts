@@ -7,24 +7,30 @@ import { AngularFireAuth } from '@angular/fire/auth';
   providedIn: 'root'
 })
 export class LoginGuardService implements CanActivate {
-  user;
-  constructor(private router: Router, private ngZone: NgZone, public authInstance: AngularFireAuth) {
+  constructor(private router: Router, public authInstance: AngularFireAuth, private ngZone: NgZone) { }
+  canActivate(): Observable<boolean> | Promise<boolean> | boolean {
     this.authInstance.auth.onAuthStateChanged(user => {
-      if (!user) {
-        this.user = undefined;
-      } else {
-        this.user = user;
+      if (user != null) {
+        // User is signed in
+        // localStorage.removeItem('user');
+        this.ngZone.run(() => this.router.navigate(['']));
+        return false;
       }
     });
-  }
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if (this.user) {
-      this.router.navigate(['/landing']);
+    if (!localStorage.getItem('user') && (this.authInstance.auth.currentUser == null ||
+      !this.authInstance.auth.currentUser.emailVerified)) {
+      // TODO come back and tell user they are not authenticated or need to create an account
+      if (this.authInstance.auth.currentUser == null) {
+        console.log('User is not logged in.');
+      } else {
+        console.log('User is not verified.');
+      }
+      // this.ngZone.run(() => this.router.navigate(['login']));
       return false;
-    } else {
-      return true;
     }
+    console.log('User is authenticated.');
+    return true;
+  }
     // });
     // if (localStorage.getItem('user') && this.authInstance.auth.currentUser
     //   && this.authInstance.auth.currentUser.emailVerified) {
@@ -34,4 +40,3 @@ export class LoginGuardService implements CanActivate {
     // }
     // return true;
   }
-}

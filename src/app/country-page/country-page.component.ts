@@ -110,13 +110,15 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       if (this.subUserPref) {
         this.subUserPref.unsubscribe();
       }
-      this.subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
-        .subscribe((pref: UserPreferences) => {
-          this.canEditSites = this.canEditWiki = pref.admin;
-          this.canProposeWiki = pref.verified;
-          this.sharedService.canEdit.emit(pref.admin || pref.verified);
-        }
-      );
+      if (user) {
+        this.subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
+          .subscribe((pref: UserPreferences) => {
+            this.canEditSites = this.canEditWiki = pref.admin;
+            this.canProposeWiki = pref.verified;
+            this.sharedService.canEdit.emit(pref.admin || pref.verified);
+          }
+        );
+      }
     });
   }
 

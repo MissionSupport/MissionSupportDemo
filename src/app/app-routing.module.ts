@@ -17,7 +17,6 @@ import {TripPageComponent} from './trip-page/trip-page.component';
 import {OrgPageComponent} from './org-page/org-page.component';
 import {ChecklistCreationPageComponent} from './checklist-fillOut-page/checklist-creation-page.component';
 import {SiteSearchComponent} from './site-search/site-search.component';
-import {LoginGuardService} from './service/login-guard.service';
 import {AdminNewListComponent} from './admin/admin-new-list/admin-new-list.component';
 import {AdminCountryCreationComponent} from './admin/admin-country-creation/admin-country-creation.component';
 import {DiffEditComponent} from './admin/diff-edit/diff-edit.component';
@@ -28,11 +27,11 @@ import {ChecklistVersionComponent} from './admin/checklist-version/checklist-ver
 const routes: Routes = [
   {
     path: '',
-    canActivate: [LoginGuardService],
-    component: LoginComponent
+    canActivate: [AuthguardService],
+    component: LandingComponent
   },
   {
-    path: 'landing',
+    path: '',
     component: SettingsListComponent,
     outlet: 'sidebar'
   },
@@ -41,9 +40,8 @@ const routes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'landing',
-    canActivate: [AuthguardService],
-    component: LandingComponent,
+    path: 'login',
+    component: LoginComponent,
   },
   {
     path: 'country/:countryId/site/:id',

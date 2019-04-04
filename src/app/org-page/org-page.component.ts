@@ -143,18 +143,19 @@ export class OrgPageComponent implements OnInit, OnDestroy {
       this.teamIds = org.teamIds;
       // Check if the user can edit
       this.authInstance.auth.onAuthStateChanged(user => {
-        this.canEditTrips = this.canEditTeams = this.canEditWiki = org.admins.includes(user.uid);
-        if (this.viewWiki) {
-          this.sharedService.addName.emit('New Section');
-          this.sharedService.canEdit.emit(this.canEditWiki);
-        } else if (this.viewTeams) {
-          this.sharedService.addName.emit('New Team');
-          this.sharedService.canEdit.emit(this.canEditTeams);
-        } else {
-          this.sharedService.addName.emit('New Trip');
-          this.sharedService.canEdit.emit(this.canEditTrips);
-        }
-      });
+        if (user) {
+          this.canEditTrips = this.canEditTeams = this.canEditWiki = org.admins.includes(user.uid);
+          if (this.viewWiki) {
+            this.sharedService.addName.emit('New Section');
+            this.sharedService.canEdit.emit(this.canEditWiki);
+          } else if (this.viewTeams) {
+            this.sharedService.addName.emit('New Team');
+            this.sharedService.canEdit.emit(this.canEditTeams);
+          } else {
+            this.sharedService.addName.emit('New Trip');
+            this.sharedService.canEdit.emit(this.canEditTrips);
+          }
+        }});
     });
   }
 
@@ -238,7 +239,7 @@ export class OrgPageComponent implements OnInit, OnDestroy {
       this.showNewSectionPopup = false;
       // Let's go ahead and create the team
       const teamId = this.db.createId();
-      const members = this.members.map(m => m.value);
+      const members = this.members.map(m => m.value).filter(m => m !== '');
       const team: Team = {
         admins: members,
         id: teamId,

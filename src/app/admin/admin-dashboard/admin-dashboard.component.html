@@ -3,8 +3,8 @@
     <p-menu [model]="items" [style]="{'width': '100%', 'margin-top' : '10px'}"></p-menu>
   </div>
   <div class="p-col-12 p-lg-10">
-    <div [hidden]="!viewUserApprovals" [style]="{'margin-top' : '10px'}">
-      <div *ngFor="let user of pendingUsers; let i = index">
+    <div *ngIf="pendingUsers | async as users" [hidden]="!viewUserApprovals" [style]="{'margin-top' : '10px'}">
+      <div *ngFor="let user of users; let i = index">
         <p-card [style]="{'margin-top' : '10px'}">
           <p-header>
             <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:5px; margin-left: 10px; ">{{user.firstName}} {{user.lastName}}</span>
@@ -25,7 +25,7 @@
             <p style="margin-left: 20px">{{edit.proposedBy}} -  {{edit.timeProposed}}</p>
           </p-header>
           <div *ngIf="edit.original | async as og">
-            <app-diff-edit [original]="og" [new]="edit.new" [layoutNum]="2" (updatedVersion)="updateVersion($event, i, edit)"></app-diff-edit>
+            <app-diff-edit [edit]=edit.edit [original]="og" [new]="edit.new" [layoutNum]="2" (updatedVersion)="updateVersion($event, i, edit)"></app-diff-edit>
           </div>
         </p-card>
       </div>

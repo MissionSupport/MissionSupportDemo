@@ -14,7 +14,7 @@ export class AuthguardService implements CanActivate {
       if (user == null) {
         // User is not signed in
         localStorage.removeItem('user');
-        this.ngZone.run(() => this.router.navigate(['/']));
+        this.ngZone.run(() => this.router.navigate(['login']));
         return false;
       }
     });
@@ -26,7 +26,7 @@ export class AuthguardService implements CanActivate {
       } else {
         console.log('User is not verified.');
       }
-      this.ngZone.run(() => this.router.navigate(['/']));
+      this.ngZone.run(() => this.router.navigate(['login']));
       return false;
     }
     console.log('User is authenticated.');
