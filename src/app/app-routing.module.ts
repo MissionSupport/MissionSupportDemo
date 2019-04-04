@@ -15,7 +15,7 @@ import {MyTripsListComponent} from './my-trips-list/my-trips-list.component';
 import {CountryPageComponent} from './country-page/country-page.component';
 import {TripPageComponent} from './trip-page/trip-page.component';
 import {OrgPageComponent} from './org-page/org-page.component';
-import {ChecklistCreationPageComponent} from './checklist-creation-page/checklist-creation-page.component';
+import {ChecklistCreationPageComponent} from './checklist-fillOut-page/checklist-creation-page.component';
 import {SiteSearchComponent} from './site-search/site-search.component';
 import {LoginGuardService} from './service/login-guard.service';
 import {AdminNewListComponent} from './admin/admin-new-list/admin-new-list.component';
@@ -148,10 +148,9 @@ const routes: Routes = [
 
   },
   {
-    path: 'adminList',
+    path: 'country/:countryId/site/:id/createList',
     canActivate: [AuthguardService],
     component: AdminNewListComponent,
-
   },
   {
     path: 'adminCountry',

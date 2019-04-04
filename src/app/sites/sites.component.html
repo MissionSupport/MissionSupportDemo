@@ -28,7 +28,7 @@
         Select New Checklist Generic
       </p-header>
     </p-listbox>
-    <p-listbox [options]="listsPresent" [(ngModel)]="selectedLists" optionLabel="name" [style]="{'width':'100%'}" readonly="true">
+    <p-listbox [options]="listsPresent" [(ngModel)]="editList" optionLabel="name" [style]="{'width':'100%'}" readonly="true">
       <p-header>
         <i class="pi pi-list"></i>
         Lists Already Included
@@ -36,8 +36,9 @@
     </p-listbox>
     <div class="p-grid" style="text-align: center; padding-top: 10px">
       <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
-      <p-button class="p-col-6" (onClick)="submitNewList()" label ="Submit"></p-button>
+      <p-button class="p-col-6" (onClick)="submitNewList()" label ="Select Lists"></p-button>
     </div>
+    <p>Don't see what you need?  <a (click)="createNewList()">Create New List</a></p>
 
   </div>
   <div style="width: 300px;" [hidden]="!viewTrips">

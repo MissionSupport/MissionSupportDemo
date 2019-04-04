@@ -79,6 +79,7 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   titleEdits = []; // For Wiki usage
   confirmTitles = [];
+  editList;
 
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'Checklist', icon: 'pi pi-list'},
@@ -145,8 +146,12 @@ export class SitesComponent implements OnInit, OnDestroy {
             const json = {};
             json['name'] = title;
             json['json'] = data[title];
+            this.genericChecklists = this.genericChecklists.filter(obj => {
+              return obj.label !== title;
+            });
             array.push(json);
           });
+          this.listsPresent = array;
           return array;
         }));
 
@@ -344,6 +349,10 @@ export class SitesComponent implements OnInit, OnDestroy {
     this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
     // this.router.navigate(['/temp']);
     this.showNewSectionPopup = false;
+  }
+
+  createNewList() {
+    this.router.navigate([`country/${this.countryId}/site/${this.siteId}/createList`]);
   }
 
   jsonParse(list) {
