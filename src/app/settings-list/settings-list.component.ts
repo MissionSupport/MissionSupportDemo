@@ -51,12 +51,12 @@ export class SettingsListComponent implements OnInit {
             { label: 'My Profile', icon: 'pi pi-fw pi-user', routerLink: ['', { outlets: { sidebar: ['profileView'] } }] },
             { label: 'Edit Checklist Preferences', icon: 'pi pi-fw pi-cog' },
             { label: 'View Permissions', icon: 'pi pi-fw pi-lock' },
-            { label: 'Admin Dashboard', icon: 'pi pi-fw pi-lock', visible: !this.viewDash, command: () => {
+            { label: 'Admin Dashboard', icon: 'pi pi-fw pi-lock', visible: this.viewDash, command: () => {
                 this.router.navigate(['/admindash']);
               } },
             { label: 'Upload Media' , icon: 'pi pi-fw pi-cloud-upload', routerLink: ['', { outlets: { sidebar: ['uploadSide'] } }] },
             { label: 'Manage Organizations', icon: 'pi pi-fw pi-users', routerLink: ['', { outlets: { sidebar: ['manageGroup'] } }] },
-            // { label: 'My Trips', icon: 'pi pi-fw pi-briefcase', routerLink: ['', { outlets: { sidebar: ['myTripsSide'] } }] },
+            // { label: 'M y Trips', icon: 'pi pi-fw pi-briefcase', routerLink: ['', { outlets: { sidebar: ['myTripsSide'] } }] },
             { label: 'Log Out', icon: 'pi pi-fw pi-sign-out', command: () => {
                 this.authInstance.auth.signOut().then(() => {
                   localStorage.removeItem('user');

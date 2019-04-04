@@ -120,11 +120,6 @@ export class OrgPageComponent implements OnInit, OnDestroy {
           this.dataSubArr = [...this.dataSubArr, tripIdSub];
         });
 
-        // this.tripIds.map(data => {
-        //   const dataSub = data.subscribe();
-        //   this.dataSubArr = [...this.dataSubArr, dataSub];
-        // });
-
         // Get wiki data
         this.sections = this.db.doc(`organizations/${this.orgId}/wiki/${org.currentWiki}`).valueChanges()
         .pipe(
@@ -172,21 +167,12 @@ export class OrgPageComponent implements OnInit, OnDestroy {
     }
     this.obsSubArr.forEach(obsSub => obsSub.unsubscribe());
     this.dataSubArr.forEach(dataSub => dataSub.unsubscribe());
-
-    // let sub: Subscription;
-    // for (sub of this.obsSubArr) {
-    //   sub.unsubscribe();
-    // }
-    // for (sub of this.dataSubArr) {
-    //   sub.unsubscribe();
-    // }
   }
 
   tripClick(): void {
     console.log(this.selectedTrip);
     this.sharedService.backHistory.push(this.router.url);
     this.router.navigate([`trip/${this.selectedTrip.id}`]);
-    // this.router.navigate(['/temp']);
   }
 
   /**

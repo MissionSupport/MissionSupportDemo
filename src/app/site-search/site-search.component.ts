@@ -17,11 +17,9 @@ export class SiteSearchComponent implements OnInit, OnDestroy {
   site: Site;
   sites: Site[];
   sitesObservable: Observable<Site[]>;
-  // siteSubArray: Subscription[];
   country: Country;
   countries: Country[];
   countriesObservable: Observable<Country[]>;
-  // countrySub: Subscription;
 
   selectedSite: Site;
   filterSites: Site[];
@@ -31,29 +29,16 @@ export class SiteSearchComponent implements OnInit, OnDestroy {
   constructor(db: AngularFirestore, public router: Router, private sharedService: SharedService) {
     this.sharedService.hideToolbar.emit(false);
     this.sharedService.canEdit.emit(false);
-    // sharedService.onPageNav.emit('Site Selection');
-    // this.sites = [];
-    // this.countries = [];
-    // this.siteSubArray = [];
     this.countriesObservable = db.collection<Country>(`countries`).valueChanges();
     this.countriesObservable.pipe(takeUntil(this.unsubscribeSubject))
       .subscribe((countries: Country[]) => {
         this.countries = countries;
         countries.forEach((country: Country) => {
-          // this.country = country;
-          // this.countries = [...this.countries, country];
           this.sitesObservable = db.collection<Site>(`countries/${country.id}/sites`).valueChanges();
 
-          // let siteSub: Subscription;
           this.sitesObservable.pipe(takeUntil(this.unsubscribeSubject))
             .subscribe((sites: Site[]) => this.sites = sites);
-          // sites.forEach((site: Site) => {
-          //   // this.site = site;
-          //   this.sites = [...this.sites, site];
-          //   // console.log(site);
-          // });
         });
-        // this.siteSubArray = [...this.siteSubArray, siteSub];
       });
   }
 
@@ -61,13 +46,6 @@ export class SiteSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // if (this.countrySub) {
-    //   this.countrySub.unsubscribe();
-    // }
-    // let sub: Subscription;
-    // for (sub of this.siteSubArray) {
-    //   sub.unsubscribe();
-    // }
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }
@@ -79,18 +57,8 @@ export class SiteSearchComponent implements OnInit, OnDestroy {
 
   filterSite(event): void {
     const query = event.query;
-    // let filtered: Site[] = [];
 
     this.filterSites = this.sites.filter((site) =>
       site.siteName.toLowerCase().startsWith(query.toLowerCase()));
-
-    // for (let i = 0; i < this.sites.length; i++) {
-    //   const site: Site = this.sites[i];
-    //   if (site.siteName.toLowerCase().indexOf(query.toLowerCase()) === 0) {
-    //     filtered = [...filtered, site];
-    //   }
-    // }
-    // this.filterSites = filtered;
   }
-
 }

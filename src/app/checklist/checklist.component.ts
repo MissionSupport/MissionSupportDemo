@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Question, Validator } from './question';
 import { FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 
@@ -16,7 +16,7 @@ import { FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms'
   `,
   styles: []
 })
-export class ChecklistComponent implements OnInit {
+export class ChecklistComponent implements OnInit, OnChanges {
   @Input() questions: Question[] = [];
   @Output() submit: EventEmitter<any> = new EventEmitter<any>();
 
@@ -32,6 +32,21 @@ export class ChecklistComponent implements OnInit {
 
   ngOnInit() {
     this.questions.forEach((question: Question) => {
+      if (question.type === 'medicineMultipleTextbox' || question.type === 'medicineMultipleCheckbox') {
+        // create a FormArray here since the number of controls is dynamic.
+        this.checklist.addControl(question.label, this.fb.array([], this.bindValidations(question.validators)));
+      } else if (question.type === 'medicineTextbox') {
+        this.checklist.addControl(question.label, this.fb.group({}, this.bindValidations(question.validators)));
+      } else {
+        this.checklist.addControl(question.label, this.fb.control('', this.bindValidations(question.validators)));
+      }
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const newControls: Question[] = (changes['questions'].currentValue as Question[]).filter((item) =>
+      (changes['questions'].previousValue as Question[]).indexOf(item) < 0);
+    newControls.forEach((question: Question) => {
       if (question.type === 'medicineMultipleTextbox' || question.type === 'medicineMultipleCheckbox') {
         // create a FormArray here since the number of controls is dynamic.
         this.checklist.addControl(question.label, this.fb.array([], this.bindValidations(question.validators)));

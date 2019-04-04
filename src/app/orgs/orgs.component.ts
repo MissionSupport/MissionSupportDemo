@@ -67,13 +67,8 @@ export class OrgsComponent implements OnInit, OnDestroy {
     if (this.groupSub) {
       this.groupSub.unsubscribe();
     }
-    let sub: Subscription;
-    for (sub of this.layoutSubArr) {
-      sub.unsubscribe();
-    }
-    for (sub of this.pageSubArr) {
-      sub.unsubscribe();
-    }
+    this.layoutSubArr.forEach(sub => sub.unsubscribe());
+    this.pageSubArr.forEach(sub => sub.unsubscribe());
   }
 
 }
