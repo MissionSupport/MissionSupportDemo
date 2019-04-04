@@ -3,8 +3,8 @@
     <p-menu [model]="items" [style]="{'width': '100%', 'margin-top' : '10px'}"></p-menu>
   </div>
   <div class="p-col-12 p-lg-10">
-    <div [hidden]="!viewUserApprovals" [style]="{'margin-top' : '10px'}">
-      <div *ngFor="let user of pendingUsers; let i = index">
+    <div *ngIf="pendingUsers | async as users" [hidden]="!viewUserApprovals" [style]="{'margin-top' : '10px'}">
+      <div *ngFor="let user of users; let i = index">
         <p-card [style]="{'margin-top' : '10px'}">
           <p-header>
             <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:5px; margin-left: 10px; ">{{user.firstName}} {{user.lastName}}</span>

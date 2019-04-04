@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import { SharedService } from 'src/app/service/shared-service.service';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {flatMap, map, take, takeUntil} from 'rxjs/operators';
 import {UserPreferences} from '../../interfaces/user-preferences';
 import {UserSettings} from '../../interfaces/user-settings';
@@ -26,7 +26,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   viewPendingChecklistEdits;
   viewNewCountrySite;
   unsubscribeSubject: Subject<void> = new Subject<void>();
-  pendingUsers = [];
+  pendingUsers: Observable<any[]>;
 
   pendingEdits = [
   ];
@@ -120,14 +120,32 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.db.collection(`user_preferences`, ref => ref.where('verified', '==', false))
       .valueChanges().pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(async (users: UserPreferences[]) => {
+        this.pendingUsers = this.db.collection(`users`).valueChanges().pipe(map((usettings: UserSettings[]) => {
+          const data = usettings.filter(x => users.map(d => d.id).includes(x.userId));
+          const array = [];
+          for (const details of data) {
+            array.push({
+              id: details.userId,
+              firstName: details.firstName,
+              lastName: details.lastName,
+              email: '',
+              org: ''
+            });
+          }
+          return array;
+        }, takeUntil(this.unsubscribeSubject)));
+        /*
         this.pendingUsers = (await Promise.all(users.map(async (user: UserPreferences) => {
           const id = user.id;
           // TODO Get email
           // const x = await this.db.doc(`emails/${id}`).get().toPromise();
+
           const details: UserSettings = await this.db.doc(`users/${id}`)
             .valueChanges().pipe(map((x: UserSettings) => {
               return x;
           }), take(1)).toPromise();
+          console.log("count test test");
+          console.log(new Date());
           if (details != null) {
             return {
               id: id,
@@ -136,9 +154,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
               email: '',
               org: ''
             };
-            return null;
           }
+          return null;
         }))).filter(e => e != null);
+        */
       });
     // Code for dealing with pending wiki edits
     this.db.collection('countries').valueChanges().pipe(takeUntil(this.unsubscribeSubject))
@@ -204,7 +223,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   approve(user, index) {
-    this.pendingUsers.splice(index, 1);
+    //this.pendingUsers.splice(index, 1);
     this.pendingUsers = this.pendingUsers;
     // Take user and change status.
     this.db.doc(`user_preferences/${user.id}`).update({verified: true}).catch(() => {
@@ -213,7 +232,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   deny(user, index) {
-    this.pendingUsers.splice(index, 1);
+    //this.pendingUsers.splice(index, 1);
     this.pendingUsers = this.pendingUsers;
     this.db.doc(`user_preferences/${user.id}`).update({verified: firebase.firestore.FieldValue.delete()})
       .catch(() => {
