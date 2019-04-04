@@ -238,7 +238,7 @@ export class OrgPageComponent implements OnInit, OnDestroy {
       this.showNewSectionPopup = false;
       // Let's go ahead and create the team
       const teamId = this.db.createId();
-      const members = this.members.map(m => m.value);
+      const members = this.members.map(m => m.value).filter(m => m !== '');
       const team: Team = {
         admins: members,
         id: teamId,

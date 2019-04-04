@@ -28,11 +28,11 @@ import {ChecklistVersionComponent} from './admin/checklist-version/checklist-ver
 const routes: Routes = [
   {
     path: '',
-    canActivate: [LoginGuardService],
-    component: LoginComponent
+    canActivate: [AuthguardService],
+    component: LandingComponent
   },
   {
-    path: 'landing',
+    path: '',
     component: SettingsListComponent,
     outlet: 'sidebar'
   },
@@ -41,9 +41,8 @@ const routes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'landing',
-    canActivate: [AuthguardService],
-    component: LandingComponent,
+    path: 'login',
+    component: LoginComponent,
   },
   {
     path: 'country/:countryId/site/:id',

@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
 
         // Check if user is authenticated.
         if (credential.user.emailVerified) {
-          this.router.navigate([{outlets: {primary: 'landing' }}]).catch(reason => {
+          this.router.navigate(['']).catch(reason => {
             console.log('Something went wrong with authguard');
           });
         } else {
