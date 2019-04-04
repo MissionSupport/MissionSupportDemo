@@ -34,32 +34,7 @@
   </div>
 </p-dialog>
 
-
-
-
-
-
-
 <div id="mainBody" [ngStyle]="{'margin-bottom' : footerHeight + 10 + 'px'}" >
-
-  <!--<div [hidden]="!viewWiki"  style="width: 99vw">-->
-      <!--&lt;!&ndash;<a (click)="editMode = !editMode" style="font-size: smaller" [hidden]="!canEdit">Toggle Edit Mode</a>&ndash;&gt;-->
-      <!--<div *ngFor="let info of sections; let i = index" style="margin-top: 20px; padding-right: 35px">-->
-        <!--<div [hidden]="!hideme[i]">-->
-          <!--<p-editor type="text" [(ngModel)]= "editText[i]" [style]="{'height':'320px'}" ></p-editor>-->
-          <!--<div class="p-grid" style="text-align: center">-->
-            <!--<p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i]">Cancel</p-button>-->
-            <!--<p-button class="p-col-6" (click)="submitEdit(info.title, i)">Submit</p-button>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<p-fieldset legend={{info.title}} [toggleable]="true" [hidden]="hideme[i]">-->
-          <!--<markdown [data]="info.markup"></markdown>-->
-        <!--</p-fieldset>-->
-        <!--&lt;!&ndash;<div [hidden]="!editMode">&ndash;&gt;-->
-          <!--&lt;!&ndash;<a (click)="hideme[i] = !hideme[i]" style="font-size: smaller" [hidden]="hideme[i]">edit?</a>&ndash;&gt;-->
-        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-      <!--</div>-->
-    <!--</div>-->
   <div [hidden]="viewSites" style="width: 100vw">
     <div *ngFor="let info of sections | async; let i = index; let confirmTitle = false" style="margin-top: 20px; padding-right: 35px">
       <div [hidden]="!hideme[i]">
@@ -85,16 +60,7 @@
         <markdown [data]="info.markup"></markdown>
       </p-fieldset>
     </div>
-    <!--<a (click)="submitEdit('test111', editText.length)" style="font-size: smaller" [hidden]="!editMode">Add new thing</a>-->
-    <!--<div *ngFor="let g of groups; let i = index" style="margin-top: 20px; padding-right: 35px">-->
-      <!--<a routerLink="./group/{{g.id}}" ><p class="p-col p-col-2">{{g.name}}</p></a>-->
-    <!--</div>-->
   </div>
-
-
-
-
-
 
   <div [hidden]="!viewSites">
     <h3>Sites</h3>
@@ -104,5 +70,4 @@
   </div>
 
 </div>
-
 <app-bottom-tabs [tabs]="tabs" [startTab]="startTab" (tabClicked)="onTabClicked($event)"></app-bottom-tabs>

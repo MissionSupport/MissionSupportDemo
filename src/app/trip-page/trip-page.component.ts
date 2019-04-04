@@ -45,7 +45,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
   teamName: string;
   date: Date;
 
-  // ToDo: Edit based on permissions
+  // TODO: Edit based on permissions
   canEditAbout = true;
 
   titleEdits = [];
@@ -78,11 +78,11 @@ export class TripPageComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.unsubscribeSubject)).subscribe(data => {
             this.sections = [];
             Object.keys(data).forEach(title => {
-            const markup = data[title];
-            this.sections.push({title, markup});
-            this.titleEdits.push();
-            this.titleEditsConfirm.push();
-          });
+              const markup = data[title];
+              this.sections.push({title, markup});
+              this.titleEdits.push();
+              this.titleEditsConfirm.push();
+            });
         });
 
         // Now get the org information
@@ -104,19 +104,6 @@ export class TripPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // if (this.orgSub) {
-    //   this.orgSub.unsubscribe();
-    // }
-    // if (this.sectionSub) {
-    //   this.sectionSub.unsubscribe();
-    // }
-    // if (this.tripSub) {
-    //   this.tripSub.unsubscribe();
-    // }
-    // if (this.wikiSub) {
-    //   this.wikiSub.unsubscribe();
-    // }
-
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }
@@ -160,10 +147,8 @@ export class TripPageComponent implements OnInit, OnDestroy {
   }
 
   groupClick(): void {
-    // console.log(this.selectedSite);
     this.sharedService.backHistory.push(this.router.url);
     this.router.navigate(['org/' + this.org.id]);
-    // this.router.navigate(['/temp']);
   }
 
   onTabClicked(tab: number) {

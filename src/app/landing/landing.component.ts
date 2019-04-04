@@ -23,10 +23,8 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   scaleFactor = 200;
   svg: d3.Selection<SVGSVGElement, {}, HTMLElement, any>;
 
-  // countries: Observable<Country[]>;
   countries: Country[];
   selectedCountry: Country;
-  // countryCollection: AngularFirestoreCollection<Country>;
   countrySub: Subscription;
 
   constructor(db: AngularFirestore, public router: Router, private sharedService: SharedService) {
@@ -100,8 +98,6 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   countryClick(): void {
-    // console.log(this.selectedSite);
     this.router.navigate(['country/' + this.selectedCountry.id]);
-    // this.router.navigate(['/temp']);
   }
 }

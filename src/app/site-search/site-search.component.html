@@ -3,8 +3,4 @@
     <p-autoComplete [(ngModel)]="selectedSite" [suggestions]="filterSites" (completeMethod)="filterSite($event)"
                     field="siteName" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" placeholder="Search for a Site" [minLength]="1" (onSelect)="siteClick()"></p-autoComplete>
   </span>
-  <!--<span id="listContainer" class = "p-col-12 p-col-align-end"  style="height: 95%; width: 100%">-->
-    <!--<p-listbox [options]="sites" [(ngModel)]="selectedSite" [style] = "{'width':'100%'}" optionLabel="siteName"-->
-               <!--(click)="siteClick()"></p-listbox>-->
-  <!--</span>-->
 </div>

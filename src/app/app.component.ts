@@ -64,17 +64,4 @@ export class AppComponent implements AfterContentInit, OnDestroy {
       this.scrollpanelSubtractSub.unsubscribe();
     }
   }
-
-  // onActivate(componentRef) {
-  //   console.log(componentRef.constructor.name);
-  //    if (componentRef.constructor.name === 'LoginComponent' || componentRef.constructor.name === 'RegisterComponent') {
-  //       this.pageName = 'NoShow';
-  //       this.showTool = true;
-  //    } else {
-  //       if (componentRef.constructor.name === 'LandingComponent') {
-  //         this.pageName = 'Region Selection';
-  //       }
-  //      this.showTool = false;
-  //    }
-  // }
 }

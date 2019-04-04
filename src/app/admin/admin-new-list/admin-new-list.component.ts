@@ -34,12 +34,12 @@ export class AdminNewListComponent implements OnInit {
     { name: '1/4 Page Width', gridSize: 'p-col-3'}
   ];
 
-  newQuestionGridSize: string;
+  newQuestionGridSize: {name: string, gridSize: string};
   newQuestion: string;
   selectedControlType: {name: string, type: 'dropdown' | 'freeResponse' | 'image' | 'medicineMultipleCheckbox'
   | 'medicineMultipleTextbox'| 'medicineTextbox' | 'multipleSelect' | 'radioButton'
   | 'textbox'};
-  options: {key: string, value: string}[];
+  options: {key: string, value: string}[] = [];
 
   constructor(private sharedService: SharedService, private preDef: PreDefined) {
     this.checklist = {
@@ -50,7 +50,7 @@ export class AdminNewListComponent implements OnInit {
     // sharedService.hideToolbar.emit(false);
     // sharedService.canEdit.emit(false);
     // sharedService.onPageNav.emit('Checklist Creation');
-    // this.sharedService.scrollPanelHeightToSubtract.emit(50);
+    this.sharedService.scrollPanelHeightToSubtract.emit(0);
 
   }
 
@@ -67,7 +67,7 @@ export class AdminNewListComponent implements OnInit {
         key: this.selectedControlType.type + this.counter.toString(),
         label: this.newQuestion,
         type: this.selectedControlType.type,
-        gridSize: this.newQuestionGridSize,
+        gridSize: this.newQuestionGridSize.gridSize,
         options: this.options,
         validators: []  // TODO: Add validation options.
       };
@@ -76,12 +76,12 @@ export class AdminNewListComponent implements OnInit {
         key: this.selectedControlType.type + this.counter.toString(),
         label: this.newQuestion,
         type: this.selectedControlType.type,
-        gridSize: this.newQuestionGridSize,
+        gridSize: this.newQuestionGridSize.gridSize,
         validators: []  // TODO: Add validation options.
       };
     }
     this.counter++;
-    this.checklist.questions.push(object);
+    this.checklist.questions = [...this.checklist.questions, object];
     this.newQuestion = '';
     this.newQuestionGridSize = undefined;
     this.options = [];

@@ -16,10 +16,6 @@ export class UploadFormComponent implements OnInit {
 
   constructor(private upSvc: UploadService) { }
 
-  // detectFiles(event) {
-  //   this.selectedFiles = event.target.files;
-  // }
-
   uploadSingle(event) {
     this.selectedFiles = event.files;
     const file = this.selectedFiles[0];

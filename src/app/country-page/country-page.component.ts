@@ -12,7 +12,6 @@ import {UserPreferences} from '../interfaces/user-preferences';
 import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import { MessageService } from 'primeng/api';
-import {Wikidata} from '../interfaces/wikidata';
 import {EditTask} from '../interfaces/edit-task';
 
 @Component({
@@ -27,7 +26,6 @@ import {EditTask} from '../interfaces/edit-task';
 export class CountryPageComponent implements OnInit, OnDestroy {
   footerHeight: number;
   clientHeight: number;
-  // viewWiki: boolean;
   viewSites: boolean;
   countryId: string;
   countryName: string;
@@ -68,11 +66,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     this.sharedService.addName.emit('New Section');
 
     // TODO: edit based on rights
-    this.sharedService.addSection.subscribe(
-      () => {
-        this.showNewSectionPopup = true;
-      }
-    );
+    this.sharedService.addSection.subscribe(() => this.showNewSectionPopup = true);
     this.sharedService.goSites.subscribe(
       (bool: boolean) => {
         if (bool) {this.goSites(); this.startTab = 1; }
@@ -112,9 +106,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       })
     );
 
-    // let subUserPref = null;
     this.authInstance.auth.onAuthStateChanged(user => {
-      console.log(user);
       if (this.subUserPref) {
         this.subUserPref.unsubscribe();
       }
@@ -132,7 +124,6 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('here');
     if (this.subUserPref) {
       this.subUserPref.unsubscribe();
     }
@@ -198,26 +189,15 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  siteClick(): void {
-    // console.log(this.selectedSite);
+  siteClick() {
     this.sharedService.backHistory.push(this.router.url);
     this.router.navigate([`country/${this.countryId}/site/${this.selectedSite.id}`]);
-    // this.router.navigate(['/temp']);
   }
 
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
     this.showNewSectionPopup = false;
     this.submitEdit(this.newSectionName, this.newSectionText, null, false);
-    /*
-    // Now save to the database
-    const jsonVariable = {};
-    jsonVariable[this.newSectionName] = this.newSectionText;
-    this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`).update(jsonVariable).then(() => {
-      // Success
-      console.log('Successfully added new section');
-    });
-    */
   }
 
   submitNewSite() {
@@ -252,14 +232,12 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   }
 
   goSites() {
-    // this.viewWiki = false;
     this.viewSites = true;
     this.sharedService.addName.emit('New Site');
     this.sharedService.canEdit.emit(this.canEditSites || this.canProposeWiki);
   }
 
   goWiki() {
-    // this.viewWiki = true;
     this.viewSites = false;
     this.sharedService.addName.emit('New Section');
     this.sharedService.canEdit.emit(this.canEditWiki);
@@ -267,12 +245,10 @@ export class CountryPageComponent implements OnInit, OnDestroy {
 
   onTabClicked(tab: number) {
     if (tab === 0) {
-      // this.viewWiki = true;
       this.viewSites = false;
       this.sharedService.addName.emit('New Section');
       this.sharedService.canEdit.emit(this.canEditWiki || this.canProposeWiki);
     } else if (tab === 1) {
-      // this.viewWiki = false;
       this.viewSites = true;
       this.sharedService.addName.emit('New Site');
       this.sharedService.canEdit.emit(this.canEditSites || this.canProposeWiki);

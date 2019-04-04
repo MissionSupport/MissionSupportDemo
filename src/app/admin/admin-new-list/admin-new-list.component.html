@@ -13,7 +13,6 @@
         optionLabel="name" placeholder="New Question Type"></p-dropdown>
       <div *ngIf="selectedControlType !== undefined">
         <p>New {{selectedControlType.name}} Question</p>
-        <!--<div [ngSwitch]="selectedControlType.controlType">-->
           <div *ngIf="selectedControlType.type === 'radioButton'" >
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
@@ -30,7 +29,6 @@
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
           </div>
-
 
           <div *ngIf="selectedControlType.type === 'dropdown'">
             <label style="padding-right: 5px">Question</label>
@@ -78,8 +76,14 @@
             </div>
             <p-button style="padding-top: 5px" (onClick)="addOption()" label="Add Option"></p-button>
           </div>
-        </div>
-      <p-button style="padding-top: 10px" label="Add New Question" (onClick)="pushNewQuestion(); selectedControlType = undefined" [disabled]="selectedControlType=== undefined"></p-button>
+
+          <label style="padding-top: 5px">Grid Size</label>
+          <p-dropdown [options]="questionLengths" [(ngModel)]="newQuestionGridSize"
+            optionLabel="name" placeholder="Grid Size"></p-dropdown>
+      </div>
+      <p-button style="padding-top: 10px" label="Add New Question"
+        (onClick)="pushNewQuestion(); selectedControlType = undefined"
+        [disabled]="!selectedControlType || !newQuestionGridSize || !newQuestion"></p-button>
       <div style="padding-top: 30px" >
         <p-button label="Done Editing?" (onClick)="pushNewForm();"></p-button>
       </div>

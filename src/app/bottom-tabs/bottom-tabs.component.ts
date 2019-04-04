@@ -12,8 +12,6 @@ export class BottomTabsComponent implements OnInit {
   @Input() startTab: number;
   @Output() tabClicked: EventEmitter<number> = new EventEmitter<number>();
 
-  // indexClicked = this.startTab;
-
   constructor() { }
 
   ngOnInit() {
