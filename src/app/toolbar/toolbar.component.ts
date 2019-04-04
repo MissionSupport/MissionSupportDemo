@@ -18,8 +18,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
   isLanding: boolean;
   constructor(public router: Router, public sidebarService: SidebarService,
               private sharedService: SharedService) {
-    this.isLanding = !(this.router.url === '' || this.router.url === '/landing');
-
+    this.isLanding = this.router.url === '/';
   }
 
   ngOnInit() {
@@ -27,7 +26,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.isLanding = !(this.router.url === '' || this.router.url.includes('/landing'));
+    this.isLanding = this.router.url === '/';
   }
 
   restoreFront() {

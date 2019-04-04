@@ -156,20 +156,22 @@ export class SitesComponent implements OnInit, OnDestroy {
       if (wikiSubscribe) {
         wikiSubscribe.unsubscribe();
       }
-      wikiSubscribe = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
-        .pipe(takeUntil(this.unsubscribeSubject)).subscribe((pref: UserPreferences) => {
-          this.canEditTrip = this.canEditChecklist = this.canEditWiki = pref.admin;
-          sharedService.canEdit.emit(pref.admin);
+      if (user) {
+        wikiSubscribe = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
+          .pipe(takeUntil(this.unsubscribeSubject)).subscribe((pref: UserPreferences) => {
+            this.canEditTrip = this.canEditChecklist = this.canEditWiki = pref.admin;
+            sharedService.canEdit.emit(pref.admin);
         });
 
-      this.getOrganizations(user).then((orgs: Observable<Organization>[]) => {
-        this.userOrgMap = [];
-        orgs.map(d => {
-          d.pipe(takeUntil(this.unsubscribeSubject)).subscribe((o: Organization) => {
-            this.userOrgMap = [...this.userOrgMap, o];
+        this.getOrganizations(user).then((orgs: Observable<Organization>[]) => {
+          this.userOrgMap = [];
+          orgs.map(d => {
+            d.pipe(takeUntil(this.unsubscribeSubject)).subscribe((o: Organization) => {
+              this.userOrgMap = [...this.userOrgMap, o];
+            });
           });
         });
-      });
+      }
     });
   }
 
