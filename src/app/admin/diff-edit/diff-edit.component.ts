@@ -232,7 +232,7 @@ export class DiffEditComponent implements OnInit {
         };
         this.db.doc(`countries/${edit.id}/wiki/${wikiId}/data/data`).set(data);
       }).catch(d => {
-        console.log('fuckkkkkk')
+        console.log('fuckkkkkk');
         console.log(d);
       });
     });

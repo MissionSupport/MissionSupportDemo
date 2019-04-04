@@ -27,7 +27,7 @@ export class SettingsListComponent implements OnInit {
         this.authInstance.auth.signOut().then(() => {
           localStorage.removeItem('user');
           this.sidebarService.toggle();
-          this.router.navigate(['/']);
+          this.router.navigateByUrl('/login');
         })
         .catch((error) => {
           console.error(error);

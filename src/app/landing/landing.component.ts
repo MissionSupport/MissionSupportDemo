@@ -98,6 +98,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   countryClick(): void {
+    this.sharedService.backHistory.push(this.router.url);
     this.router.navigate(['country/' + this.selectedCountry.id]);
   }
 }
