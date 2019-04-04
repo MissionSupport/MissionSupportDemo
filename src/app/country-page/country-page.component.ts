@@ -153,7 +153,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
         user_id: this.authInstance.auth.currentUser.uid,
         id: id,
         country_id: this.countryId
-      }
+      };
       this.db.doc(`edits/${id}`).set(pending_update_json).catch((error) => {
           console.log(error);
           this.messageService.add({

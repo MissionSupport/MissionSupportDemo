@@ -29,15 +29,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   pendingUsers = [];
 
   pendingEdits = [
-    {original: 'hi i am katie', new: 'hi i am Katie Cox', section: 'Communication',
-      wiki: 'USA', proposedBy: 'Katie Cox', timeProposed: 'timeStamp'},
-    {original: 'BabyShark Doddod do', new: 'BabySharhik Dodododo hi', section: 'Baby Sharks',
-      wiki: 'USA', proposedBy: 'Katie Cox', timeProposed: 'timeStamp'},
-    {original: 'BabyShark Doddod do', new: 'BabySharhik dsfsdfdDodododo hi', section: 'Baby Sharks',
-      wiki: 'USA', proposedBy: 'Katie Cox', timeProposed: 'timeStamp'},
-    {original: 'If I were a shark I would want to cuddle humans', new: 'If I were a shark I would want to cuddle humans.' +
-        ' But why humans no wanna cuddle me?', section: 'Baby Sharks With emotional problems blog',
-      wiki: 'USA', proposedBy: 'Katie Cox', timeProposed: 'timeStamp'},
   ];
 
   pendingChecklistEdits = [
@@ -129,7 +120,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.db.collection(`user_preferences`, ref => ref.where('verified', '==', false))
       .valueChanges().pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(async (users: UserPreferences[]) => {
-        this.pendingUsers = await Promise.all(users.map(async (user: UserPreferences) => {
+        this.pendingUsers = (await Promise.all(users.map(async (user: UserPreferences) => {
           const id = user.id;
           // TODO Get email
           // const x = await this.db.doc(`emails/${id}`).get().toPromise();
@@ -137,14 +128,17 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
             .valueChanges().pipe(map((x: UserSettings) => {
               return x;
           }), take(1)).toPromise();
-          return {
-            id: id,
-            firstName: details.firstName,
-            lastName: details.lastName,
-            email: '',
-            org: ''
-          };
-        }));
+          if (details != null) {
+            return {
+              id: id,
+              firstName: details.firstName,
+              lastName: details.lastName,
+              email: '',
+              org: ''
+            };
+            return null;
+          }
+        }))).filter(e => e != null);
       });
     // Code for dealing with pending wiki edits
     this.db.collection('countries').valueChanges().pipe(takeUntil(this.unsubscribeSubject))
@@ -166,7 +160,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
                 section: edit.title,
                 wiki: array[edit.country_id].countryName,
                 proposedBy: edit.email,
-                timeProposed: edit.date
+                timeProposed: edit.date,
+                edit: edit
               };
               values.push(json);
             }
