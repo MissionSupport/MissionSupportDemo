@@ -15,6 +15,9 @@ export class LoginComponent implements OnInit {
   time: number; // Time since last email verification
 
   loginForm: FormGroup;
+  forgotPasswordForm: FormGroup;
+
+  loginView = true;
 
   constructor(public router: Router, public authInstance: AngularFireAuth,
               private messageService: MessageService, private sharedService: SharedService,
@@ -23,6 +26,9 @@ export class LoginComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', Validators.required)
     });
+    this.forgotPasswordForm = this.fb.group({
+      email: new FormControl('', [Validators.required, Validators.email])
+    })
     this.sharedService.scrollPanelHeightToSubtract.emit(0);
   }
 
@@ -75,6 +81,19 @@ export class LoginComponent implements OnInit {
       } catch (err) {
         this.messageService.add({severity: 'error', summary: 'Login Error', detail: err});
       }
+    }
+  }
+
+  forgotPasswordClick() {
+    if (this.forgotPasswordForm.valid) {
+      // Send password reset to user's email
+      this.authInstance.auth.sendPasswordResetEmail(this.forgotPasswordForm.get('email').value).then(() => {
+        this.messageService.add({severity: 'info', summary: 'Password Reset',
+          detail: 'Sent password reset link to email'});
+        this.loginView = !this.loginView;
+      }).catch(error => {
+        this.messageService.add({severity: 'error', summary: 'Password Reset Error', detail: error});
+      });
     }
   }
 }

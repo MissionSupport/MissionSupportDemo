@@ -1,7 +1,7 @@
 <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
 <div class="p-grid p-nogutter p-align-center p-justify-center" style="width: 100%; height: 100%">
   <div class="p-sm-8 p-md-6 p-lg-4">
-    <p-card>
+    <p-card  [hidden]="!loginView">
       <p-header>
         <p style="text-align: center; font-size: 24px; padding-top: 20px">Support the Mission</p>
       </p-header>
@@ -34,7 +34,30 @@
 
       <p-footer>
         <p style="text-align: center">Don't have an account? <a routerLink="/register">Register</a></p>
+        <p style="text-align: center"><a (click)="loginView=!loginView">Forgot Password?</a></p>
       </p-footer>
+
+    </p-card>
+    <p-card [hidden]="loginView">
+      <p-header>
+        <p style="text-align: center; font-size: 24px; padding-top: 20px">Forgot Password</p>
+      </p-header>
+      <form [formGroup]="forgotPasswordForm" (submit)="forgotPasswordClick()">
+        <span class="p-col-12" >
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+            <input placeholder="Email Address" type="text" pInputText
+                   (keydown.enter)="forgotPasswordClick()" style="width: 100%"
+                   formControlName="email">
+          </div>
+          <p-message severity="error" *ngIf="forgotPasswordForm.get('email').hasError('required') && (forgotPasswordForm.get('email').dirty || forgotPasswordForm.get('email').touched)"
+                     [text]="'Email address is required.'"></p-message>
+          <p-message severity="error" *ngIf="forgotPasswordForm.get('email').hasError('email') && (forgotPasswordForm.get('email').dirty || forgotPasswordForm.get('email').touched)"
+                     [text]="'Email address must be an email.'"></p-message>
+        </span>
+        <button pButton label="Submit" style="width: 100%" type="submit"></button>
+        <p style="text-align: center"><a (click)="loginView=!loginView">Cancel</a></p>
+      </form>
     </p-card>
   </div>
 </div>
