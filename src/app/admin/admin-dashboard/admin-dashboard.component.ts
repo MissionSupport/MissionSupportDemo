@@ -28,8 +28,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   unsubscribeSubject: Subject<void> = new Subject<void>();
   pendingUsers: Observable<any[]>;
 
-  pendingEdits = [
-  ];
+  pendingEdits: Observable<any[]>;
 
   pendingChecklistEdits = [
     {
@@ -129,37 +128,60 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
               firstName: details.firstName,
               lastName: details.lastName,
               email: '',
-              org: ''
+              org: details.organization
             });
           }
           return array;
         }, takeUntil(this.unsubscribeSubject)));
-        /*
-        this.pendingUsers = (await Promise.all(users.map(async (user: UserPreferences) => {
-          const id = user.id;
-          // TODO Get email
-          // const x = await this.db.doc(`emails/${id}`).get().toPromise();
-
-          const details: UserSettings = await this.db.doc(`users/${id}`)
-            .valueChanges().pipe(map((x: UserSettings) => {
-              return x;
-          }), take(1)).toPromise();
-          console.log("count test test");
-          console.log(new Date());
-          if (details != null) {
-            return {
-              id: id,
-              firstName: details.firstName,
-              lastName: details.lastName,
-              email: '',
-              org: ''
-            };
-          }
-          return null;
-        }))).filter(e => e != null);
-        */
       });
     // Code for dealing with pending wiki edits
+    this.pendingEdits = this.db.collection('edits').valueChanges().pipe(flatMap((edits: EditTask[]) => {
+      return this.db.collection('countries').valueChanges().pipe(flatMap((countries: Country[]) => {
+        const array = countries.filter(c => edits.map(e => e.country_id).includes(c.id));
+        return this.db.collection('wiki').snapshotChanges().pipe(map((wikis: any[]) => {
+          const wik = wikis.filter(w => array.map(a => a.current).includes(w.payload.doc.id));
+          const temp = wik.map(m => {
+            console.log(m.payload.doc.id);
+            const json = {};
+            json[m.payload.doc.id] = m.payload.doc.data();
+            return json;
+          });
+          const wikiMapping = {};
+          for (const x of temp) {
+            for (const k in x) {
+              if (x.hasOwnProperty(k)) {
+                wikiMapping[k] = x[k];
+              }
+            }
+          }
+          const cons = {};
+          for (const country of countries) {
+            cons[country.id] = country;
+          }
+          const values = [];
+          console.log(wikiMapping);
+          console.log(cons);
+          for (const edit of edits) {
+            let mapping = wikiMapping[cons[edit.country_id].current][edit.title];
+            if (mapping == null) {
+              mapping = '';
+            }
+            const json = {
+              original: mapping,
+              new: edit.markup,
+              section: edit.title,
+              wiki: cons[edit.country_id].countryName,
+              proposedBy: edit.email,
+              timeProposed: edit.date,
+              edit: edit
+            };
+            values.push(json);
+          }
+          return values;
+        }), takeUntil(this.unsubscribeSubject));
+      }), takeUntil(this.unsubscribeSubject));
+    }));
+    /*
     this.db.collection('countries').valueChanges().pipe(takeUntil(this.unsubscribeSubject))
       .subscribe((countries: Country[]) => {
         const array = {};
@@ -187,6 +209,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
             this.pendingEdits = values;
           });
       });
+      */
     this.items = [
       {label: 'Pending User Approvals', icon: 'pi pi-fw pi-user-plus', command: event1 => {
           this.viewUserApprovals = true;
@@ -218,7 +241,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   updateVersion(newText, index, edit) {
     console.log(newText);
     console.log(edit);
-    this.pendingEdits.splice(index, 1);
+    //this.pendingEdits.splice(index, 1);
     this.pendingEdits = this.pendingEdits;
   }
 

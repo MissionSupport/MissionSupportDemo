@@ -248,7 +248,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     const wikiId = this.db.createId();
     this.db.firestore.batch()
       .update(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`).ref, {'current': wikiId})
-      .set(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}`).ref, json)
+      .set(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}`).ref, json, {merge:true})
       .commit()
       .then(() => {
         this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}/data/data`).set(data);

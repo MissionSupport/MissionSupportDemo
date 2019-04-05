@@ -3,6 +3,7 @@
  */
 export interface UserPreferences {
   admin: false;
+  email: string;
   id: string;
   orgs: string[];
   teams: string[];

@@ -17,16 +17,14 @@
 
       </div>
     </div>
-    <div [hidden]="!viewWikiEdits" [style]="{'margin-top' : '10px'}">
-      <div *ngFor="let edit of pendingEdits; let i = index" style="margin-top: 10px ">
+    <div *ngIf="pendingEdits | async as edits" [hidden]="!viewWikiEdits" [style]="{'margin-top' : '10px'}">
+      <div *ngFor="let edit of edits; let i = index" style="margin-top: 10px ">
         <p-card>
           <p-header>
             <span class="ui-panel-title" style="font-size:24px;display:inline-block;margin-top:5px; margin-left: 10px; ">{{edit.wiki}} - {{edit.section}}</span>
             <p style="margin-left: 20px">{{edit.proposedBy}} -  {{edit.timeProposed}}</p>
           </p-header>
-          <div *ngIf="edit.original | async as og">
-            <app-diff-edit [edit]=edit.edit [original]="og" [new]="edit.new" [layoutNum]="2" (updatedVersion)="updateVersion($event, i, edit)"></app-diff-edit>
-          </div>
+          <app-diff-edit [edit]=edit.edit [original]="edit.original" [new]="edit.new" [layoutNum]="2" (updatedVersion)="updateVersion($event, i, edit)"></app-diff-edit>
         </p-card>
       </div>
     </div>

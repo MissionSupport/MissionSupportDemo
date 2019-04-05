@@ -16,7 +16,8 @@ exports.createUserPreferences = functions.auth.user().onCreate(user => {
     id: userId,
     orgs: [],
     teams: [],
-    verified: verified
+    verified: verified,
+    email: user.email
   });
   console.log('Create email mapping to uid for user');
   const email = admin.firestore().doc(`emails/${user.email}`);
