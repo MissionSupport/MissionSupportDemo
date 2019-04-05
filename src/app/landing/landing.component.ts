@@ -26,6 +26,7 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   countries: Country[];
   selectedCountry: Country;
   countrySub: Subscription;
+  names: any[] = [];
 
   constructor(db: AngularFirestore, public router: Router, private sharedService: SharedService) {
     this.countrySub = db.collection<Country>('countries').valueChanges()
@@ -85,9 +86,14 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
             .attr('d', path)
             .style('stroke', 'white')
             .style('stroke-width', '1px')
-            .attr('id', (e) => e.properties.GU_A3)
+            .attr('id', (e) => {
+              // this.names.push(e.properties.NAME_EN);
+              // console.log(e.properties.NAME_EN);
+              return e.properties.GU_A3;
+            })
             .on('click', this.region_clicked);
       });
+    // console.log(this.names);
   }
 
   region_clicked(e) {

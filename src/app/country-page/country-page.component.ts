@@ -175,7 +175,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       const wikiId = this.db.createId();
       this.db.firestore.batch()
         .update(this.db.doc(`countries/${this.countryId}`).ref, {'current': wikiId})
-        .set(this.db.doc(`countries/${this.countryId}/wiki/${wikiId}`).ref, json)
+        .set(this.db.doc(`countries/${this.countryId}/wiki/${wikiId}`).ref, json, {merge: true})
         .commit()
         .then(() => {
           this.db.doc(`countries/${this.countryId}/wiki/${wikiId}/data/data`).set(data);

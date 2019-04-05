@@ -248,7 +248,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     const wikiId = this.db.createId();
     this.db.firestore.batch()
       .update(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`).ref, {'current': wikiId})
-      .set(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}`).ref, json)
+      .set(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}`).ref, json, {merge: true})
       .commit()
       .then(() => {
         this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}/data/data`).set(data);
@@ -355,6 +355,14 @@ export class SitesComponent implements OnInit, OnDestroy {
       });
       return value;
     }
+  }
+
+  editChecklist(checklist) {
+    this.sharedService.selectedChecklists = [checklist.name];
+    this.sharedService.filledOutChecklist = [checklist, true];
+    this.sharedService.backHistory.push(this.router.url);
+    this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
+    this.showNewSectionPopup = false;
   }
 }
 

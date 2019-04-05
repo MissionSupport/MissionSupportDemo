@@ -18,10 +18,13 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
   countryId: string;
   siteId: string;
   checkListId: string;
+  filledOut;
+  filledOutBool;
 
   siteSubscribable: Subscription;
 
   lists: {name: string, hidden: boolean, list: Question[]}[] = [];
+
 
   listMap = {
     'Hospital': this.preDef.hospitalChecklist,
@@ -47,6 +50,10 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
         list: this.listMap[listName]
       });
     });
+    this.filledOut = this.sharedService.filledOutChecklist[0];
+    this.filledOutBool = this.sharedService.filledOutChecklist[1];
+    console.log(this.filledOut);
+    console.log(this.filledOutBool);
 
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');

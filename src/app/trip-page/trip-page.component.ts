@@ -127,7 +127,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
     const wikiId = this.db.createId();
     this.db.firestore.batch()
       .update(this.db.doc(`trips/${this.tripId}`).ref, {'current': wikiId})
-      .set(this.db.doc(`trips/${this.tripId}/wiki/${wikiId}`).ref, json)
+      .set(this.db.doc(`trips/${this.tripId}/wiki/${wikiId}`).ref, json, {merge: true})
       .commit()
       .then(() => {
         this.db.doc(`trips/${this.tripId}/wiki/${wikiId}/data/data`).set(data);

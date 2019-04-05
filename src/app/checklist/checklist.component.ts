@@ -17,6 +17,7 @@ import { FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms'
   styles: []
 })
 export class ChecklistComponent implements OnInit, OnChanges {
+  @Input() filledOutList;
   @Input() questions: Question[] = [];
   @Output() submit: EventEmitter<any> = new EventEmitter<any>();
 

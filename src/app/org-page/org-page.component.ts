@@ -12,6 +12,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import { BottomTab } from '../interfaces/bottom-tab';
 import {MessageService} from 'primeng/api';
 import {Wikidata} from '../interfaces/wikidata';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-group-page',
@@ -59,6 +60,9 @@ export class OrgPageComponent implements OnInit, OnDestroy {
   canEditWiki = false;  // this means the user can edit
   canEditTeams = false;
   canEditTrips = false;
+
+  titleEdits = []; // For Wiki usage
+  confirmTitles = [];
 
   members = [{value: ''}];
 
@@ -179,12 +183,17 @@ export class OrgPageComponent implements OnInit, OnDestroy {
   /**
    * Used for updating an already existing wiki entry.
    */
-  async submitWikiEdit(title: string, markup: string) {
+  async submitWikiEdit(title: string, markup: string, newTitle, confirm) {
     const json: {} = await this.db.doc(`organizations/${this.orgId}/wiki/${this.currentWikiId}`)
       .valueChanges().pipe(map(d => {
         return d;
       }), take(1)).toPromise();
-    json[title] = markup;
+    if (confirm) {
+      json[newTitle] = markup;
+      json[title] = firebase.firestore.FieldValue.delete();
+    } else {
+      json[title] = markup;
+    }
     const data: Wikidata = {
       created_id: this.authInstance.auth.currentUser.uid,
       date: new Date()
@@ -193,7 +202,7 @@ export class OrgPageComponent implements OnInit, OnDestroy {
     const wikiId = this.db.createId();
     this.db.firestore.batch()
       .update(this.db.doc(`organizations/${this.orgId}`).ref, {'currentWiki': wikiId})
-      .set(this.db.doc(`organizations/${this.orgId}/wiki/${wikiId}`).ref, json)
+      .set(this.db.doc(`organizations/${this.orgId}/wiki/${wikiId}`).ref, json, {merge: true})
       .commit()
       .then(() => {
         // Now add the wiki data to it
@@ -207,7 +216,7 @@ export class OrgPageComponent implements OnInit, OnDestroy {
 
   submitNewSection() {
     console.log(this.newSectionName, this.newSectionText);
-    this.submitWikiEdit(this.newSectionName, this.newSectionText);
+    this.submitWikiEdit(this.newSectionName, this.newSectionText, null, false);
   }
 
   addAnotherMember() {

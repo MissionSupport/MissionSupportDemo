@@ -47,9 +47,9 @@ export class ToolbarComponent implements OnInit, OnChanges {
     for (let i = 0; i < urlSegs.length - 1; i++) {
       url = url + '/' + urlSegs[i].toString();
     }
-    if (url === '') {
-      url = '/landing';
-    }
+    // if (url === '') {
+    //   url = '/landing';
+    // }
     this.router.navigateByUrl(url)
       .then(() => {
         console.log('Route exists, redirection is done');
