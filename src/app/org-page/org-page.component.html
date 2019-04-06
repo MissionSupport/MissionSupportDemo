@@ -61,10 +61,17 @@
   <div [hidden]="!viewWiki" style="width: 100vw">
     <div *ngFor="let info of sections | async; let i = index" style="margin-top: 20px; padding-right: 35px">
       <div [hidden]="!hideme[i]">
+        <label>Edit Section Title</label>
+        <div class="ui-inputgroup" style="margin-bottom: 10px" >
+          <input type="text" pInputText [placeholder]="info.title" [(ngModel)]="titleEdits[i]">
+          <span class="ui-inputgroup-addon"><p-checkbox binary="true" label = "Confirm Title Edit"
+                                                        [(ngModel)]="confirmTitles[i]"></p-checkbox></span>
+        </div>
         <p-editor type="text" [(ngModel)]= "info.markup" [style]="{'height':'320px'}" ></p-editor>
         <div class="p-grid" style="text-align: center; padding-top: 5px">
           <p-button class="p-col-6" (onClick)="hideme[i] = !hideme[i];" label="Cancel"></p-button>
-          <p-button class="p-col-6" (click)="submitWikiEdit(info.title, info.markup); hideme[i] = !hideme[i];" label="Submit"></p-button>
+          <p-button class="p-col-6" (click)="submitWikiEdit(info.title, info.markup, titleEdits[i], confirmTitles[i]);
+          hideme[i] = !hideme[i]" label="Submit"></p-button>
         </div>
       </div>
       <p-fieldset [toggleable]="true" [hidden]="hideme[i]">

@@ -98,6 +98,8 @@ export class SitesComponent implements OnInit, OnDestroy {
   constructor(public route: ActivatedRoute, private readonly db: AngularFirestore,
     public authInstance: AngularFireAuth, private sharedService: SharedService, public router: Router,
     private preDef: PreDefined, private messageService: MessageService) {
+    this.sharedService.selectedChecklists = [];
+    this.sharedService.updatingChecklists = [];
 
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
@@ -119,7 +121,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       this.wikiId = site.current;
 
         // Get wiki information
-      this.sections = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${site.current}`).valueChanges()
+      this.sections = this.db.doc(`wiki/${site.current}`).valueChanges()
         .pipe(map(data => {
           const array = [];
           Object.keys(data).forEach(title => {
@@ -146,7 +148,6 @@ export class SitesComponent implements OnInit, OnDestroy {
               this.editChecklists.push({label: title, value: title});
             });
           }
-          console.dir(array);
           this.listsPresent = array;
           return array;
         }));
@@ -246,19 +247,18 @@ export class SitesComponent implements OnInit, OnDestroy {
     } else {
       json[title] = markup;
     }
-    const data: Wikidata = {
+    const version = {};
+    // Create a new update
+    const wikiId = this.db.createId();
+    version[wikiId] = {
       created_id: this.authInstance.auth.currentUser.uid,
       date: new Date()
     };
-    // Create a new update
-    const wikiId = this.db.createId();
     this.db.firestore.batch()
-      .update(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`).ref, {'current': wikiId})
-      .set(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}`).ref, json, {merge:true})
+      .set(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`).ref,
+        {'current': wikiId, versions: version}, {merge: true})
+      .set(this.db.doc(`wiki/${wikiId}`).ref, json, {merge: true})
       .commit()
-      .then(() => {
-        this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/wiki/${wikiId}/data/data`).set(data);
-      })
       .catch((error) => {
           console.log(error);
           this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
@@ -304,7 +304,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       this.viewWiki = false;
       this.viewChecklist = true;
       this.viewTrips = false;
-      this.sharedService.addName.emit('New List');
+      this.sharedService.addName.emit('New/Edit List');
       this.sharedService.canEdit.emit(this.canEditChecklist);
     } else if (tab === 2) {
       this.viewWiki = false;
@@ -317,12 +317,9 @@ export class SitesComponent implements OnInit, OnDestroy {
 
   submitNewList() {
     this.selectedEditLists.forEach((selected) => {
-      console.dir(selected);
       const checklistJson = this.listsPresent.filter((list) => {
-        console.dir(list);
         return list['name'] === selected;
       });
-      console.dir(checklistJson);
       this.sharedService.updatingChecklists.push({
         name: selected,
         json: checklistJson[0]
@@ -375,5 +372,13 @@ export class SitesComponent implements OnInit, OnDestroy {
       return value;
     }
   }
+
+  // editChecklist(checklist) {
+  //   this.sharedService.selectedChecklists = [checklist.name];
+  //   this.sharedService.filledOutChecklist = [checklist, true];
+  //   this.sharedService.backHistory.push(this.router.url);
+  //   this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
+  //   this.showNewSectionPopup = false;
+  // }
 }
 

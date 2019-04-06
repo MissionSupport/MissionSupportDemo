@@ -23,6 +23,7 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
 
   lists: {name: string, hidden: boolean, list: Question[], answers: any}[] = [];
 
+
   listMap = {
     'Hospital': this.preDef.hospitalChecklist,
     'Hospital Infrastructure': this.preDef.hospitalInfrastructureChecklist,
@@ -49,14 +50,12 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
       });
     });
     this.sharedService.updatingChecklists.forEach((list) => {
-      console.dir(list);
       const obj = {
         name: list['name'],
         hidden: false,
         list: this.listMap[list['name']],
         answers: JSON.parse(list['json']['json'])
       };
-      console.dir(obj);
       this.lists.push(obj);
     });
 

@@ -98,7 +98,9 @@
   <div [hidden]="!viewChecklist">
     <h1>Checklist</h1>
     <div *ngFor="let list of (checkList | async)">
-      <h2>{{list.name}}</h2>
+      <h2 style="display: inline-block">{{list.name}}
+        <!-- <i *ngIf="canEditChecklist" class="pi pi-pencil" style="cursor: pointer; padding-left: 10px" (click)="editChecklist(list)"></i> -->
+      </h2>
       <p-table [value]="jsonParse(list.json)">
         <ng-template pTemplate="header">
           <tr>
