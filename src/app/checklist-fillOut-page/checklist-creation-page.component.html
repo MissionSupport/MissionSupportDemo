@@ -1,7 +1,7 @@
 <div *ngFor="let list of lists">
   <div [hidden]="list.hidden">
     <h2>{{ list.name }}</h2>
-    <app-checklist [questions]="list.list" (submit)="onSubmit($event, list.name)"></app-checklist>
+    <app-checklist [questions]="list.list" [answers]="list.answers" (submit)="onSubmit($event, list.name)"></app-checklist>
   </div>
   <div [hidden]="!list.hidden">
     <h2>{{ list.name + ' - Submitted' }}</h2>

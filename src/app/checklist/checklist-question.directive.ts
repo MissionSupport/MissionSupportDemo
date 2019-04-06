@@ -16,6 +16,7 @@ import { FormGroup } from '@angular/forms';
 export class ChecklistQuestionDirective implements OnInit {
   @Input() question: Question;
   @Input() group: FormGroup;
+  @Input() numberOfDrugs: number;
 
   componentMap = {
     'dropdown': DropdownQuestionComponent,
@@ -38,6 +39,21 @@ export class ChecklistQuestionDirective implements OnInit {
     this.componentRef = this.container.createComponent(factory);
     this.componentRef.instance.question = this.question;
     this.componentRef.instance.group = this.group;
+
+    if (this.question.type === 'medicineMultipleCheckbox' || this.question.type === 'medicineMultipleTextbox') {
+      for (let num = 0; num < this.numberOfDrugs; num++) {
+        this.componentRef.instance.drugsInAutoComplete.push([]);
+        const strength = this.group.get(this.question.label).get(num.toString()).get('drugStrength').value;
+        this.componentRef.instance.strengthsInDropdown.push([{
+          label: strength,
+          value: strength
+        }]);
+      }
+
+      if (this.question.type === 'medicineMultipleCheckbox' && this.numberOfDrugs > 0) {
+        this.componentRef.instance.showMedicine = true;
+      }
+    }
 
     const classes: string[] = this.question.gridSize.split(' ');
     classes.forEach(cls => {

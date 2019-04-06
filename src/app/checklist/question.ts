@@ -8,7 +8,7 @@ export interface Question {
   label: string;
   name?: string;
   type: 'dropdown' | 'freeResponse' | 'image' | 'medicineMultipleCheckbox'
-    | 'medicineMultipleTextbox'| 'medicineTextbox' | 'multipleSelect' | 'radioButton'
+    | 'medicineMultipleTextbox' /*| 'medicineTextbox'*/ | 'multipleSelect' | 'radioButton'
     | 'textbox';
   options?: {key: string, value: string}[];
   value?: any;

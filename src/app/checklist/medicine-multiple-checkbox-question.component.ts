@@ -3,6 +3,7 @@ import { Question } from './question';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { DrugsService } from '../service/drugs.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-medicine-multiple-checkbox-question',
@@ -11,8 +12,8 @@ import { DrugsService } from '../service/drugs.service';
       <label [attr.for]="question.key">{{question.label}}</label>
     </div>
     <div class="p-col-2">
-      <p-checkbox [id]="'check'+question.key" binary="true"
-        (onChange)="changeView()"></p-checkbox>
+      <p-checkbox [id]="'check'+question.key" binary="true" [(ngModel)]="showMedicine"
+        (onChange)="changeView($event)"></p-checkbox>
     </div>
     <div [formGroup]="group" class="p-col-12" style="padding-top: 0" *ngIf="showMedicine">
       <div [formArrayName]="question.label">
@@ -68,7 +69,7 @@ export class MedicineMultipleCheckboxQuestionComponent implements OnInit {
   }
 
   searchDrugs(event, index: number) {
-    this.drugsService.searchDrug(event.query).subscribe((respArr: any[]) => {
+    this.drugsService.searchDrug(event.query).pipe(take(1)).subscribe((respArr: any[]) => {
       // respArr[0] is the number of drugs returned. Ignore it.
       // respArr[1] is an array of drug string names.
       this.drugsInAutoComplete[index] = respArr[1] as string[];
@@ -99,13 +100,16 @@ export class MedicineMultipleCheckboxQuestionComponent implements OnInit {
     }));
   }
 
-  changeView() {
-    if (this.showMedicine) {
-      this.showMedicine = !this.showMedicine;
+  changeView(checked: boolean) {
+    if (!checked) {
       this.formArray.controls = [];
-    } else {
-      this.showMedicine = !this.showMedicine;
     }
+    // if (this.showMedicine) {
+    //   // this.showMedicine = !this.showMedicine;
+    //   this.formArray.controls = [];
+    // } else {
+    //   // this.showMedicine = !this.showMedicine;
+    // }
   }
 
   removeItem(index: number) {

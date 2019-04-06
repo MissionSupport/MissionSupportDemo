@@ -13,14 +13,14 @@ export class AdminNewListComponent implements OnInit {
   counter = 0;
 
   questionTypes: {name: string, type: 'dropdown' | 'freeResponse' | 'image' | 'medicineMultipleCheckbox'
-  | 'medicineMultipleTextbox'| 'medicineTextbox' | 'multipleSelect' | 'radioButton'
+  | 'medicineMultipleTextbox' /*| 'medicineTextbox'*/ | 'multipleSelect' | 'radioButton'
   | 'textbox'}[] = [
     { name: 'Radio Buttons (select only one)', type: 'radioButton' },
     { name: 'Dropdown', type: 'dropdown' },
     { name: 'Multiple Select Dropdown', type: 'multipleSelect' },
     { name: 'Single-Line Text Input', type: 'textbox' },
     { name: 'Large Text Input', type: 'freeResponse' },
-    { name: 'Single Medicine (Name and Strength) Input', type: 'medicineTextbox' },
+    // { name: 'Single Medicine (Name and Strength) Input', type: 'medicineTextbox' },
     { name: 'Multiple Medicine (Name and Strength) Input', type: 'medicineMultipleTextbox' },
     { name: 'Enable/Disable Multiple Medicine (Name and Strength) Input', type: 'medicineMultipleCheckbox' }
   ];
@@ -37,7 +37,7 @@ export class AdminNewListComponent implements OnInit {
   newQuestionGridSize: {name: string, gridSize: string};
   newQuestion: string;
   selectedControlType: {name: string, type: 'dropdown' | 'freeResponse' | 'image' | 'medicineMultipleCheckbox'
-  | 'medicineMultipleTextbox'| 'medicineTextbox' | 'multipleSelect' | 'radioButton'
+  | 'medicineMultipleTextbox' /*'| 'medicineTextbox'*/ | 'multipleSelect' | 'radioButton'
   | 'textbox'};
   options: {key: string, value: string}[] = [];
 

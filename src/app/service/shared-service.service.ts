@@ -14,6 +14,7 @@ export class SharedService {
 
   backHistory: Array<string> = [];
   selectedChecklists: Array<string> = [];
+  updatingChecklists: Array<any> = [];
 
   constructor() { }
 }

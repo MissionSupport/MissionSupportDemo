@@ -21,23 +21,25 @@
     </div>
   </div>
   <div style="width: 300px;" [hidden]="!viewChecklist">
-    <p-listbox [options]="genericChecklists" [(ngModel)]="selectedLists" multiple="multiple" checkbox="checkbox" [style]="{'width':'100%'}">
+    <p-listbox [options]="genericChecklists" [(ngModel)]="selectedLists"
+      multiple="multiple" checkbox="checkbox" [style]="{'width':'100%'}">
       <p-header>
         <i class="pi pi-list"></i>
-        Select New Checklist Generic
+        Select New Generic Checklists
       </p-header>
     </p-listbox>
-    <p-listbox [options]="listsPresent" [(ngModel)]="editList" optionLabel="name" [style]="{'width':'100%'}" readonly="true">
+    <p-listbox [options]="editChecklists" [(ngModel)]="selectedEditLists"
+      [style]="{'width':'100%'}" multiple="multiple" checkbox="checkbox">
       <p-header>
         <i class="pi pi-list"></i>
-        Lists Already Included
+        Edit Existing Checklists
       </p-header>
     </p-listbox>
     <div class="p-grid" style="text-align: center; padding-top: 10px">
       <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
       <p-button class="p-col-6" (onClick)="submitNewList()" label ="Select Lists"></p-button>
     </div>
-    <p>Don't see what you need?  <a (click)="createNewList()">Create New List</a></p>
+    <p>Don't see what you need? <a (click)="createNewList()">Create New List</a></p>
 
   </div>
   <div style="width: 300px;" [hidden]="!viewTrips">

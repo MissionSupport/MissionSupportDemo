@@ -21,7 +21,7 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
 
   siteSubscribable: Subscription;
 
-  lists: {name: string, hidden: boolean, list: Question[]}[] = [];
+  lists: {name: string, hidden: boolean, list: Question[], answers: any}[] = [];
 
   listMap = {
     'Hospital': this.preDef.hospitalChecklist,
@@ -44,8 +44,20 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
       this.lists.push({
         name: listName,
         hidden: false,
-        list: this.listMap[listName]
+        list: this.listMap[listName],
+        answers: null
       });
+    });
+    this.sharedService.updatingChecklists.forEach((list) => {
+      console.dir(list);
+      const obj = {
+        name: list['name'],
+        hidden: false,
+        list: this.listMap[list['name']],
+        answers: JSON.parse(list['json']['json'])
+      };
+      console.dir(obj);
+      this.lists.push(obj);
     });
 
     this.siteId = this.route.snapshot.paramMap.get('id');

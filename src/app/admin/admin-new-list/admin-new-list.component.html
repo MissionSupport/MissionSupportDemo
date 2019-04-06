@@ -42,10 +42,10 @@
             <p-button style="padding-top: 5px" (onClick)="addOption()" label="Add Option"></p-button>
           </div>
 
-          <div *ngIf="selectedControlType.type === 'medicalTextbox'" >
+          <!-- <div *ngIf="selectedControlType.type === 'medicineTextbox'" >
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
-          </div>
+          </div> -->
 
           <div *ngIf="selectedControlType.type === 'freeResponse'" >
             <label style="padding-right: 5px">Prompt</label>
@@ -53,13 +53,13 @@
 
           </div>
 
-          <div *ngIf="selectedControlType.type === 'medicalMultipleTextbox'" >
+          <div *ngIf="selectedControlType.type === 'medicineMultipleTextbox'" >
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
 
           </div>
 
-          <div *ngIf="selectedControlType.type === 'medicalMultipleCheckbox'">
+          <div *ngIf="selectedControlType.type === 'medicineMultipleCheckbox'">
             <label style="padding-right: 5px">Question</label>
             <input pInputText type="text" [(ngModel)]="newQuestion">
 

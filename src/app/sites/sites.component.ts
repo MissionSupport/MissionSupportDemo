@@ -86,7 +86,11 @@ export class SitesComponent implements OnInit, OnDestroy {
     {label: 'Accommodations', value: 'Accommodations'}
   ];
 
+  editChecklists: SelectItem[] = [];
+
   selectedLists = [];
+  selectedEditLists = [];
+
   listsPresent = [];
 
   unsubscribeSubject: Subject<void> = new Subject<void>();
@@ -139,8 +143,10 @@ export class SitesComponent implements OnInit, OnDestroy {
                 return obj.label !== title;
               });
               array.push(json);
+              this.editChecklists.push({label: title, value: title});
             });
           }
+          console.dir(array);
           this.listsPresent = array;
           return array;
         }));
@@ -310,6 +316,18 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   submitNewList() {
+    this.selectedEditLists.forEach((selected) => {
+      console.dir(selected);
+      const checklistJson = this.listsPresent.filter((list) => {
+        console.dir(list);
+        return list['name'] === selected;
+      });
+      console.dir(checklistJson);
+      this.sharedService.updatingChecklists.push({
+        name: selected,
+        json: checklistJson[0]
+      });
+    });
     this.sharedService.selectedChecklists = this.selectedLists;
     this.sharedService.backHistory.push(this.router.url);
     this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
@@ -317,6 +335,7 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   createNewList() {
+    this.sharedService.backHistory.push(this.router.url);
     this.router.navigate([`country/${this.countryId}/site/${this.siteId}/createList`]);
   }
 

@@ -11,8 +11,7 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon"><i class="pi pi-envelope"></i></span>
             <input placeholder="Email Address" type="text" pInputText
-              (keydown.enter)="loginClick()" style="width: 100%"
-              formControlName="email">
+              style="width: 100%" formControlName="email">
           </div>
           <p-message severity="error" *ngIf="loginForm.get('email').hasError('required') && (loginForm.get('email').dirty || loginForm.get('email').touched)"
             [text]="'Email address is required.'"></p-message>

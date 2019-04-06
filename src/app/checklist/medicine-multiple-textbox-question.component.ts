@@ -3,6 +3,7 @@ import { Question } from './question';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { DrugsService } from '../service/drugs.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-medicine-multiple-textbox-question',
@@ -59,7 +60,7 @@ export class MedicineMultipleTextboxQuestionComponent implements OnInit {
   }
 
   searchDrugs(event, index: number) {
-    this.drugsService.searchDrug(event.query).subscribe((respArr: any[]) => {
+    this.drugsService.searchDrug(event.query).pipe(take(1)).subscribe((respArr: any[]) => {
       // respArr[0] is the number of drugs returned. Ignore it.
       // respArr[1] is an array of drug string names.
       this.drugsInAutoComplete[index] = respArr[1] as string[];
