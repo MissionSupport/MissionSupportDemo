@@ -6,4 +6,5 @@ export interface Site {
   id: string;
   siteName: string;
   tripIds: string[];
+  versions: {};
 }
