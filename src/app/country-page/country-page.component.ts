@@ -13,6 +13,7 @@ import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import { MessageService } from 'primeng/api';
 import {EditTask} from '../interfaces/edit-task';
+import {Wikidata} from '../interfaces/wikidata';
 
 @Component({
   selector: 'app-country-page',
@@ -167,19 +168,17 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       } else {
         json[title] = markup;
       }
-      const data = {
+      const version = {};
+      // Create a new update
+      const wikiId = this.db.createId();
+      version[wikiId] = {
         created_id: this.authInstance.auth.currentUser.uid,
         date: new Date()
       };
-      // Create a new update
-      const wikiId = this.db.createId();
       this.db.firestore.batch()
-        .update(this.db.doc(`countries/${this.countryId}`).ref, {'current': wikiId})
-        .set(this.db.doc(`wiki/${wikiId}`).ref, json, {merge: true})
+        .set(this.db.doc(`countries/${this.countryId}`).ref, {'current': wikiId, versions: version}, {merge: true})
+        .set(this.db.doc(`wiki/${wikiId}`).ref, json)
         .commit()
-        .then(() => {
-          this.db.doc(`wiki/${wikiId}/data/data`).set(data);
-        })
         .catch((error) => {
             console.log(error);
             this.messageService.add({
@@ -215,7 +214,9 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       isHospital: this.isNewSiteHospital,
       id: siteId,
       siteName: this.newSiteName,
-      tripIds: []
+      tripIds: [],
+      // TODO edited because would not allow push without
+      versions: ''
     };
     this.db.doc(`countries/${this.countryId}/sites/${siteId}`).set(site).then(() => {
       console.log('Successfully created site, generating wiki and checklist');
