@@ -90,7 +90,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
         this.wikiId = data.current; // Wiki id.
         this.sharedService.onPageNav.emit(this.countryName);
 
-        return this.db.doc(`countries/${this.countryId}/wiki/${this.countryData.current}`).valueChanges()
+        return this.db.doc(`wiki/${this.countryData.current}`).valueChanges()
         .pipe(
           map(sectionData => {
             const sections = [];
@@ -157,7 +157,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       );
     } else { // They are admin
       // Just going to create a new wiki version
-      const json: {} = await this.db.doc(`countries/${this.countryId}/wiki/${this.wikiId}`)
+      const json: {} = await this.db.doc(`wiki/${this.wikiId}`)
         .valueChanges().pipe(map(d => {
           return d;
         }), take(1)).toPromise();
@@ -175,10 +175,10 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       const wikiId = this.db.createId();
       this.db.firestore.batch()
         .update(this.db.doc(`countries/${this.countryId}`).ref, {'current': wikiId})
-        .set(this.db.doc(`countries/${this.countryId}/wiki/${wikiId}`).ref, json, {merge: true})
+        .set(this.db.doc(`wiki/${wikiId}`).ref, json, {merge: true})
         .commit()
         .then(() => {
-          this.db.doc(`countries/${this.countryId}/wiki/${wikiId}/data/data`).set(data);
+          this.db.doc(`wiki/${wikiId}/data/data`).set(data);
         })
         .catch((error) => {
             console.log(error);

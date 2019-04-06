@@ -28,9 +28,10 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   countrySub: Subscription;
   names: any[] = [];
 
-  constructor(db: AngularFirestore, public router: Router, private sharedService: SharedService) {
+  constructor(private db: AngularFirestore, public router: Router, private sharedService: SharedService) {
+    // Filter is used to list only those countries which have at least one site created
     this.countrySub = db.collection<Country>('countries').valueChanges()
-      .subscribe(ctries => this.countries = ctries);
+      .subscribe(ctries => this.countries = ctries.filter(c => c.current));
 
     this.sharedService.hideToolbar.emit(false);
     this.sharedService.canEdit.emit(false);
@@ -89,6 +90,15 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
             .attr('id', (e) => {
               // this.names.push(e.properties.NAME_EN);
               // console.log(e.properties.NAME_EN);
+
+              // this.db.collection('countries').doc(e.properties.GU_A3).set({
+              //   countryName: e.properties.NAME_EN,
+              //   id: e.properties.GU_A3,
+              // }, {merge: true}).then(() => {
+              //   console.log("satisfied: ", e.properties.GU_A3);
+              // }, (err) => {
+              //   console.log("failed with error: ", err);
+              // });
               return e.properties.GU_A3;
             })
             .on('click', this.region_clicked);
@@ -107,4 +117,9 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     this.sharedService.backHistory.push(this.router.url);
     this.router.navigate(['country/' + this.selectedCountry.id]);
   }
+
+  mouseEnter(event, c) {
+    console.log(event, c);
+  }
+
 }

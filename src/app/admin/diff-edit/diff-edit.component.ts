@@ -211,7 +211,7 @@ export class DiffEditComponent implements OnInit {
     const edit = this.edit;
     const wikiId = this.db.createId();
     this.db.doc(`countries/${edit.country_id}`).valueChanges().pipe(map((country: Country) => {
-      return this.db.doc(`countries/${edit.country_id}/wiki/${country.current}`).valueChanges().pipe(take(1)).toPromise();
+      return this.db.doc(`wiki/${country.current}`).valueChanges().pipe(take(1)).toPromise();
     }), take(1)).toPromise().then(wiki => {
       if (edit.new_title) {
         wiki[edit.new_title] = this.diffOutput;
@@ -222,7 +222,7 @@ export class DiffEditComponent implements OnInit {
       this.db.firestore.batch()
         .delete(this.db.doc(`edits/${edit.id}`).ref)
         // Now lets update the ref in the organization and create a new version
-        .set(this.db.doc(`countries/${edit.country_id}/wiki/${wikiId}`).ref, wiki)
+        .set(this.db.doc(`wiki/${wikiId}`).ref, wiki)
         .update(this.db.doc(`countries/${edit.country_id}`).ref, {current: wikiId})
         .commit().then(d => {
           // Now create history doc
@@ -230,9 +230,8 @@ export class DiffEditComponent implements OnInit {
           created_id: this.authInstance.auth.currentUser.uid,
           date: new Date()
         };
-        this.db.doc(`countries/${edit.id}/wiki/${wikiId}/data/data`).set(data);
+        this.db.doc(`wiki/${wikiId}/data/data`).set(data);
       }).catch(d => {
-        console.log('fuckkkkkk');
         console.log(d);
       });
     });

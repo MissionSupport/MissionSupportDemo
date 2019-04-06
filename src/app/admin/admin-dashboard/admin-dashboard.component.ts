@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import { SharedService } from 'src/app/service/shared-service.service';
 import {AngularFirestore} from '@angular/fire/firestore';
@@ -10,26 +10,44 @@ import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 import {Country} from '../../interfaces/country';
 import {EditTask} from '../../interfaces/edit-task';
+import * as d3 from 'd3';
+import {drag} from 'd3';
+import {Topology} from 'topojson-specification';
+import {feature} from 'topojson';
+import {FeatureCollection} from 'geojson';
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminDashboardComponent implements OnInit, OnDestroy {
+export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentInit {
 
   original = 'Hello my name is Katie and I like Doggos. Doggos are cute. dodododo daddy shark sososos';
   proposed = 'Hello my name is Katie and I LOVE Doggos & Baby Sharku do do do. Moma Shark dodododo';
   items: MenuItem[];
   viewUserApprovals;
-  viewWikiEdits;
+  viewWikiCountryEdits;
   viewPendingChecklistEdits;
   viewNewCountrySite;
+  viewWikiSiteEdits;
   unsubscribeSubject: Subject<void> = new Subject<void>();
   pendingUsers: Observable<any[]>;
 
-  pendingEdits = [
-  ];
+  pendingCountryEdits: Observable<any[]>;
+  pendingSiteEdits: Observable<any[]>;
+  existingCountries: Country[] = [];
+  unInitiatedCountries: Country[] = [];
+  countrySub;
+  selectedCountries = [];
+  selectedDeleteCountries = [];
+
+  width = 1024;
+  height = 600;
+  minx = 0;
+  miny = 0;
+  scaleFactor = 200;
+  svg: d3.Selection<SVGSVGElement, {}, HTMLElement, any>;
 
   pendingChecklistEdits = [
     {
@@ -116,6 +134,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Code to get Countries
+    this.countrySub = this.db.collection<Country>('countries').valueChanges()
+      .subscribe(ctries => {
+        this.existingCountries = ctries.filter(c => c.current);
+        this.unInitiatedCountries = ctries.filter(c => !c.current);
+      });
     // Code for dealing with pending users
     this.db.collection(`user_preferences`, ref => ref.where('verified', '==', false))
       .valueChanges().pipe(takeUntil(this.unsubscribeSubject))
@@ -129,37 +153,60 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
               firstName: details.firstName,
               lastName: details.lastName,
               email: '',
-              org: ''
+              org: details.organization
             });
           }
           return array;
         }, takeUntil(this.unsubscribeSubject)));
-        /*
-        this.pendingUsers = (await Promise.all(users.map(async (user: UserPreferences) => {
-          const id = user.id;
-          // TODO Get email
-          // const x = await this.db.doc(`emails/${id}`).get().toPromise();
-
-          const details: UserSettings = await this.db.doc(`users/${id}`)
-            .valueChanges().pipe(map((x: UserSettings) => {
-              return x;
-          }), take(1)).toPromise();
-          console.log("count test test");
-          console.log(new Date());
-          if (details != null) {
-            return {
-              id: id,
-              firstName: details.firstName,
-              lastName: details.lastName,
-              email: '',
-              org: ''
-            };
-          }
-          return null;
-        }))).filter(e => e != null);
-        */
       });
     // Code for dealing with pending wiki edits
+    this.pendingCountryEdits = this.db.collection('edits').valueChanges().pipe(flatMap((edits: EditTask[]) => {
+      return this.db.collection('countries').valueChanges().pipe(flatMap((countries: Country[]) => {
+        const array = countries.filter(c => edits.map(e => e.country_id).includes(c.id));
+        return this.db.collection('wiki').snapshotChanges().pipe(map((wikis: any[]) => {
+          const wik = wikis.filter(w => array.map(a => a.current).includes(w.payload.doc.id));
+          const temp = wik.map(m => {
+            console.log(m.payload.doc.id);
+            const json = {};
+            json[m.payload.doc.id] = m.payload.doc.data();
+            return json;
+          });
+          const wikiMapping = {};
+          for (const x of temp) {
+            for (const k in x) {
+              if (x.hasOwnProperty(k)) {
+                wikiMapping[k] = x[k];
+              }
+            }
+          }
+          const cons = {};
+          for (const country of countries) {
+            cons[country.id] = country;
+          }
+          const values = [];
+          console.log(wikiMapping);
+          console.log(cons);
+          for (const edit of edits) {
+            let mapping = wikiMapping[cons[edit.country_id].current][edit.title];
+            if (mapping == null) {
+              mapping = '';
+            }
+            const json = {
+              original: mapping,
+              new: edit.markup,
+              section: edit.title,
+              wiki: cons[edit.country_id].countryName,
+              proposedBy: edit.email,
+              timeProposed: edit.date,
+              edit: edit
+            };
+            values.push(json);
+          }
+          return values;
+        }), takeUntil(this.unsubscribeSubject));
+      }), takeUntil(this.unsubscribeSubject));
+    }));
+    /*
     this.db.collection('countries').valueChanges().pipe(takeUntil(this.unsubscribeSubject))
       .subscribe((countries: Country[]) => {
         const array = {};
@@ -184,46 +231,65 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
               };
               values.push(json);
             }
-            this.pendingEdits = values;
+            this.pendingCountryEdits = values;
           });
       });
+      */
     this.items = [
       {label: 'Pending User Approvals', icon: 'pi pi-fw pi-user-plus', command: event1 => {
           this.viewUserApprovals = true;
           this.viewNewCountrySite = false;
           this.viewPendingChecklistEdits = false;
-          this.viewWikiEdits = false;
+          this.viewWikiCountryEdits = false;
+          this.viewWikiSiteEdits = false;
         }},
-      {label: 'Pending Wiki Edits', icon: 'pi pi-fw pi-pencil', command: event1 => {
+      {label: 'Pending Country Wiki Edits', icon: 'pi pi-fw pi-pencil', command: event1 => {
           this.viewUserApprovals = false;
           this.viewNewCountrySite = false;
           this.viewPendingChecklistEdits = false;
-          this.viewWikiEdits = true;
+          this.viewWikiCountryEdits = true;
+          this.viewWikiSiteEdits = false;
+        }},
+      {label: 'Pending Site Wiki Edits', icon: 'pi pi-fw pi-pencil', command: event1 => {
+          this.viewUserApprovals = false;
+          this.viewNewCountrySite = false;
+          this.viewPendingChecklistEdits = false;
+          this.viewWikiCountryEdits = false;
+          this.viewWikiSiteEdits = true;
         }},
       {label: 'Pending Checklist Edits', icon: 'pi pi-fw pi-list', command: event1 => {
           this.viewUserApprovals = false;
           this.viewNewCountrySite = false;
           this.viewPendingChecklistEdits = true;
-          this.viewWikiEdits = false;
+          this.viewWikiCountryEdits = false;
+          this.viewWikiSiteEdits = false;
         }},
       {label: 'New Country Site', icon: 'pi pi-fw pi-plus', command: event1 => {
           this.viewUserApprovals = false;
           this.viewNewCountrySite = true;
           this.viewPendingChecklistEdits = false;
-          this.viewWikiEdits = false;
+          this.viewWikiCountryEdits = false;
+          this.viewWikiSiteEdits = false;
         }}
     ];
   }
 
-  updateVersion(newText, index, edit) {
+  updateCountryVersion(newText, index, edit) {
     console.log(newText);
     console.log(edit);
-    this.pendingEdits.splice(index, 1);
-    this.pendingEdits = this.pendingEdits;
+    // this.pendingCountryEdits.splice(index, 1);
+    this.pendingCountryEdits = this.pendingCountryEdits;
+  }
+
+  updateSiteVersion(newText, index, edit) {
+    console.log(newText);
+    console.log(edit);
+    // this.pendingCountryEdits.splice(index, 1);
+    this.pendingSiteEdits = this.pendingSiteEdits;
   }
 
   approve(user, index) {
-    //this.pendingUsers.splice(index, 1);
+    // this.pendingUsers.splice(index, 1);
     this.pendingUsers = this.pendingUsers;
     // Take user and change status.
     this.db.doc(`user_preferences/${user.id}`).update({verified: true}).catch(() => {
@@ -232,7 +298,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   deny(user, index) {
-    //this.pendingUsers.splice(index, 1);
+    // this.pendingUsers.splice(index, 1);
     this.pendingUsers = this.pendingUsers;
     this.db.doc(`user_preferences/${user.id}`).update({verified: firebase.firestore.FieldValue.delete()})
       .catch(() => {
@@ -249,6 +315,76 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
+  }
+
+  createGeneric() {
+    console.log(this.selectedCountries);
+  }
+
+  deleteCountry() {
+    console.log(this.selectedDeleteCountries);
+  }
+
+  ngAfterContentInit(): void {
+    this.svg = d3.select('#svgContainer')
+      .append('svg')
+      .attr('preserveAspectRatio', 'xMidYMid slice')
+      .attr('viewBox', `${this.minx} ${this.miny} ${this.width} ${this.height}`)
+      .attr('class', 'map')
+      .style('display', 'inline-block')
+      .style('position', 'absolute')
+      .style('top', '0')
+      .style('left', '0')
+      .style('height', '100%')
+      .style('width', '100%')
+      .call(drag()
+        .on('start', () => d3.select('.map').style('cursor', 'grabbing'))
+        .on('drag', () => {
+          this.minx -= d3.event.dx;
+          this.miny -= d3.event.dy;
+          d3.select('.map').attr('viewBox', `${this.minx} ${this.miny} ${this.width} ${this.height}`);
+        })
+        .on('end', () => d3.select('.map').style('cursor', 'auto'))
+      );
+
+    d3.json('assets/countries.topo.json')
+      .then((topology: Topology) => {
+        // projection fn so we can fit geodata within svg's area
+        const projection = d3.geoMercator().scale(this.scaleFactor)
+          .translate([this.width / 2, this.height / 1.2]);
+
+        // use projection fn with geoPath fn
+        const path = d3.geoPath().projection(projection);
+
+        this.svg.append('g')
+          .attr('class', 'states')
+          .selectAll('path')
+          .data((feature(topology, topology.objects.countriess) as FeatureCollection).features)
+          .enter().append('path')
+          .attr('d', path)
+          .style('stroke', 'white')
+          .style('stroke-width', '1px')
+          .attr('id', (e) => {
+            return e.properties.GU_A3;
+          })
+          .on('click', this.region_clicked);
+      });
+  }
+
+  region_clicked(e) {
+    d3.select('.country_highlighted').style('fill', 'black');
+    d3.select('.country_highlighted').classed('country_highlighted', false);
+    d3.select('#' + e.properties.GU_A3).style('fill', 'red');
+    d3.select('#' + e.properties.GU_A3).classed('country_highlighted', true);
+    console.log(this.existingCountries);
+    const filterExisting = this.existingCountries.filter(c => c.id !== e.properties.GU_A3);
+    const filterUninitalized = this.unInitiatedCountries.filter(c => c.id !== e.properties.GU_A3);
+    if (filterExisting.length >= 1) {
+      this.selectedDeleteCountries = filterExisting;
+    }
+    if (filterUninitalized.length >= 1) {
+      this.selectedCountries = filterUninitalized;
+    }
   }
 
 }

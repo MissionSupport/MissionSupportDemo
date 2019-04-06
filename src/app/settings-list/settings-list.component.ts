@@ -23,14 +23,13 @@ export class SettingsListComponent implements OnInit {
 
   constructor(public authInstance: AngularFireAuth, public router: Router, private sidebarService: SidebarService,
               private readonly db: AngularFirestore) {
-
-
-
-    ///
     let subUserPref = null;
     this.authInstance.auth.onAuthStateChanged(user => {
       if (subUserPref) {
         subUserPref.unsubscribe();
+      }
+      if (user == null) {
+        return;
       }
       subUserPref = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
         .pipe(takeUntil(this.unsubscribeSubject)).subscribe((pref: UserPreferences) => {
