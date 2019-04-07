@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
     });
     this.forgotPasswordForm = this.fb.group({
       email: new FormControl('', [Validators.required, Validators.email])
-    })
+    });
     this.sharedService.scrollPanelHeightToSubtract.emit(0);
   }
 

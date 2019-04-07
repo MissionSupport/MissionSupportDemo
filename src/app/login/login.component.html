@@ -22,7 +22,7 @@
           <div class="ui-inputgroup">
             <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
             <input placeholder="Password" type="password" pInputText
-              (keydown.enter)="loginClick()" style="width: 100%"
+              (keypress.enter)="loginClick()" style="width: 100%"
               formControlName="password">
           </div>
           <p-message severity="error" *ngIf="loginForm.get('password').hasError('required') && (loginForm.get('password').dirty || loginForm.get('password').touched)"

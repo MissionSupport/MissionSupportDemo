@@ -14,6 +14,7 @@ import 'firebase/firestore';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {MessageService} from 'primeng/api';
 import {Team} from '../interfaces/team';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-trip-page',
@@ -51,6 +52,8 @@ export class TripPageComponent implements OnInit, OnDestroy {
   titleEdits = [];
   titleEditsConfirm = [];
 
+  newSectionForm: FormGroup;
+
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'About', icon: 'pi pi-info-circle'}];
 
@@ -58,11 +61,17 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   constructor(public sharedService: SharedService, private preDef: PreDefined, public router: Router,
               private route: ActivatedRoute, private readonly db: AngularFirestore,
-              private authInstance: AngularFireAuth, private messageService: MessageService) {
+              private authInstance: AngularFireAuth, private messageService: MessageService,
+              private fb: FormBuilder) {
     sharedService.hideToolbar.emit(false);
     this.tripId = this.route.snapshot.paramMap.get('id');
     sharedService.addName.emit('New Section');
     this.sharedService.scrollPanelHeightToSubtract.emit(100);
+
+    this.newSectionForm = this.fb.group({
+      name: this.fb.control('', Validators.required),
+      text: this.fb.control('', Validators.required)
+    });
 
     const trip = this.db.doc(`trips/${this.tripId}`);
     trip.valueChanges()
@@ -141,9 +150,15 @@ export class TripPageComponent implements OnInit, OnDestroy {
   }
 
   submitNewSection() {
-    console.log(this.newSectionName, this.newSectionText);
-    this.showNewSectionPopup = false;
-    this.submitEdit(this.newSectionName, this.newSectionName, null, false);
+    if (this.newSectionForm.valid) {
+      this.showNewSectionPopup = false;
+      this.submitEdit(this.newSectionForm.get('name').value, this.newSectionForm.get('text').value, null, false);
+      this.newSectionForm.reset();
+    } else {
+      Object.keys(this.newSectionForm.controls).forEach(field => {
+        this.newSectionForm.controls[field].markAsDirty({onlySelf: true});
+      });
+    }
   }
 
   groupClick(): void {

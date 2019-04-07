@@ -1,24 +1,30 @@
  <p-toast position="bottom-center" class="ui-messages-error"></p-toast>
 <p-dialog header="New Section Creation" [(visible)]="showNewSectionPopup">
   <div [hidden]="!viewWiki">
-    <div style="width: 300px;" >
-      <p>Section Title</p>
-      <input type="text" pInputText [(ngModel)]="newSectionName"/>
-      <p style="margin-top: 20px;">Section Text</p>
-      <p-editor [(ngModel)]="newSectionText" [style]="{'height': '200px'}">
-        <p-header>
+    <form [formGroup]="newSectionForm" (submit)="submitNewSection()">
+      <div style="width: 300px;" >
+        <p>Section Title</p>
+        <input type="text" pInputText [formControlName]="'name'"/>
+        <p-message severity="error" *ngIf="newSectionForm.get('name').hasError('required') && newSectionForm.get('name').dirty"
+            [text]="'Section Title is required.'"></p-message>
+        <p style="margin-top: 20px;">Section Text</p>
+        <p-editor [formControlName]="'text'" [style]="{'height': '200px'}">
+          <p-header>
             <span class="ql-formats">
                 <button class="ql-bold" aria-label="Bold"></button>
                 <button class="ql-italic" aria-label="Italic"></button>
                 <button class="ql-underline" aria-label="Underline"></button>
             </span>
-        </p-header>
-      </p-editor>
-    </div>
-    <div class="p-grid" style="text-align: center; padding-top: 10px">
-      <p-button class="p-col-6" (onClick)="showNewSectionPopup = false" label="Cancel"></p-button>
-      <p-button class="p-col-6" (onClick)="submitNewSection()" label ="Submit"></p-button>
-    </div>
+          </p-header>
+        </p-editor>
+        <p-message severity="error" *ngIf="newSectionForm.get('text').hasError('required') && newSectionForm.get('text').dirty"
+          [text]="'Section Text is required.'"></p-message>
+      </div>
+      <div class="p-grid" style="text-align: center; padding-top: 10px">
+        <p-button class="p-col-6" [type]="'button'" (onClick)="showNewSectionPopup = false; newSectionForm.reset()" label="Cancel"></p-button>
+        <p-button class="p-col-6" [type]="'submit'" label ="Submit"></p-button>
+      </div>
+    </form>
   </div>
   <div style="width: 300px;" [hidden]="!viewAbout">
     <p>Add New About Information</p>

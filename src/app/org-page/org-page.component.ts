@@ -13,6 +13,7 @@ import { BottomTab } from '../interfaces/bottom-tab';
 import {MessageService} from 'primeng/api';
 import {Wikidata} from '../interfaces/wikidata';
 import * as firebase from 'firebase';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-group-page',
@@ -66,19 +67,26 @@ export class OrgPageComponent implements OnInit, OnDestroy {
 
   members = [{value: ''}];
 
+  newSectionForm: FormGroup;
+
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'Teams', icon: 'pi pi-users'},
                             {name: 'Trips', icon: 'pi pi-briefcase'}];
 
   constructor(public sharedService: SharedService, public router: Router,
     private readonly db: AngularFirestore, private route: ActivatedRoute, private authInstance: AngularFireAuth,
-    private messageService: MessageService) {
+    private messageService: MessageService, private fb: FormBuilder) {
     /*
     this.route.params.subscribe((params) => {
       this.orgId = params['id'];
       this.ngOnInit();
     });
     */
+
+    this.newSectionForm = this.fb.group({
+      name: this.fb.control('', Validators.required),
+      text: this.fb.control('', Validators.required)
+    });
 
     this.subAddSection = this.sharedService.addSection.subscribe(() => this.showNewSectionPopup = true);
     this.dataSubArr = [];
@@ -215,8 +223,15 @@ export class OrgPageComponent implements OnInit, OnDestroy {
   }
 
   submitNewSection() {
-    console.log(this.newSectionName, this.newSectionText);
-    this.submitWikiEdit(this.newSectionName, this.newSectionText, null, false);
+    if (this.newSectionForm.valid) {
+      this.showNewSectionPopup = false;
+      this.submitWikiEdit(this.newSectionForm.get('name').value, this.newSectionForm.get('text').value, null, false);
+      this.newSectionForm.reset();
+    } else {
+      Object.keys(this.newSectionForm.controls).forEach(field => {
+        this.newSectionForm.controls[field].markAsDirty({onlySelf: true});
+      });
+    }
   }
 
   addAnotherMember() {

@@ -13,7 +13,7 @@ import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import { MessageService } from 'primeng/api';
 import {EditTask} from '../interfaces/edit-task';
-import {Wikidata} from '../interfaces/wikidata';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-country-page',
@@ -42,8 +42,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
 
   // TODO: Change to proper value based on edit privileges
   showNewSectionPopup = false;
-  newSectionText;
-  newSectionName;
+
   newSiteName;
   isNewSiteHospital;
 
@@ -55,16 +54,23 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   titleEdits = [];
   startTab = 0;
 
+  newSectionForm: FormGroup;
+
   tabs: Array<BottomTab> = [{name: 'Wiki', icon: 'pi pi-align-justify'},
                             {name: 'Sites', icon: 'pi pi-sitemap'}];
 
   constructor(private sharedService: SharedService, public router: Router, private readonly db: AngularFirestore,
                private preDef: PreDefined, private route: ActivatedRoute, private authInstance: AngularFireAuth,
-               private messageService: MessageService) {
+               private messageService: MessageService, private fb: FormBuilder) {
     this.countryId = this.route.snapshot.paramMap.get('id');
     this.clientHeight = window.innerHeight;
     this.sharedService.hideToolbar.emit(false);
     this.sharedService.addName.emit('New Section');
+
+    this.newSectionForm = this.fb.group({
+      name: this.fb.control('', Validators.required),
+      text: this.fb.control('', Validators.required)
+    });
 
     // TODO: edit based on rights
     this.sharedService.addSection.subscribe(() => this.showNewSectionPopup = true);
@@ -196,9 +202,15 @@ export class CountryPageComponent implements OnInit, OnDestroy {
   }
 
   submitNewSection() {
-    console.log(this.newSectionName, this.newSectionText);
-    this.showNewSectionPopup = false;
-    this.submitEdit(this.newSectionName, this.newSectionText, null, false);
+    if (this.newSectionForm.valid) {
+      this.showNewSectionPopup = false;
+      this.submitEdit(this.newSectionForm.get('name').value, this.newSectionForm.get('text').value, null, false);
+      this.newSectionForm.reset();
+    } else {
+      Object.keys(this.newSectionForm.controls).forEach(field => {
+        this.newSectionForm.controls[field].markAsDirty({onlySelf: true});
+      });
+    }
   }
 
   submitNewSite() {
