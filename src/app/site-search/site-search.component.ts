@@ -33,13 +33,10 @@ export class SiteSearchComponent implements OnInit, OnDestroy {
     this.countriesObservable.pipe(takeUntil(this.unsubscribeSubject))
       .subscribe((countries: Country[]) => {
         this.countries = countries;
-        countries.forEach((country: Country) => {
-          this.sitesObservable = db.collection<Site>(`countries/${country.id}/sites`).valueChanges();
-
-          this.sitesObservable.pipe(takeUntil(this.unsubscribeSubject))
-            .subscribe((sites: Site[]) => this.sites = sites);
-        });
       });
+    this.sitesObservable = db.collection<Site>(`sites`).valueChanges();
+    this.sitesObservable.pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe((sites: Site[]) => this.sites = sites);
   }
 
   ngOnInit() {

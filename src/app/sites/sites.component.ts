@@ -15,6 +15,7 @@ import {Organization} from '../interfaces/organization';
 import {Team} from '../interfaces/team';
 import {MessageService, SelectItem} from 'primeng/api';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {EditTask} from '../interfaces/edit-task';
 
 @Component({
   selector: 'app-sites',
@@ -64,6 +65,7 @@ export class SitesComponent implements OnInit, OnDestroy {
   canEditWiki: boolean;  // this means the user can edit wiki
   canEditChecklist: boolean;
   canEditTrip: boolean;
+  canProposeWiki: boolean; // Propose wiki changes. Only applies to verified users
 
   titleEdits = []; // For Wiki usage
   confirmTitles = [];
@@ -120,7 +122,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     sharedService.addSection.pipe(takeUntil(this.unsubscribeSubject))
       .subscribe(() => this.showNewSectionPopup = true);
 
-    this.siteObservable = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`)
+    this.siteObservable = this.db.doc(`sites/${this.siteId}`)
       .valueChanges() as Observable<Site>;
 
     this.siteObservable.pipe(takeUntil(this.unsubscribeSubject)).subscribe((site: Site) => {
@@ -140,7 +142,7 @@ export class SitesComponent implements OnInit, OnDestroy {
 
       // Let's do checklist
       this.checkList =
-        this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/checklist/${site.currentCheckList}`)
+        this.db.doc(`sites/${this.siteId}/checklist/${site.currentCheckList}`)
         .valueChanges().pipe(map(data => {
           const array = [];
           if (data) {
@@ -179,7 +181,8 @@ export class SitesComponent implements OnInit, OnDestroy {
         wikiSubscribe = this.db.doc(`user_preferences/${user.uid}`).valueChanges()
           .pipe(takeUntil(this.unsubscribeSubject)).subscribe((pref: UserPreferences) => {
             this.canEditTrip = this.canEditChecklist = this.canEditWiki = pref.admin;
-            sharedService.canEdit.emit(pref.admin);
+            this.canProposeWiki = pref.verified;
+            this.sharedService.canEdit.emit(pref.admin || pref.verified);
         });
 
         this.getOrganizations(user).then((orgs: Observable<Organization>[]) => {
@@ -250,34 +253,59 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   async submitEdit(title, markup, newTitle, confirm) {
-    const json: {} = await this.db.doc(`wiki/${this.wikiId}`)
-      .valueChanges().pipe(map(d => {
-        return d;
-      }), take(1)).toPromise();
-    if (confirm) {
-      json[newTitle] = markup;
-      json[title] = firebase.firestore.FieldValue.delete();
-    } else {
-      json[title] = markup;
-    }
-    const version = {};
-    // Create a new update
-    const wikiId = this.db.createId();
-    version[wikiId] = {
-      created_id: this.authInstance.auth.currentUser.uid,
-      date: new Date()
-    };
-    this.db.firestore.batch()
-      .set(this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`).ref,
-        {'current': wikiId, versions: version}, {merge: true})
-      .set(this.db.doc(`wiki/${wikiId}`).ref, json, {merge: true})
-      .commit()
-      .catch((error) => {
+    if (this.canProposeWiki && !this.canEditWiki) { // If they are verified but not admin
+      const id = this.db.createId();
+      const pending_update_json: EditTask = {
+        email: this.authInstance.auth.currentUser.email, // the email of who changed the doc
+        date: new Date(), // date of the changed doc
+        title: title,
+        markup: markup,
+        new_title: newTitle ? newTitle : null,
+        user_id: this.authInstance.auth.currentUser.uid,
+        id: id,
+        owner_id: this.siteId,
+        type: 'site'
+      };
+      this.db.doc(`edits/${id}`).set(pending_update_json).catch((error) => {
           console.log(error);
-          this.messageService.add({severity: 'error', summary: 'Unable to Save Edit',
-            detail: 'Failed to save your edit to the wiki. Please try again later.'});
+          this.messageService.add({
+            severity: 'error', summary: 'Unable to Save Edit',
+            detail: 'Failed to save your edit to the wiki. Please try again later.'
+          });
         }
       );
+    } else {
+      const json: {} = await this.db.doc(`wiki/${this.wikiId}`)
+        .valueChanges().pipe(map(d => {
+          return d;
+        }), take(1)).toPromise();
+      if (confirm) {
+        json[newTitle] = markup;
+        json[title] = firebase.firestore.FieldValue.delete();
+      } else {
+        json[title] = markup;
+      }
+      const version = {};
+      // Create a new update
+      const wikiId = this.db.createId();
+      version[wikiId] = {
+        created_id: this.authInstance.auth.currentUser.uid,
+        date: new Date()
+      };
+      this.db.firestore.batch()
+        .set(this.db.doc(`sites/${this.siteId}`).ref,
+          {'current': wikiId, versions: version}, {merge: true})
+        .set(this.db.doc(`wiki/${wikiId}`).ref, json, {merge: true})
+        .commit()
+        .catch((error) => {
+            console.log(error);
+            this.messageService.add({
+              severity: 'error', summary: 'Unable to Save Edit',
+              detail: 'Failed to save your edit to the wiki. Please try again later.'
+            });
+          }
+        );
+    }
   }
 
   submitNewTrip() {
@@ -340,13 +368,13 @@ export class SitesComponent implements OnInit, OnDestroy {
     });
     this.sharedService.selectedChecklists = this.selectedLists;
     this.sharedService.backHistory.push(this.router.url);
-    this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
+    this.router.navigate([`site/${this.siteId}/list`]);
     this.showNewSectionPopup = false;
   }
 
   createNewList() {
     this.sharedService.backHistory.push(this.router.url);
-    this.router.navigate([`country/${this.countryId}/site/${this.siteId}/createList`]);
+    this.router.navigate([`site/${this.siteId}/createList`]);
   }
 
   jsonParse(list) {
@@ -385,13 +413,5 @@ export class SitesComponent implements OnInit, OnDestroy {
       return value;
     }
   }
-
-  // editChecklist(checklist) {
-  //   this.sharedService.selectedChecklists = [checklist.name];
-  //   this.sharedService.filledOutChecklist = [checklist, true];
-  //   this.sharedService.backHistory.push(this.router.url);
-  //   this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
-  //   this.showNewSectionPopup = false;
-  // }
 }
 
