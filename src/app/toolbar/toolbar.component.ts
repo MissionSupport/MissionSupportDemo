@@ -42,6 +42,12 @@ export class ToolbarComponent implements OnInit, OnChanges {
     }
   }
 
+  goHome() {
+    this.router.navigateByUrl('').catch(err => {
+      console.log(err);
+    });
+  }
+
   navHelper(urlSegs) {
     let url = '';
     for (let i = 0; i < urlSegs.length - 1; i++) {
