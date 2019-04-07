@@ -9,5 +9,6 @@ export interface EditTask {
   new_title: string;
   title: string;
   user_id: string;
-  country_id: string;
+  owner_id: string;
+  type: string;
 }

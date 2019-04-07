@@ -15,6 +15,7 @@ import {drag} from 'd3';
 import {Topology} from 'topojson-specification';
 import {feature} from 'topojson';
 import {FeatureCollection} from 'geojson';
+import {Site} from '../../interfaces/site';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -160,9 +161,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
         }, takeUntil(this.unsubscribeSubject)));
       });
     // Code for dealing with pending wiki edits
-    this.pendingCountryEdits = this.db.collection('edits').valueChanges().pipe(flatMap((edits: EditTask[]) => {
+    this.pendingCountryEdits = this.db.collection('edits', ref => ref.where('type', '==', 'country'))
+      .valueChanges().pipe(flatMap((edits: EditTask[]) => {
       return this.db.collection('countries').valueChanges().pipe(flatMap((countries: Country[]) => {
-        const array = countries.filter(c => edits.map(e => e.country_id).includes(c.id));
+        const array = countries.filter(c => edits.map(e => e.owner_id).includes(c.id))
         return this.db.collection('wiki').snapshotChanges().pipe(map((wikis: any[]) => {
           const wik = wikis.filter(w => array.map(a => a.current).includes(w.payload.doc.id));
           const temp = wik.map(m => {
@@ -187,7 +189,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
           console.log(wikiMapping);
           console.log(cons);
           for (const edit of edits) {
-            let mapping = wikiMapping[cons[edit.country_id].current][edit.title];
+            let mapping = wikiMapping[cons[edit.owner_id].current][edit.title];
             if (mapping == null) {
               mapping = '';
             }
@@ -195,7 +197,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
               original: mapping,
               new: edit.markup,
               section: edit.title,
-              wiki: cons[edit.country_id].countryName,
+              wiki: cons[edit.owner_id].countryName,
               proposedBy: edit.email,
               timeProposed: edit.date,
               edit: edit
@@ -206,35 +208,53 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
         }), takeUntil(this.unsubscribeSubject));
       }), takeUntil(this.unsubscribeSubject));
     }));
-    /*
-    this.db.collection('countries').valueChanges().pipe(takeUntil(this.unsubscribeSubject))
-      .subscribe((countries: Country[]) => {
-        const array = {};
-        for (const country of countries) {
-          array[country.id] = country;
-        }
-        this.db.collection('edits').valueChanges().pipe(takeUntil(this.unsubscribeSubject))
-          .subscribe((edits: EditTask[]) => {
-            const values = [];
-            for (const edit of edits) {
-              const json = {
-                original: this.db.doc(`countries/${edit.country_id}/wiki/${array[edit.country_id].current}`).valueChanges()
-                  .pipe(map(d => {
-                    return d[edit.title];
-                    }), take(1)).toPromise(),
-                new: edit.markup,
-                section: edit.title,
-                wiki: array[edit.country_id].countryName,
-                proposedBy: edit.email,
-                timeProposed: edit.date,
-                edit: edit
-              };
-              values.push(json);
-            }
-            this.pendingCountryEdits = values;
+    this.pendingSiteEdits = this.db.collection('edits', ref => ref.where('type', '==', 'site'))
+      .valueChanges().pipe(flatMap((edits: EditTask[]) => {
+      return this.db.collection('sites').valueChanges().pipe(flatMap((sites: Site[]) => {
+        const array = sites.filter(c => edits.map(e => e.owner_id).includes(c.id));
+        return this.db.collection('wiki').snapshotChanges().pipe(map((wikis: any[]) => {
+          const wik = wikis.filter(w => array.map(a => a.current).includes(w.payload.doc.id));
+          const temp = wik.map(m => {
+            console.log(m.payload.doc.id);
+            const json = {};
+            json[m.payload.doc.id] = m.payload.doc.data();
+            return json;
           });
-      });
-      */
+          const wikiMapping = {};
+          for (const x of temp) {
+            for (const k in x) {
+              if (x.hasOwnProperty(k)) {
+                wikiMapping[k] = x[k];
+              }
+            }
+          }
+          const sits = {};
+          for (const site of sites) {
+            sits[site.id] = site;
+          }
+          const values = [];
+          console.log(wikiMapping);
+          console.log(sits);
+          for (const edit of edits) {
+            let mapping = wikiMapping[sits[edit.owner_id].current][edit.title];
+            if (mapping == null) {
+              mapping = '';
+            }
+            const json = {
+              original: mapping,
+              new: edit.markup,
+              section: edit.title,
+              wiki: sits[edit.owner_id].siteName,
+              proposedBy: edit.email,
+              timeProposed: edit.date,
+              edit: edit
+            };
+            values.push(json);
+          }
+          return values;
+        }), takeUntil(this.unsubscribeSubject));
+      }), takeUntil(this.unsubscribeSubject));
+    }));
     this.items = [
       {label: 'Pending User Approvals', icon: 'pi pi-fw pi-user-plus', command: event1 => {
           this.viewUserApprovals = true;

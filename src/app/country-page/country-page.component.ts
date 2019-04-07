@@ -84,7 +84,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
 
     // TODO: Change this to get the 'Country/Sites' list instead
-    this.siteCollection = db.collection<Site>(`countries/${this.countryId}/sites`);
+    this.siteCollection = db.collection<Site>(`sites`);
     this.siteCollection.valueChanges().subscribe((item: Site[]) => {
       this.sites = item;
     });
@@ -152,7 +152,8 @@ export class CountryPageComponent implements OnInit, OnDestroy {
         new_title: newTitle ? newTitle : null,
         user_id: this.authInstance.auth.currentUser.uid,
         id: id,
-        country_id: this.countryId
+        owner_id: this.countryId,
+        type: 'country'
       };
       this.db.doc(`edits/${id}`).set(pending_update_json).catch((error) => {
           console.log(error);
@@ -227,18 +228,17 @@ export class CountryPageComponent implements OnInit, OnDestroy {
       id: siteId,
       siteName: this.newSiteName,
       tripIds: [],
-      // TODO edited because would not allow push without
-      versions: ''
+      versions: {}
     };
-    this.db.doc(`countries/${this.countryId}/sites/${siteId}`).set(site).then(() => {
+    this.db.doc(`sites/${siteId}`).set(site).then(() => {
       console.log('Successfully created site, generating wiki and checklist');
       const wikiData = {};
       for (const x of this.preDef.wikiSite) {
         wikiData[x.title] = x.markup;
       }
       this.db.firestore.batch()
-        .set(this.db.doc(`countries/${this.countryId}/sites/${siteId}/wiki/${wikiId}`).ref, wikiData)
-        .set(this.db.doc(`countries/${this.countryId}/sites/${siteId}/checklist/${checklistId}`).ref, {})
+        .set(this.db.doc(`wiki/${wikiId}`).ref, wikiData)
+        .set(this.db.doc(`sites/${siteId}/checklist/${checklistId}`).ref, {})
         .commit();
     });
     // Go ahead and clear the section variables
