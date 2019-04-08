@@ -37,8 +37,6 @@ import { MenuModule } from 'primeng/menu';
 import { CountryPageComponent } from './country-page/country-page.component';
 import { TripPageComponent } from './trip-page/trip-page.component';
 import { OrgPageComponent } from './org-page/org-page.component';
-import { OrgsListComponent } from './orgs-list/orgs-list.component';
-import { MyOrgsListComponent } from './my-orgs-list/my-orgs-list.component';
 import { MyTripsListComponent } from './my-trips-list/my-trips-list.component';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {AccordionModule} from 'primeng/accordion';
@@ -94,8 +92,6 @@ import { ChecklistVersionComponent } from './admin/checklist-version/checklist-v
     CountryPageComponent,
     TripPageComponent,
     OrgPageComponent,
-    OrgsListComponent,
-    MyOrgsListComponent,
     MyTripsListComponent,
     ChecklistCreationPageComponent,
     SiteSearchComponent,

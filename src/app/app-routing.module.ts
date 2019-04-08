@@ -10,7 +10,6 @@ import {UploadFormComponent} from './upload-form/upload-form.component';
 import {OrgsComponent} from './orgs/orgs.component';
 import {OrgadminComponent} from './admin/orgAdmin/orgadmin.component';
 import {ProfileViewComponent} from './profile-view/profile-view.component';
-import {MyOrgsListComponent} from './my-orgs-list/my-orgs-list.component';
 import {MyTripsListComponent} from './my-trips-list/my-trips-list.component';
 import {CountryPageComponent} from './country-page/country-page.component';
 import {TripPageComponent} from './trip-page/trip-page.component';
@@ -74,12 +73,6 @@ const routes: Routes = [
     path: 'profileView',
     canActivate: [AuthguardService],
     component: ProfileViewComponent,
-    outlet: 'sidebar'
-  },
-  {
-    path: 'myGroupsSide',
-    canActivate: [AuthguardService],
-    component: MyOrgsListComponent,
     outlet: 'sidebar'
   },
   {

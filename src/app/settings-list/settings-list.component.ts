@@ -33,8 +33,6 @@ export class SettingsListComponent implements OnInit {
           this.viewDash = pref.admin;
           this.menuItems = [
             { label: 'My Profile', icon: 'pi pi-fw pi-user', routerLink: ['', { outlets: { sidebar: ['profileView'] } }] },
-            { label: 'Edit Checklist Preferences', icon: 'pi pi-fw pi-cog' },
-            { label: 'View Permissions', icon: 'pi pi-fw pi-lock' },
             { label: 'Admin Dashboard', icon: 'pi pi-fw pi-lock', visible: this.viewDash, command: () => {
                 this.sharedService.backHistory.push(this.router.url);
                 this.sidebarService.toggle();
