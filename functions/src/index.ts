@@ -8,7 +8,7 @@ exports.createUserPreferences = functions.auth.user().onCreate(user => {
   console.log(user);
   console.log('Creating user_preferences for', userId);
   // Let's see if they will be verified or not.
-  const verified = user.email.includes('.edu', user.email.length - 4);
+  const verified = user.email.toLocaleLowerCase().includes('.edu', user.email.length - 4);
   const batch = admin.firestore().batch();
   const pref = admin.firestore().doc(`user_preferences/${userId}`)
   batch.create(pref, {

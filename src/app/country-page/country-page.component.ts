@@ -84,7 +84,7 @@ export class CountryPageComponent implements OnInit, OnDestroy {
     this.mainHeight = this.clientHeight - this.footerHeight * 2.2;
 
     // TODO: Change this to get the 'Country/Sites' list instead
-    this.siteCollection = db.collection<Site>(`sites`);
+    this.siteCollection = db.collection<Site>(`sites`, ref => ref.where('countryID', '==', this.countryId));
     this.siteCollection.valueChanges().subscribe((item: Site[]) => {
       this.sites = item;
     });
