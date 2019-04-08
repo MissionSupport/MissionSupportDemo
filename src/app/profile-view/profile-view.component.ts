@@ -21,8 +21,8 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   organization: string;
   orgs;
   teams;
-  groups;
   isAdmin: boolean;
+  verified: boolean;
 
   editingEmail: boolean;
   newEmail: string;
@@ -50,6 +50,7 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
       this.db.doc(`user_preferences/${this.id}`).valueChanges().pipe(takeUntil(this.unsubscribeSubject))
         .subscribe((data: UserPreferences) => {
         this.isAdmin = data.admin;
+        this.verified = data.verified;
         });
 
       // TODO: this function only updates the email text input field after being clicked on. Needs to be fixed.
