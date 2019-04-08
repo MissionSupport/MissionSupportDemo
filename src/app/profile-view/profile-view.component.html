@@ -20,16 +20,12 @@
   <span>{{organization}}</span>
 </div>
 <div>
-  <h4>Groups</h4>
-  <span>{{groups}}</span>
+  <h4>Teams</h4>
+  <span>{{teams}}</span>
 </div>
 <div>
   <h4>Permissions</h4>
-  <span>{{isAdmin}}</span>
-</div>
-<div>
-  <h4>My Media</h4>
-  <span>{{isAdmin}}</span>
+  <span>{{(isAdmin)?'Administrator':(verified)?'Verified User':'User'}}</span>
 </div>
 <div [ngStyle]="!changingPassword ? {'padding-top': '20px'} : null">
   <p-button *ngIf="!changingPassword" (onClick)="changingPassword = true" styleClass="ui-button-danger" label="Change Password"></p-button>
