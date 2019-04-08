@@ -128,14 +128,23 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
       if ((country.countryName === countryName) && (country.id === countryID)) {
         // console.log(countryName);
         this.siteSub = this.db.collection<Site>(`sites`).valueChanges().subscribe((sites: Site[]) => {
-          console.log(sites);
+          // console.log(sites);
           sites.forEach((site: Site) => {
-            if (site.countryID === countryID) {
+            let alreadyIn = false;
+            for (const siteInst of this.navSites) {
+              if (siteInst.siteName === site.siteName) {
+                alreadyIn = true;
+                break;
+              }
+            }
+            if ((site.countryID === countryID) && !(alreadyIn)) {
+              console.log(site);
+              console.log(this.navSites);
               this.navSites = [...this.navSites, site];
             }
           });
         });
-        console.log(this.navSites);
+        // console.log(this.navSites);
         this.navCountry = country;
         this.navDialog = true;
         break;

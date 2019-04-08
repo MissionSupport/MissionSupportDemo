@@ -1,7 +1,9 @@
 <div style="height: 100%; width: 100%; position: absolute; display: flex; flex-direction: column">
   <p-dialog header="Map Navigation" [(visible)]="navDialog">
-    <button pButton [label]="navCountry?.countryName" (click)="mapNavCountry(navCountry)"></button>
-    <button pButton *ngFor="let site of navSites" [label]="site?.siteName" (click)="mapNavSite(site)"></button>
+    <div class="p-grid">
+      <button pButton class="p-col" [label]="navCountry?.countryName" (click)="mapNavCountry(navCountry)"></button>
+      <button pButton class="p-col" *ngFor="let site of navSites" [label]="site?.siteName" (click)="mapNavSite(site)"></button>
+    </div>
   </p-dialog>
   <div id="svgContainer" style="display: inline-block; position: relative; width: 100%; vertical-align: top; overflow: hidden; height: 60%"></div>
   <app-site-search></app-site-search>
