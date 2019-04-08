@@ -57,11 +57,11 @@
 
         <div class="p-col-6" style="margin-top: 10px;">
           <h2>Countries without a page</h2>
-          <p-listbox [style]="{'width':'100%', 'text-align': 'left'}" [options]="unInitiatedCountries" [(ngModel)]="selectedCountries" optionLabel="countryName" filter="true" [listStyle]="{'max-height':'250px'}" multiple="true" checkbox="checkbox"></p-listbox>
+          <p-listbox [style]="{'width':'100%', 'text-align': 'left'}" [options]="unInitiatedCountries" [(ngModel)]="selectedCountries" optionLabel="countryName" filter="true" [listStyle]="{'max-height':'250px'}" multiple="true" checkbox="checkbox" #listBoxNon id="listBoxNon"></p-listbox>
         </div>
         <div class="p-col-6" style="margin-top: 10px">
           <h2>Countries with a page</h2>
-          <p-listbox [style]="{'width':'100%', 'text-align': 'left'}" [options]="existingCountries" [(ngModel)]="selectedDeleteCountries" optionLabel="countryName" filter="true" [listStyle]="{'max-height':'250px'}" multiple="true" checkbox="checkbox"></p-listbox>
+          <p-listbox [style]="{'width':'100%', 'text-align': 'left'}" [options]="existingCountries" [(ngModel)]="selectedDeleteCountries" optionLabel="countryName" filter="true" [listStyle]="{'max-height':'250px'}" multiple="true" checkbox="checkbox" #listBox id="listBox"></p-listbox>
         </div>
         <div class="p-col-12">
           <div class="p-grid">

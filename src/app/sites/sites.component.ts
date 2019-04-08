@@ -368,13 +368,13 @@ export class SitesComponent implements OnInit, OnDestroy {
     });
     this.sharedService.selectedChecklists = this.selectedLists;
     this.sharedService.backHistory.push(this.router.url);
-    this.router.navigate([`site/${this.siteId}/list`]);
+    this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
     this.showNewSectionPopup = false;
   }
 
   createNewList() {
     this.sharedService.backHistory.push(this.router.url);
-    this.router.navigate([`site/${this.siteId}/createList`]);
+    this.router.navigate([`country/${this.countryId}/site/${this.siteId}/createList`]);
   }
 
   jsonParse(list) {

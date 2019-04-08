@@ -18,7 +18,6 @@ import {OrgPageComponent} from './org-page/org-page.component';
 import {ChecklistCreationPageComponent} from './checklist-fillOut-page/checklist-creation-page.component';
 import {SiteSearchComponent} from './site-search/site-search.component';
 import {AdminNewListComponent} from './admin/admin-new-list/admin-new-list.component';
-import {AdminCountryCreationComponent} from './admin/admin-country-creation/admin-country-creation.component';
 import {DiffEditComponent} from './admin/diff-edit/diff-edit.component';
 import {AdminDashboardComponent} from './admin/admin-dashboard/admin-dashboard.component';
 import {ChecklistVersionComponent} from './admin/checklist-version/checklist-version.component';
@@ -123,12 +122,6 @@ const routes: Routes = [
     path: 'country/:countryId/site/:id/createList',
     canActivate: [AuthguardService],
     component: AdminNewListComponent,
-  },
-  {
-    path: 'adminCountry',
-    canActivate: [AuthguardService],
-    component: AdminCountryCreationComponent,
-
   },
   {
     path: 'admindash',

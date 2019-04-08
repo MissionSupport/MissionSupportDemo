@@ -62,7 +62,6 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {TableModule} from 'primeng/table';
 import {PreDefined} from './globals';
 import { AdminNewListComponent } from './admin/admin-new-list/admin-new-list.component';
-import { AdminCountryCreationComponent } from './admin/admin-country-creation/admin-country-creation.component';
 import { DiffEditComponent } from './admin/diff-edit/diff-edit.component';
 import { ChecklistComponent } from './checklist/checklist.component';
 import { DropdownQuestionComponent } from './checklist/dropdown-question.component';
@@ -102,7 +101,6 @@ import { ChecklistVersionComponent } from './admin/checklist-version/checklist-v
     SiteSearchComponent,
     BottomTabsComponent,
     AdminNewListComponent,
-    AdminCountryCreationComponent,
     DiffEditComponent,
     ChecklistComponent,
     DropdownQuestionComponent,
