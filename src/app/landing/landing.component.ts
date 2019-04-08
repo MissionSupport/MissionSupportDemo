@@ -10,7 +10,7 @@ import { drag } from 'd3-drag';
 import { Topology } from 'topojson-specification';
 import {Subscription} from 'rxjs';
 import {Site} from '../interfaces/site';
-import {CountryPageComponent} from '../country-page/country-page.component';
+import {MenuItem} from 'primeng/api';
 
 @Component({
   selector: 'app-landing',
@@ -34,6 +34,10 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   navSites: Site[] = [];
   siteSub: Subscription;
 
+  navMenuItems: MenuItem[] = [];
+  siteMenuItems: MenuItem[] = [];
+  countryMenuItems: MenuItem[] = [];
+
   constructor(private db: AngularFirestore, public router: Router, private sharedService: SharedService) {
     // Filter is used to list only those countries which have at least one site created
     this.countrySub = db.collection<Country>('countries').valueChanges()
@@ -43,8 +47,8 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     this.sharedService.canEdit.emit(false);
     this.sharedService.onPageNav.emit('Country Selection');
     this.sharedService.scrollPanelHeightToSubtract.emit(50);
-
   }
+
   ngOnInit() {
   }
 
@@ -120,15 +124,19 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     d3.select('.country_highlighted').classed('country_highlighted', false);
     d3.select('#' + e.properties.GU_A3).style('fill', 'red');
     d3.select('#' + e.properties.GU_A3).classed('country_highlighted', true);
+    this.navCountry = null;
+    this.navSites = [];
+    this.navMenuItems = [];
+    this.siteMenuItems = [];
+    this.countryMenuItems = [];
     const countryName = e.properties.NAME_EN;
     const countryID = e.properties.GU_A3;
-    // console.log(this.countries);
     for (const country of this.countries ) {
-      // console.log(country);
       if ((country.countryName === countryName) && (country.id === countryID)) {
-        // console.log(countryName);
+        this.navCountry = country;
+        const countryInst: MenuItem = {label: country.countryName, routerLink: `country/${country.id}`};
+        this.countryMenuItems = [countryInst];
         this.siteSub = this.db.collection<Site>(`sites`).valueChanges().subscribe((sites: Site[]) => {
-          // console.log(sites);
           sites.forEach((site: Site) => {
             let alreadyIn = false;
             for (const siteInst of this.navSites) {
@@ -138,14 +146,15 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
               }
             }
             if ((site.countryID === countryID) && !(alreadyIn)) {
-              console.log(site);
-              console.log(this.navSites);
               this.navSites = [...this.navSites, site];
+              console.log(this.navSites);
+              const itemInst: MenuItem = {label: site.siteName, routerLink: `country/${country.id}/site/${site.id}`};
+              this.siteMenuItems = [...this.siteMenuItems, itemInst];
+              console.log(this.siteMenuItems);
+              this.navMenuItems = [{label: 'Country', items: this.countryMenuItems}, {label: 'Sites', items: this.siteMenuItems}];
             }
           });
         });
-        // console.log(this.navSites);
-        this.navCountry = country;
         this.navDialog = true;
         break;
       }
