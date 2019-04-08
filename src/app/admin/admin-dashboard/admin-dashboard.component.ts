@@ -17,6 +17,7 @@ import {feature} from 'topojson';
 import {FeatureCollection} from 'geojson';
 import {Site} from '../../interfaces/site';
 import {ListboxModule} from 'primeng/listbox';
+import {PreDefined} from '../../globals';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -129,7 +130,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
     },
   ];
 
-  constructor(public sharedService: SharedService, private readonly db: AngularFirestore) {
+  constructor(public sharedService: SharedService, private readonly db: AngularFirestore, private preDef: PreDefined) {
     sharedService.hideToolbar.emit(false);
     sharedService.onPageNav.emit('Admin Dashboard');
     this.sharedService.scrollPanelHeightToSubtract.emit(50);
@@ -344,7 +345,28 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
   }
 
   createGeneric() {
-    console.log(this.selectedCountries);
+    // Now save to the database
+    this.selectedCountries.forEach(c => {
+      const countryId = c.id;
+      const wikiId = this.db.createId();
+      const country: Country = {
+        countryName: c.countryName,
+        current: wikiId,
+        id: countryId,
+        versions: {}
+      };
+      this.db.doc(`countries/${countryId}`).set(country, {merge: true}).then(() => {
+        console.log('Successfully updated country, generating wiki');
+        const wikiData = {};
+        for (const x of this.preDef.wikiCountry) {
+          wikiData[x.title] = x.markup;
+        }
+        this.db.firestore.batch()
+          .set(this.db.doc(`wiki/${wikiId}`).ref, wikiData).commit();
+      });
+      // Go ahead and clear the section variables
+      this.selectedCountries = null;
+    });
   }
 
   deleteCountry() {

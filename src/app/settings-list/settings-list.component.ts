@@ -38,7 +38,7 @@ export class SettingsListComponent implements OnInit {
                 this.sidebarService.toggle();
                 this.router.navigate(['/admindash']);
               } },
-            { label: 'Upload Media' , icon: 'pi pi-fw pi-cloud-upload', routerLink: ['', { outlets: { sidebar: ['uploadSide'] } }] },
+            // { label: 'Upload Media' , icon: 'pi pi-fw pi-cloud-upload', routerLink: ['', { outlets: { sidebar: ['uploadSide'] } }] },
             { label: 'Manage Organizations', icon: 'pi pi-fw pi-users', routerLink: ['', { outlets: { sidebar: ['manageGroup'] } }] },
             { label: 'Log Out', icon: 'pi pi-fw pi-sign-out', command: () => {
                 this.authInstance.auth.signOut().then(() => {
