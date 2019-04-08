@@ -14,6 +14,8 @@ export class ToolbarComponent implements OnInit, OnChanges {
   @Input() editMode;
   @Input() addName = '';
   display;
+  width: any = window.innerWidth;
+  shortNum: number = Math.floor((this.width - 280) / 10);
 
   isLanding: boolean;
   constructor(public router: Router, public sidebarService: SidebarService,
@@ -23,6 +25,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.sidebarService.change.subscribe((isOpen: boolean) => this.display = isOpen);
+    this.width = window.innerWidth;
   }
 
   ngOnChanges() {
@@ -68,6 +71,13 @@ export class ToolbarComponent implements OnInit, OnChanges {
         const segs = this.router.parseUrl(url).root.children.primary.segments;
         this.navHelper(segs);
       });
+  }
+
+  onResize() {
+    this.width = window.innerWidth;
+    if (this.width > 280) {
+      this.shortNum = Math.floor((this.width - 280) / 10) ;
+    }
   }
 
   // toggleEditMode() {
