@@ -13,7 +13,7 @@
     <p-button icon="pi pi-home" *ngIf="!this.isLanding" styleClass="ui-button-rounded" style="height: 100%; padding-top: 5px; padding-right: 5px; cursor: pointer;" (onClick)="goHome()"></p-button>
   </div>
   <div class="p-col-fixed p-col-align-center p-align-center" style="font-size: larger; text-align: center;">
-    {{ (header.length > shortNum) ? (header | slice:0:shortNum) + '...': header}}
+    {{ (header?.length > shortNum) ? (header | slice:0:shortNum) + '...': header}}
   </div>
   <div class="p-col-fixed p-col-align-center p-align-end" style="height: 90%; margin-bottom: 7px">
     <div style="padding-right: 15px; text-align: center; cursor: pointer" (click)="addSection()" [style.display]="!hasEditRights ? 'none' : 'inline-block'">

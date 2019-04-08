@@ -53,24 +53,26 @@ export class ToolbarComponent implements OnInit, OnChanges {
 
   navHelper(urlSegs) {
     let url = '';
-    for (let i = 0; i < urlSegs.length - 1; i++) {
-      url = url + '/' + urlSegs[i].toString();
+    if (urlSegs) {
+      for (let i = 0; i < urlSegs.length - 1; i++) {
+        url = url + '/' + urlSegs[i].toString();
+      }
+      // if (url === '') {
+      //   url = '/landing';
+      // }
+      this.router.navigateByUrl(url)
+        .then(() => {
+          console.log('Route exists, redirection is done');
+          if (urlSegs.toString().includes('site')) {
+            this.sharedService.goSites.emit(true);
+          }
+        })
+        .catch(() => {
+          console.log('Route does not exists, redirection edit');
+          const segs = this.router.parseUrl(url).root.children.primary.segments;
+          this.navHelper(segs);
+        });
     }
-    // if (url === '') {
-    //   url = '/landing';
-    // }
-    this.router.navigateByUrl(url)
-      .then(() => {
-        console.log('Route exists, redirection is done');
-        if (urlSegs.toString().includes('site')) {
-          this.sharedService.goSites.emit(true);
-        }
-      })
-      .catch(() => {
-        console.log('Route does not exists, redirection edit');
-        const segs = this.router.parseUrl(url).root.children.primary.segments;
-        this.navHelper(segs);
-      });
   }
 
   onResize() {

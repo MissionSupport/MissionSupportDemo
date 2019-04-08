@@ -9,6 +9,8 @@ import {Country} from '../interfaces/country';
 import { drag } from 'd3-drag';
 import { Topology } from 'topojson-specification';
 import {Subscription} from 'rxjs';
+import {Site} from '../interfaces/site';
+import {CountryPageComponent} from '../country-page/country-page.component';
 
 @Component({
   selector: 'app-landing',
@@ -23,10 +25,14 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   scaleFactor = 200;
   svg: d3.Selection<SVGSVGElement, {}, HTMLElement, any>;
 
-  countries: Country[];
+  countries: Country[] = [];
   selectedCountry: Country;
   countrySub: Subscription;
   names: any[] = [];
+  navDialog: Boolean = false;
+  navCountry: Country = null;
+  navSites: Site[] = [];
+  siteSub: Subscription;
 
   constructor(private db: AngularFirestore, public router: Router, private sharedService: SharedService) {
     // Filter is used to list only those countries which have at least one site created
@@ -45,6 +51,9 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   ngOnDestroy() {
     if (this.countrySub) {
       this.countrySub.unsubscribe();
+    }
+    if (this.siteSub) {
+      this.siteSub.unsubscribe();
     }
   }
 
@@ -106,11 +115,44 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
     // console.log(this.names);
   }
 
-  region_clicked(e) {
+  region_clicked = (e) => {
     d3.select('.country_highlighted').style('fill', 'black');
     d3.select('.country_highlighted').classed('country_highlighted', false);
     d3.select('#' + e.properties.GU_A3).style('fill', 'red');
     d3.select('#' + e.properties.GU_A3).classed('country_highlighted', true);
+    const countryName = e.properties.NAME_EN;
+    const countryID = e.properties.GU_A3;
+    // console.log(this.countries);
+    for (const country of this.countries ) {
+      // console.log(country);
+      if ((country.countryName === countryName) && (country.id === countryID)) {
+        // console.log(countryName);
+        this.siteSub = this.db.collection<Site>(`sites`).valueChanges().subscribe((sites: Site[]) => {
+          console.log(sites);
+          sites.forEach((site: Site) => {
+            if (site.countryID === countryID) {
+              this.navSites = [...this.navSites, site];
+            }
+          });
+        });
+        console.log(this.navSites);
+        this.navCountry = country;
+        this.navDialog = true;
+        break;
+      }
+    }
+  }
+
+  mapNavCountry(country) {
+    this.router.navigateByUrl(`country/${country.id}`).catch(err => {
+      console.log(err);
+    });
+  }
+
+  mapNavSite(site) {
+    this.router.navigateByUrl(`country/${this.navCountry.id}/site/${site.id}`).catch(err => {
+      console.log(err);
+    });
   }
 
   countryClick(): void {
