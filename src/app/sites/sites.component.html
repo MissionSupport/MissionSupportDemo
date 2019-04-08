@@ -27,11 +27,11 @@
     </form>
   </div>
   <div style="width: 300px;" [hidden]="!viewChecklist">
-    <p-listbox [options]="genericChecklists" [(ngModel)]="selectedLists"
+    <p-listbox [options]="genericChecklists.concat(addedChecklists)" [(ngModel)]="selectedLists"
       multiple="multiple" checkbox="checkbox" [style]="{'width':'100%'}">
       <p-header>
         <i class="pi pi-list"></i>
-        Select New Generic Checklists
+        Select New Checklists
       </p-header>
     </p-listbox>
     <p-listbox [options]="editChecklists" [(ngModel)]="selectedEditLists"

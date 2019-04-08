@@ -13,8 +13,9 @@ export class SharedService {
   scrollPanelHeightToSubtract: EventEmitter<number> = new EventEmitter();
 
   backHistory: Array<string> = [];
+
   selectedChecklists: Array<string> = [];
   updatingChecklists: Array<any> = [];
-
+  addedChecklistsMap: any;
   constructor() { }
 }

@@ -2,8 +2,11 @@
 <div class="p-grid">
   <div class="p-col-8">
     <h2>Form Preview</h2>
+      <input type="text" pInputText [(ngModel)]="checklist.name" placeholder="Checklist Name">
       <h3>{{checklist.name}}</h3>
-      <app-checklist [questions]="checklist.questions"></app-checklist>
+      <p-message severity="error" *ngIf="alreadyUsedNames.includes(checklist.name)"
+        [text]="'This name is already in use. Choose another one.'"></p-message>
+      <app-checklist [questions]="checklist.questions" [showSubmit]="false"></app-checklist>
   </div>
 
   <div class="p-col-4">
@@ -85,7 +88,9 @@
         (onClick)="pushNewQuestion(); selectedControlType = undefined"
         [disabled]="!selectedControlType || !newQuestionGridSize || !newQuestion"></p-button>
       <div style="padding-top: 30px" >
-        <p-button label="Done Editing?" (onClick)="pushNewForm();"></p-button>
+        <p-button label="Done Editing?"
+        [disabled]="alreadyUsedNames.includes(checklist.name) || checklist.questions.length == 0"
+        (onClick)="pushNewForm();"></p-button>
       </div>
 
     </div>

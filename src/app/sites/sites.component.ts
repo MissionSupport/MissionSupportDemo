@@ -88,6 +88,9 @@ export class SitesComponent implements OnInit, OnDestroy {
     {label: 'Accommodations', value: 'Accommodations'}
   ];
 
+  addedChecklistsQuestions = {};
+  addedChecklists: SelectItem[] = [];
+
   editChecklists: SelectItem[] = [];
 
   selectedLists = [];
@@ -104,6 +107,7 @@ export class SitesComponent implements OnInit, OnDestroy {
     private preDef: PreDefined, private messageService: MessageService, private fb: FormBuilder) {
     this.sharedService.selectedChecklists = [];
     this.sharedService.updatingChecklists = [];
+    this.sharedService.addedChecklistsMap = {};
 
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
@@ -160,6 +164,21 @@ export class SitesComponent implements OnInit, OnDestroy {
           this.listsPresent = array;
           return array;
         }));
+
+      this.db.collection('checklists').snapshotChanges().pipe(takeUntil(this.unsubscribeSubject))
+        .subscribe((actions) => {
+          this.addedChecklistsQuestions = {};
+          this.addedChecklists = [];
+          actions.map(a => {
+            const questions = [];
+            Object.keys(a.payload.doc.data()).forEach((key) => {
+              questions.push(a.payload.doc.data()[key]);
+            })
+            this.addedChecklistsQuestions[a.payload.doc.id] = questions;
+            this.addedChecklists.push({label: a.payload.doc.id, value: a.payload.doc.id});
+          });
+        }
+      );
 
       // Let's get the trips information
       this.tripValues = [];
@@ -367,6 +386,7 @@ export class SitesComponent implements OnInit, OnDestroy {
       });
     });
     this.sharedService.selectedChecklists = this.selectedLists;
+    this.sharedService.addedChecklistsMap = this.addedChecklistsQuestions;
     this.sharedService.backHistory.push(this.router.url);
     this.router.navigate([`country/${this.countryId}/site/${this.siteId}/list`]);
     this.showNewSectionPopup = false;

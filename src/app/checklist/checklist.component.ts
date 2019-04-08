@@ -11,7 +11,7 @@ import { FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms'
         [numberOfDrugs]="((question.type === 'medicineMultipleCheckbox'
           || question.type === 'medicineMultipleTextbox') && answers) ? answers[question.label].length : 0">
       </ng-container>
-      <div class="form-row p-col-12">
+      <div class="form-row p-col-12" *ngIf="showSubmit">
         <p-button type="submit" [label]="'Save'"></p-button>
       </div>
     </form>
@@ -23,6 +23,7 @@ export class ChecklistComponent implements OnInit, OnChanges {
   @Input() questions: Question[] = [];
   @Input() answers: any;
   @Output() submit: EventEmitter<any> = new EventEmitter<any>();
+  @Input() showSubmit: boolean;
 
   numberOfDrugs = 0;
   checklist: FormGroup;

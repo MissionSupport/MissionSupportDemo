@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {PreDefined} from '../../globals';
 import {SharedService} from '../../service/shared-service.service';
 import { Question } from 'src/app/checklist/question';
+import { Subscription } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-new-list',
@@ -9,7 +12,7 @@ import { Question } from 'src/app/checklist/question';
   styleUrls: ['./admin-new-list.component.css'],
   providers: []
 })
-export class AdminNewListComponent implements OnInit {
+export class AdminNewListComponent implements OnInit, OnDestroy {
   counter = 0;
 
   questionTypes: {name: string, type: 'dropdown' | 'freeResponse' | 'image' | 'medicineMultipleCheckbox'
@@ -41,11 +44,24 @@ export class AdminNewListComponent implements OnInit {
   | 'textbox'};
   options: {key: string, value: string}[] = [];
 
-  constructor(private sharedService: SharedService, private preDef: PreDefined) {
+  alreadyUsedNames: string[] = [];
+
+  alreadyUsedSub: Subscription;
+
+  constructor(private sharedService: SharedService, private readonly db: AngularFirestore) {
     this.checklist = {
-      name: 'newFormName',
+      name: '',
       questions: []
     };
+
+    this.alreadyUsedSub = this.db.collection('checklists').snapshotChanges().pipe().subscribe(actions => {
+      this.alreadyUsedNames = ['Hospital', 'Hospital Infrastructure', 'Pharmacy and Lab', 'Operating Room',
+      'Wards', 'Supplies', 'Ambulance', 'Case Volume and Staff', 'Personnel', 'Education and QI', 'Logistics',
+      'Accommodations'];
+      actions.map(a => {
+        this.alreadyUsedNames.push(a.payload.doc.id);
+      });
+    });
 
     // sharedService.hideToolbar.emit(false);
     // sharedService.canEdit.emit(false);
@@ -55,6 +71,12 @@ export class AdminNewListComponent implements OnInit {
   }
 
   ngOnInit() {}
+
+  ngOnDestroy() {
+    if (this.alreadyUsedSub) {
+      this.alreadyUsedSub.unsubscribe();
+    }
+  }
 
   pushNewQuestion() {
     let object: Question;
@@ -92,6 +114,12 @@ export class AdminNewListComponent implements OnInit {
   }
 
   pushNewForm() {
-    console.dir(this.checklist);
+    const json = {};
+    this.checklist.questions.forEach((question) => {
+      json[question.key] = question;
+    });
+    this.db.collection('checklists').doc(this.checklist.name).set(json);
+    this.checklist.name = '';
+    this.checklist.questions = [];
   }
 }

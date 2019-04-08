@@ -23,7 +23,6 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
 
   lists: {name: string, hidden: boolean, list: Question[], answers: any}[] = [];
 
-
   listMap = {
     'Hospital': this.preDef.hospitalChecklist,
     'Hospital Infrastructure': this.preDef.hospitalInfrastructureChecklist,
@@ -42,26 +41,45 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
   constructor(private sharedService: SharedService, private preDef: PreDefined,
               private readonly db: AngularFirestore, private route: ActivatedRoute) {
     this.sharedService.selectedChecklists.forEach((listName) => {
-      this.lists.push({
-        name: listName,
-        hidden: false,
-        list: this.listMap[listName],
-        answers: null
-      });
+      if (Object.keys(this.sharedService.addedChecklistsMap).includes(listName)) {
+        this.lists.push({
+          name: listName,
+          hidden: false,
+          list: this.sharedService.addedChecklistsMap[listName] as Question[],
+          answers: null
+        });
+      } else {
+        this.lists.push({
+          name: listName,
+          hidden: false,
+          list: this.listMap[listName],
+          answers: null
+        });
+      }
     });
     this.sharedService.updatingChecklists.forEach((list) => {
-      const obj = {
-        name: list['name'],
-        hidden: false,
-        list: this.listMap[list['name']],
-        answers: JSON.parse(list['json']['json'])
-      };
-      this.lists.push(obj);
+      if (Object.keys(this.sharedService.addedChecklistsMap).includes(list['name'])) {
+        this.lists.push({
+          name: list['name'],
+          hidden: false,
+          list: this.sharedService.addedChecklistsMap[list['name']] as Question[],
+          answers: JSON.parse(list['json']['json'])
+        });
+      } else {
+        const obj = {
+          name: list['name'],
+          hidden: false,
+          list: this.listMap[list['name']],
+          answers: JSON.parse(list['json']['json'])
+        };
+        this.lists.push(obj);
+      }
     });
 
     this.siteId = this.route.snapshot.paramMap.get('id');
     this.countryId = this.route.snapshot.paramMap.get('countryId');
-    this.siteSubscribable = this.db.doc(`countries/${this.countryId}/sites/${this.siteId}`).valueChanges()
+
+    this.siteSubscribable = this.db.doc(`sites/${this.siteId}`).valueChanges()
       .subscribe((site: Site) => this.checkListId = site.currentCheckList);
 
     this.sharedService.hideToolbar.emit(false);
@@ -77,9 +95,11 @@ export class ChecklistCreationPageComponent implements OnInit, AfterViewInit, On
   onSubmit(formValue: any, listName: string) {
     const json = {};
     json[listName] = JSON.stringify(formValue);
-    this.db.doc(`countries/${this.countryId}/sites/${this.siteId}/checklist/${this.checkListId}`)
-      .update(json);
-    this.lists.find((value) => value.name === listName).hidden = true;
+    this.db.doc(`sites/${this.siteId}/checklist/${this.checkListId}`)
+      .update(json).then(() => {
+        this.lists.find((value) => value.name === listName).hidden = true;
+      })
+      .catch((err) => console.error(err));
   }
 
   unhideForm(listName: string) {
