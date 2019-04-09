@@ -8,7 +8,7 @@ import {PreDefined} from '../globals';
 import {SharedService} from '../service/shared-service.service';
 import {Site} from '../interfaces/site';
 import {Trip} from '../interfaces/trip';
-import {map, take, takeUntil, tap} from 'rxjs/operators';
+import {flatMap, map, take, takeUntil, tap} from 'rxjs/operators';
 import * as firebase from 'firebase';
 import { BottomTab } from '../interfaces/bottom-tab';
 import {Organization} from '../interfaces/organization';
@@ -173,7 +173,7 @@ export class SitesComponent implements OnInit, OnDestroy {
             const questions = [];
             Object.keys(a.payload.doc.data()).forEach((key) => {
               questions.push(a.payload.doc.data()[key]);
-            })
+            });
             this.addedChecklistsQuestions[a.payload.doc.id] = questions;
             this.addedChecklists.push({label: a.payload.doc.id, value: a.payload.doc.id});
           });
@@ -204,12 +204,10 @@ export class SitesComponent implements OnInit, OnDestroy {
             this.sharedService.canEdit.emit(pref.admin || pref.verified);
         });
 
-        this.getOrganizations(user).then((orgs: Observable<Organization>[]) => {
+        this.getOrganizations(user).then((orgs: Observable<Organization[]>) => {
           this.userOrgMap = [];
-          orgs.map(d => {
-            d.pipe(takeUntil(this.unsubscribeSubject)).subscribe((o: Organization) => {
-              this.userOrgMap = [...this.userOrgMap, o];
-            });
+          orgs.subscribe((os: Organization[]) => {
+            this.userOrgMap = os;
           });
         });
       }
@@ -217,17 +215,11 @@ export class SitesComponent implements OnInit, OnDestroy {
   }
 
   public async getOrganizations(user: firebase.User) {
-    const pref: UserPreferences = await (this.db.doc(`user_preferences/${user.uid}`).valueChanges()
-      .pipe(take(1)).toPromise() as Promise<UserPreferences>);
-
-    // Load all the orgs that they belong to on teams
-    const teamsOrgs: string[] = await Promise.all(pref.teams.map(team => {
-      return this.db.doc(`teams/${team}`).valueChanges().pipe(map((t: Team) => t.org, take(1))).toPromise();
+    return this.db.doc(`user_preferences/${user.uid}`).valueChanges().pipe(flatMap((u: UserPreferences) => {
+      return this.db.collection(`organizations`).valueChanges().pipe(map((orgs: Organization[]) => {
+        return orgs.filter(f => u.orgs.includes(f.id));
+      }, takeUntil(this.unsubscribeSubject)));
     }));
-
-    teamsOrgs.push(...pref.orgs);
-
-    return teamsOrgs.map(org => this.db.doc(`organizations/${org}`).valueChanges() as Observable<Organization>);
   }
 
   public loadTrips() {
