@@ -18,6 +18,7 @@ import {FeatureCollection} from 'geojson';
 import {Site} from '../../interfaces/site';
 import {ListboxModule} from 'primeng/listbox';
 import {PreDefined} from '../../globals';
+import {Trip} from '../../interfaces/trip';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -371,6 +372,42 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
 
   deleteCountry() {
     console.log(this.selectedDeleteCountries);
+    const batch = this.db.firestore.batch();
+    const promiseArray = [];
+    for (const country of this.selectedDeleteCountries) {
+      // We want to delete the country and all sites that belong to it.
+      batch.delete(this.db.doc(`countries/${country.id}`).ref);
+      // delete all wikis that belong to it
+      for (const wikiId in country.versions) {
+        batch.delete(this.db.doc(`wiki/${wikiId}`).ref);
+      }
+      // delete all sites that belong to it
+      promiseArray.push(this.db.collection('sites', ref => ref.where('countryID', '==', country.id))
+        .valueChanges().pipe(map((sites: Site[]) => {
+          for (const site of sites) {
+            // delete site
+            batch.delete(this.db.doc(`sites/${site.id}`).ref);
+            // Now need to delete site wiki
+            batch.delete(this.db.doc(`wiki/${site.current}`).ref);
+            // Delete all old versions
+            for (const wikiId in site.versions) {
+              batch.delete(this.db.doc(`wiki/${wikiId}`).ref);
+            }
+            // Delete all checklists
+            batch.delete(this.db.doc(`sites/${site.id}/checklist/${site.currentCheckList}`).ref);
+          }
+        }), take(1)).toPromise());
+      // Now delete all trips that belong to a country
+      promiseArray.push(this.db.collection('trips', ref => ref.where('countryId', '==', country.id))
+        .valueChanges().pipe(map((trips : Trip[]) => {
+          for (const trip of trips) {
+            batch.delete(this.db.doc(`trips/${trip.id}`).ref);
+            // Delete instance from team
+            //batch.set(this.db.doc(`teams/${trip.teamId}`).ref, {trips: trip.})
+          }
+        }), take(1)).toPromise());
+      // Now need to update teams and remove instances of trips from them.
+    }
   }
 
   ngAfterContentInit(): void {
