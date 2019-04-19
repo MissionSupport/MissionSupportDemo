@@ -181,5 +181,20 @@ export class LandingComponent implements OnInit, AfterContentInit, OnDestroy {
   mouseEnter(event, c) {
     console.log(event, c);
   }
+  // clearCache() {
+  //   if (window.indexedDB) {
+  //     window.indexedDB.deleteDatabase('firestore/MissionSupport1/missionsupport1-1541644479691/main');
+  //     window.location.reload();
+  //
+  //   } else {
+  //     console.log('nope');
+  //   }
+  //   // window.indexedDB.webkitGetDatabaseNames().onsuccess = function(sender,args)
+  //   // {
+  //   //   var r = sender.target.result;
+  //   //   for(var i in r)
+  //   //     indexedDB.deleteDatabase(r[i]);
+  //   // };
+  // }
 
 }

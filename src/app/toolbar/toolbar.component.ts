@@ -32,7 +32,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
     this.isLanding = this.router.url === '/';
   }
 
-  restoreFront() {
+  restoreFront(event) {
     this.router.navigate(['', { outlets: { sidebar: ['settingsOptions'] } }]);
   }
 
@@ -75,7 +75,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
     }
   }
 
-  onResize() {
+  onResize(event) {
     this.width = window.innerWidth;
     if (this.width > 280) {
       this.shortNum = Math.floor((this.width - 280) / 10) ;

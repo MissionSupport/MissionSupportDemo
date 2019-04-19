@@ -371,6 +371,24 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
 
   deleteCountry() {
     console.log(this.selectedDeleteCountries);
+    this.selectedDeleteCountries.forEach( c => {
+      const countryId = c.id;
+      let wikiId = '';
+      const countryDoc = this.db.collection('countries').doc(`${countryId}`);
+      countryDoc.ref.get().then(doc => {
+        // console.log(doc.data().current);
+        wikiId = doc.data().current;
+        this.db.collection('wiki').doc(`${wikiId}`).delete().then(function() {
+          console.log('Country Wiki successfully deleted!');
+        }).catch(function(error) {
+          console.error('Error removing document: ', error);
+        });
+      });
+      countryDoc.update({
+        current: firebase.firestore.FieldValue.delete()
+      });
+
+    });
   }
 
   ngAfterContentInit(): void {
