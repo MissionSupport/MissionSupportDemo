@@ -371,6 +371,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
   }
 
   deleteCountry() {
+    /* TODO needs to be finished
     console.log(this.selectedDeleteCountries);
     const batch = this.db.firestore.batch();
     const promiseArray = [];
@@ -408,6 +409,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
         }), take(1)).toPromise());
       // Now need to update teams and remove instances of trips from them.
     }
+    */
   }
 
   ngAfterContentInit(): void {
