@@ -8,6 +8,8 @@ import {Country} from '../../interfaces/country';
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 import {AngularFireAuth} from '@angular/fire/auth';
+import {SharedService} from '../../service/shared-service.service';
+import {Site} from '../../interfaces/site';
 
 @Component({
   selector: 'app-diff-edit',
@@ -38,7 +40,7 @@ export class DiffEditComponent implements OnInit {
   selectedEdits;
   layout;
 
-  constructor(private readonly db: AngularFirestore, private authInstance: AngularFireAuth) {
+  constructor(private readonly db: AngularFirestore, private authInstance: AngularFireAuth, public sharedService: SharedService) {
     // $scope.$watch('left',() => { this.doDiff(); });
     // $scope.$watch('right',() => { this.doDiff(); });
 
@@ -210,7 +212,7 @@ export class DiffEditComponent implements OnInit {
     // Delete edit
     const edit = this.edit;
     const wikiId = this.db.createId();
-    this.db.doc(`countries/${edit.owner_id}`).valueChanges().pipe(map((country: Country) => {
+    this.db.doc(`${this.sharedService.countryOrSiteEdits}/${edit.owner_id}`).valueChanges().pipe(map((country: Country) => {
       return this.db.doc(`wiki/${country.current}`).valueChanges().pipe(take(1)).toPromise();
     }), take(1)).toPromise().then(wiki => {
       if (edit.new_title) {
@@ -223,7 +225,7 @@ export class DiffEditComponent implements OnInit {
         .delete(this.db.doc(`edits/${edit.id}`).ref)
         // Now lets update the ref in the organization and create a new version
         .set(this.db.doc(`wiki/${wikiId}`).ref, wiki)
-        .update(this.db.doc(`countries/${edit.owner_id}`).ref, {current: wikiId})
+        .update(this.db.doc(`${this.sharedService.countryOrSiteEdits}/${edit.owner_id}`).ref, {current: wikiId})
         .commit().then(d => {
           // Now create history doc
         const data = {

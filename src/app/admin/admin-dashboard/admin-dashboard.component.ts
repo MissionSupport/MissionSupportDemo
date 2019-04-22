@@ -270,6 +270,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
           this.viewPendingChecklistEdits = false;
           this.viewWikiCountryEdits = true;
           this.viewWikiSiteEdits = false;
+          this.sharedService.countryOrSiteEdits = 'countries';
         }
       },
       {
@@ -279,6 +280,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy, AfterContentI
           this.viewPendingChecklistEdits = false;
           this.viewWikiCountryEdits = false;
           this.viewWikiSiteEdits = true;
+          this.sharedService.countryOrSiteEdits = 'sites';
         }
       },
       {

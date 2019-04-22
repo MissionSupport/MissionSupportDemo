@@ -17,5 +17,6 @@ export class SharedService {
   selectedChecklists: Array<string> = [];
   updatingChecklists: Array<any> = [];
   addedChecklistsMap: any;
+  countryOrSiteEdits: string;
   constructor() { }
 }
