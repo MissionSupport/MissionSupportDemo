@@ -201,6 +201,7 @@ export class SitesComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.unsubscribeSubject)).subscribe((pref: UserPreferences) => {
             this.canEditTrip = this.canEditChecklist = this.canEditWiki = pref.admin;
             this.canProposeWiki = pref.verified;
+            console.log(this.canProposeWiki);
             this.sharedService.canEdit.emit(pref.admin || pref.verified);
         });
 

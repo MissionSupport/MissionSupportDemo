@@ -241,12 +241,14 @@ export class DiffEditComponent implements OnInit {
     console.log(this.selectedEdits);
     this.selectedEdits.forEach( edit => {
       if (edit.type === 1) {
+        console.log(this.diffOutput, edit);
         this.diffOutput = this.diffOutput.replace('<u style="background-color: rgb(204, 232, 204);">' + edit.string + '</u>', edit.string);
       } else {
         // console.log(this.diffOutput, edit);
         this.diffOutput = this.diffOutput.replace('<s style="background-color: rgb(250, 204, 204);">' + edit.string + '</s>', '');
       }
     });
+    console.log(this.diffOutput);
   }
 
 }
